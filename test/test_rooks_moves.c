@@ -1,0 +1,386 @@
+
+#ifdef TEST
+
+#include "unity.h"
+
+#include "rooks_moves.h"
+#include "board.h"
+#include "binary_tools.h"
+
+void setUp(void)
+{
+    initialize_pre_calculated_rook_moves_database();
+}
+
+void tearDown(void)
+{
+}
+
+void test_generate_rooks_move_from_a1_without_blocking_piece_should_return_valid_bitboard(void)
+{
+    Bitboard moves = generate_rook_moves_from_square_without_blocking_piece(A1);
+    Bitboard expected = 0x0ULL;
+
+    expected = set_bit_on_bitboard(expected, A2);
+    expected = set_bit_on_bitboard(expected, A3);
+    expected = set_bit_on_bitboard(expected, A4);
+    expected = set_bit_on_bitboard(expected, A5);
+    expected = set_bit_on_bitboard(expected, A6);
+    expected = set_bit_on_bitboard(expected, A7);
+    expected = set_bit_on_bitboard(expected, A8);
+    expected = set_bit_on_bitboard(expected, B1);
+    expected = set_bit_on_bitboard(expected, C1);
+    expected = set_bit_on_bitboard(expected, D1);
+    expected = set_bit_on_bitboard(expected, E1);
+    expected = set_bit_on_bitboard(expected, F1);
+    expected = set_bit_on_bitboard(expected, G1);
+    expected = set_bit_on_bitboard(expected, H1);
+
+    TEST_ASSERT_EQUAL_UINT64(expected, moves);
+}
+
+void test_generate_rooks_move_from_d4_without_blocking_piece_should_return_valid_bitboard(void)
+{
+    Bitboard moves = generate_rook_moves_from_square_without_blocking_piece(D4);
+    Bitboard expected = 0x0ULL;
+
+    expected = set_bit_on_bitboard(expected, D5);
+    expected = set_bit_on_bitboard(expected, D6);
+    expected = set_bit_on_bitboard(expected, D7);
+    expected = set_bit_on_bitboard(expected, D8);
+    expected = set_bit_on_bitboard(expected, D3);
+    expected = set_bit_on_bitboard(expected, D2);
+    expected = set_bit_on_bitboard(expected, D1);
+    expected = set_bit_on_bitboard(expected, A4);
+    expected = set_bit_on_bitboard(expected, B4);
+    expected = set_bit_on_bitboard(expected, C4);
+    expected = set_bit_on_bitboard(expected, E4);
+    expected = set_bit_on_bitboard(expected, F4);
+    expected = set_bit_on_bitboard(expected, G4);
+    expected = set_bit_on_bitboard(expected, H4);
+
+    TEST_ASSERT_EQUAL_UINT64(expected, moves);
+}
+
+void test_generate_rooks_move_from_b7_without_blocking_piece_edge_remove_should_return_valid_bitboard(void)
+{
+    Bitboard moves = generate_rook_moves_from_square_without_blocking_piece_edge_remove(B7);
+    Bitboard expected = 0x0ULL;
+
+    expected = set_bit_on_bitboard(expected, B6);
+    expected = set_bit_on_bitboard(expected, B5);
+    expected = set_bit_on_bitboard(expected, B4);
+    expected = set_bit_on_bitboard(expected, B3);
+    expected = set_bit_on_bitboard(expected, B2);
+    expected = set_bit_on_bitboard(expected, C7);
+    expected = set_bit_on_bitboard(expected, D7);
+    expected = set_bit_on_bitboard(expected, E7);
+    expected = set_bit_on_bitboard(expected, F7);
+    expected = set_bit_on_bitboard(expected, G7);
+
+    TEST_ASSERT_EQUAL_UINT64(expected, moves);
+}
+
+void test_generate_rooks_move_from_C6_without_blocking_piece_edge_remove_should_return_valid_bitboard(void)
+{
+    Bitboard moves = generate_rook_moves_from_square_without_blocking_piece_edge_remove(C6);
+    Bitboard expected = 0x0ULL;
+
+    expected = set_bit_on_bitboard(expected, C5);
+    expected = set_bit_on_bitboard(expected, C4);
+    expected = set_bit_on_bitboard(expected, C3);
+    expected = set_bit_on_bitboard(expected, C2);
+    expected = set_bit_on_bitboard(expected, C7);
+    expected = set_bit_on_bitboard(expected, B6);
+    expected = set_bit_on_bitboard(expected, D6);
+    expected = set_bit_on_bitboard(expected, E6);
+    expected = set_bit_on_bitboard(expected, F6);
+    expected = set_bit_on_bitboard(expected, G6);
+
+    TEST_ASSERT_EQUAL_UINT64(expected, moves);
+}
+
+void test_generate_rooks_move_from_a1_without_blocking_piece_edge_remove_should_return_valid_bitboard(void)
+{
+    Bitboard moves = generate_rook_moves_from_square_without_blocking_piece_edge_remove(A1);
+    Bitboard expected = 0x0ULL;
+
+    expected = set_bit_on_bitboard(expected, A2);
+    expected = set_bit_on_bitboard(expected, A3);
+    expected = set_bit_on_bitboard(expected, A4);
+    expected = set_bit_on_bitboard(expected, A5);
+    expected = set_bit_on_bitboard(expected, A6);
+    expected = set_bit_on_bitboard(expected, A7);
+    expected = set_bit_on_bitboard(expected, B1);
+    expected = set_bit_on_bitboard(expected, C1);
+    expected = set_bit_on_bitboard(expected, D1);
+    expected = set_bit_on_bitboard(expected, E1);
+    expected = set_bit_on_bitboard(expected, F1);
+    expected = set_bit_on_bitboard(expected, G1);
+
+    TEST_ASSERT_EQUAL_UINT64(expected, moves);
+}
+
+void test_get_rook_blocker_configuration_for_d4_giving_index_0_sould_return_0(void)
+{
+    Bitboard blockers = get_rook_blocker_configuration_for_square_giving_index(D4, 0);
+    Bitboard expected = 0x0ULL;
+
+    TEST_ASSERT_EQUAL_UINT64(expected, blockers);
+}
+
+void test_get_rook_blocker_configuration_for_g7_giving_index_0_sould_return_0(void)
+{
+    Bitboard blockers = get_rook_blocker_configuration_for_square_giving_index(G7, 0);
+    Bitboard expected = 0x0ULL;
+
+    TEST_ASSERT_EQUAL_UINT64(expected, blockers);
+}
+
+void test_get_rook_blocker_configuration_for_e6_giving_index_1023_sould_return_all_blockers_set(void)
+{
+    Bitboard blockers = get_rook_blocker_configuration_for_square_giving_index(E6, 1023);
+    Bitboard expected = 0x0ULL;
+
+    expected = set_bit_on_bitboard(expected, E7);
+    expected = set_bit_on_bitboard(expected, E5);
+    expected = set_bit_on_bitboard(expected, E4);
+    expected = set_bit_on_bitboard(expected, E3);
+    expected = set_bit_on_bitboard(expected, E2);
+    expected = set_bit_on_bitboard(expected, B6);
+    expected = set_bit_on_bitboard(expected, C6);
+    expected = set_bit_on_bitboard(expected, D6);
+    expected = set_bit_on_bitboard(expected, F6);
+    expected = set_bit_on_bitboard(expected, G6);
+
+    TEST_ASSERT_EQUAL_UINT64(expected, blockers);
+}
+
+void test_get_rook_blocker_configuration_for_b4_giving_index_3_sould_return_valid_blocker_configuration(void)
+{
+    Bitboard blockers = get_rook_blocker_configuration_for_square_giving_index(B4, 3);
+    Bitboard expected = 0x0ULL;
+
+    expected = set_bit_on_bitboard(expected, B7);
+    expected = set_bit_on_bitboard(expected, B6);
+
+    TEST_ASSERT_EQUAL_UINT64(expected, blockers);
+}
+
+void test_test_candidate_magic_bitboard_rook_with_known_magic_number_should_return_valid_result(void)
+{
+    Bitboard magic_number1 = 0x4080002080104000ULL;
+    int test_result1 = test_candidate_magic_bitboard_rook(A8, magic_number1);
+
+    Bitboard magic_number2 = 0x82020040a08011ULL;
+    int test_result2 = test_candidate_magic_bitboard_rook(C6, magic_number2);
+
+    Bitboard magic_number3 = 0xc012001008120084ULL;
+    int test_result3 = test_candidate_magic_bitboard_rook(F3, magic_number3);
+
+    Bitboard magic_number4 = 0xc1080011000c4900ULL;
+    int test_result4 = test_candidate_magic_bitboard_rook(E2, magic_number4);
+
+    Bitboard magic_number5 = 0x408200050044ULL;
+    int test_result5 = test_candidate_magic_bitboard_rook(H5, magic_number5);
+
+    TEST_ASSERT_EQUAL_INT(1, test_result1);
+    TEST_ASSERT_EQUAL_INT(1, test_result2);
+    TEST_ASSERT_EQUAL_INT(1, test_result3);
+    TEST_ASSERT_EQUAL_INT(1, test_result4);
+    TEST_ASSERT_EQUAL_INT(1, test_result5);
+}
+
+void test_test_candidate_magic_bitboard_rook_with_invalid_magic_number_should_return_zero(void)
+{
+    Bitboard invalid_magic_number1 = 0x1234567890abcdefULL;
+    int test_result1 = test_candidate_magic_bitboard_rook(D4, invalid_magic_number1);
+
+    Bitboard invalid_magic_number2 = 0xffffffffffffffffULL;
+    int test_result2 = test_candidate_magic_bitboard_rook(B2, invalid_magic_number2);
+
+    TEST_ASSERT_EQUAL_INT(0, test_result1);
+    TEST_ASSERT_EQUAL_INT(0, test_result2);
+}
+
+void test_generate_magic_number_for_rook_on_square_should_return_valid_magic_number(void)
+{
+    Bitboard magic_number = generate_magic_number_for_rook_on_square(A8);
+    
+    TEST_ASSERT_EQUAL_INT(1, test_candidate_magic_bitboard_rook(A8, magic_number));
+
+}
+
+void test_generate_all_magic_numbers_for_rooks_should_return_valid_magic_numbers(void)
+{
+    Bitboard* magic_numbers = generate_all_magic_numbers_for_rooks();
+    int i;
+    int test_result;
+
+    for (i = 0; i < 64; i++)
+    {
+        test_result = test_candidate_magic_bitboard_rook((Square)i, magic_numbers[i]);
+        TEST_ASSERT_EQUAL_INT(1, test_result);
+    }
+
+    free(magic_numbers);
+}
+
+void test_all_rooks_magic_numbers_should_be_valid(void)
+{
+    int i;
+    int test_result;
+
+    for (i = 0; i < 64; i++)
+    {
+        test_result = test_candidate_magic_bitboard_rook((Square)i, rook_magic_numbers[i]);
+        TEST_ASSERT_EQUAL_INT(1, test_result);
+    }
+}
+
+void test_generate_rook_moves_on_E6_for_giving_blocker_configuration_should_return_valid_moves(void)
+{
+    Bitboard blockers = 0x0000000000280010ULL;
+    Bitboard expected = 0x0ULL;
+    Bitboard moves = generate_rook_moves_for_giving_blocker_configuration(E6, blockers);
+    
+    expected = set_bit_on_bitboard(expected, E7);
+    expected = set_bit_on_bitboard(expected, E8);
+    expected = set_bit_on_bitboard(expected, E5);
+    expected = set_bit_on_bitboard(expected, E4);
+    expected = set_bit_on_bitboard(expected, E3);
+    expected = set_bit_on_bitboard(expected, E2);
+    expected = set_bit_on_bitboard(expected, E1);
+    expected = set_bit_on_bitboard(expected, D6);
+    expected = set_bit_on_bitboard(expected, F6);
+
+    TEST_ASSERT_EQUAL_UINT64(expected, moves);
+}
+
+void test_generate_rook_moves_on_H6_for_giving_blocker_configuration_should_return_valid_moves(void)
+{
+    Bitboard blockers = 0x0000000000380030ULL;
+    Bitboard expected = 0x0ULL;
+    Bitboard moves = generate_rook_moves_for_giving_blocker_configuration(H6, blockers);
+    
+    expected = set_bit_on_bitboard(expected, H7);
+    expected = set_bit_on_bitboard(expected, H8);
+    expected = set_bit_on_bitboard(expected, H5);
+    expected = set_bit_on_bitboard(expected, H4);
+    expected = set_bit_on_bitboard(expected, H3);
+    expected = set_bit_on_bitboard(expected, H2);
+    expected = set_bit_on_bitboard(expected, H1);
+    expected = set_bit_on_bitboard(expected, G6);
+    expected = set_bit_on_bitboard(expected, F6);
+
+    TEST_ASSERT_EQUAL_UINT64(expected, moves);
+}
+
+void test_generate_rook_moves_on_H6_for_0_blocker_configuration_should_return_valid_moves(void)
+{
+    Bitboard blockers = 0x0000000000000000ULL;
+    Bitboard expected = 0x0ULL;
+    Bitboard moves = generate_rook_moves_for_giving_blocker_configuration(H6, blockers);
+    
+    expected = set_bit_on_bitboard(expected, H7);
+    expected = set_bit_on_bitboard(expected, H8);
+    expected = set_bit_on_bitboard(expected, H5);
+    expected = set_bit_on_bitboard(expected, H4);
+    expected = set_bit_on_bitboard(expected, H3);
+    expected = set_bit_on_bitboard(expected, H2);
+    expected = set_bit_on_bitboard(expected, H1);
+    expected = set_bit_on_bitboard(expected, G6);
+    expected = set_bit_on_bitboard(expected, F6);
+    expected = set_bit_on_bitboard(expected, E6);
+    expected = set_bit_on_bitboard(expected, D6);
+    expected = set_bit_on_bitboard(expected, C6);
+    expected = set_bit_on_bitboard(expected, B6);
+    expected = set_bit_on_bitboard(expected, A6);
+
+    TEST_ASSERT_EQUAL_UINT64(expected, moves);
+}
+
+void test_retrieve_pre_calculated_rook_moves_on_D7_for_giving_blocker_configuration_should_return_valid_moves(void)
+{
+    Bitboard blockers = 0x8450684045448ULL;
+    Bitboard expected = 0x0ULL;
+    Bitboard moves = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(D7, blockers);
+    
+    expected = set_bit_on_bitboard(expected, D8);
+    expected = set_bit_on_bitboard(expected, D6);
+    expected = set_bit_on_bitboard(expected, D5);
+    expected = set_bit_on_bitboard(expected, D4);
+    expected = set_bit_on_bitboard(expected, D3);
+    expected = set_bit_on_bitboard(expected, D2);
+    expected = set_bit_on_bitboard(expected, C7);
+    expected = set_bit_on_bitboard(expected, E7);
+
+    TEST_ASSERT_EQUAL_UINT64(expected, moves);
+}
+
+void test_retrieve_pre_calculated_rook_moves_on_E4_for_giving_blocker_configuration_should_return_valid_moves(void)
+{
+    Bitboard blockers = 0x8450684045448ULL;
+    Bitboard expected = 0x0ULL;
+    Bitboard moves = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(E4, blockers);
+
+    expected = set_bit_on_bitboard(expected, E5);
+    expected = set_bit_on_bitboard(expected, E6);
+    expected = set_bit_on_bitboard(expected, E7);
+    expected = set_bit_on_bitboard(expected, E3);
+    expected = set_bit_on_bitboard(expected, E2);
+    expected = set_bit_on_bitboard(expected, E1);
+    expected = set_bit_on_bitboard(expected, D4);
+    expected = set_bit_on_bitboard(expected, C4);
+    expected = set_bit_on_bitboard(expected, F4);
+    expected = set_bit_on_bitboard(expected, G4);
+    expected = set_bit_on_bitboard(expected, H4);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected, moves);
+}
+
+
+void test_retrieve_pre_calculated_rook_moves_on_A1_for_giving_blocker_configuration_should_return_valid_moves(void)
+{
+    Bitboard blockers = 0x8450684045448ULL;
+    Bitboard expected = 0x0ULL;
+    Bitboard moves = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(A1, blockers);
+    
+    expected = set_bit_on_bitboard(expected, A2);
+    expected = set_bit_on_bitboard(expected, A3);
+    expected = set_bit_on_bitboard(expected, B1);
+    expected = set_bit_on_bitboard(expected, C1);
+    expected = set_bit_on_bitboard(expected, D1);
+    expected = set_bit_on_bitboard(expected, E1);
+    expected = set_bit_on_bitboard(expected, F1);
+    expected = set_bit_on_bitboard(expected, G1);
+    expected = set_bit_on_bitboard(expected, H1);
+
+    TEST_ASSERT_EQUAL_UINT64(expected, moves);
+}
+
+void test_retrieve_pre_calculated_rook_moves_on_C4_for_0_blocker_configuration_should_return_valid_moves(void)
+{
+    Bitboard blockers = 0x0000000000000000ULL;
+    Bitboard expected = 0x0ULL;
+    Bitboard moves = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(C4, blockers);
+    
+    expected = set_bit_on_bitboard(expected, C5);
+    expected = set_bit_on_bitboard(expected, C6);
+    expected = set_bit_on_bitboard(expected, C7);
+    expected = set_bit_on_bitboard(expected, C8);
+    expected = set_bit_on_bitboard(expected, C3);
+    expected = set_bit_on_bitboard(expected, C2);
+    expected = set_bit_on_bitboard(expected, C1);
+    expected = set_bit_on_bitboard(expected, B4);
+    expected = set_bit_on_bitboard(expected, A4);
+    expected = set_bit_on_bitboard(expected, D4);
+    expected = set_bit_on_bitboard(expected, E4);
+    expected = set_bit_on_bitboard(expected, F4);
+    expected = set_bit_on_bitboard(expected, G4);
+    expected = set_bit_on_bitboard(expected, H4);
+
+    TEST_ASSERT_EQUAL_UINT64(expected, moves);
+}
+
+#endif // TEST
