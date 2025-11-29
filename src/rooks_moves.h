@@ -2,8 +2,8 @@
 #ifndef ROOKS_MOVES_H
 #define ROOKS_MOVES_H
 
-#include "board.h"
-#include "time.h"
+#include "game.h"
+#include "moves.h"
 
 extern const int number_of_bit_in_rook_mask_for_square[64];
 extern const Bitboard rook_magic_numbers[64];
@@ -23,4 +23,6 @@ Bitboard generate_rook_moves_for_giving_blocker_configuration(Square square, Bit
 void initialize_pre_calculated_rook_moves_database();
 
 Bitboard retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(Square square, Bitboard blocker);
+
+void generate_all_rooks_moves_from_game_state(Game* board_state, MoveList* moves_list);
 #endif // ROOKS_MOVES_H

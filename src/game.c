@@ -21,6 +21,7 @@ Game* create_game()
 
     game->turn = WHITE_TURN;
     game->castling_rights = WHITE_KING_SIDE_CASTLING | WHITE_QUEEN_SIDE_CASTLING | BLACK_KING_SIDE_CASTLING | BLACK_QUEEN_SIDE_CASTLING;
+    game->en_passant_target_square = -1;
     return game;
 }
 

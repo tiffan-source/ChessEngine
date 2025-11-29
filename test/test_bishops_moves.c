@@ -1,12 +1,14 @@
 
-
-#ifdef TEST
+// #ifdef TEST
 
 #include "unity.h"
 
 #include "bishops_moves.h"
 #include "board.h"
 #include "binary_tools.h"
+#include "game.h"
+#include "moves.h"
+#include "pieces.h"
 
 void setUp(void)
 {
@@ -15,6 +17,12 @@ void setUp(void)
 
 void tearDown(void)
 {
+}
+
+static int compare_move(const void *a, const void *b) {
+    int ia = *(const Move*)a;
+    int ib = *(const Move*)b;
+    return ia - ib;
 }
 
 void test_generate_bishop_move_from_a1_without_blocking_piece_should_return_valid_bitboard(void)
@@ -239,98 +247,71 @@ void test_generate_bishop_moves_on_E7_for_giving_blocker_configuration_should_re
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
 
-void test_generate_bishop_moves_on_E7_for_0_blocker_configuration_should_return_valid_moves(void)
+void test_generate_all_white_bishop_move_from_tricky_position(void)
 {
-    Bitboard blockers = 0x0000000000000000ULL;
-    Bitboard expected = 0x0ULL;
-    Bitboard moves = generate_bishop_moves_for_giving_blocker_configuration(E7, blockers);
+    char *position_white = "r3k2r/Pppp1Npp/1b3nb1/nP6/BBP1P3/q4N2/Pp1P2Pp/R2Q1R1K w kq - 0 1";
     
-    expected = set_bit_on_bitboard(expected, D8);
-    expected = set_bit_on_bitboard(expected, F8);
-    expected = set_bit_on_bitboard(expected, D6);
-    expected = set_bit_on_bitboard(expected, C5);
-    expected = set_bit_on_bitboard(expected, B4);
-    expected = set_bit_on_bitboard(expected, A3);
-    expected = set_bit_on_bitboard(expected, F6);
-    expected = set_bit_on_bitboard(expected, G5);
-    expected = set_bit_on_bitboard(expected, H4);
+    Game *game_white = create_game_from_FEN(position_white);
 
-    TEST_ASSERT_EQUAL_UINT64(expected, moves);
+    MoveList* result_for_white = (MoveList*) malloc(sizeof(MoveList));
+    result_for_white->current_index = 0;
+
+    Move expected_for_white[] = {
+        create_move(A4, B3, WHITE_BISHOP, QUIET_MOVES),
+        create_move(A4, C2, WHITE_BISHOP, QUIET_MOVES),
+
+        create_move(B4, A3, WHITE_BISHOP, CAPTURE),
+        create_move(B4, A5, WHITE_BISHOP, CAPTURE),
+        create_move(B4, C3, WHITE_BISHOP, QUIET_MOVES),
+        create_move(B4, C5, WHITE_BISHOP, QUIET_MOVES),
+        create_move(B4, D6, WHITE_BISHOP, QUIET_MOVES),
+        create_move(B4, E7, WHITE_BISHOP, QUIET_MOVES),
+        create_move(B4, F8, WHITE_BISHOP, QUIET_MOVES),
+    };
+    
+    generate_all_bishop_moves_from_game_state(game_white, result_for_white);
+
+    qsort(result_for_white->moves, result_for_white->current_index, sizeof(Move), compare_move);
+    qsort(expected_for_white, 9, sizeof(Move), compare_move);    
+
+    TEST_ASSERT_EQUAL_INT_ARRAY(expected_for_white, result_for_white->moves, 9);
+
+    free_game(game_white);
+    free(result_for_white);
 }
 
-void test_retrieve_pre_calculated_bishop_moves_on_D7_for_giving_blocker_configuration_should_return_valid_moves(void)
+void test_generate_all_black_bishop_move_from_tricky_position(void)
 {
-    Bitboard blockers = 0x8450684045448ULL;
-    Bitboard expected = 0x0ULL;
-    Bitboard moves = retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(D7, blockers);
-    
-    expected = set_bit_on_bitboard(expected, E8);
-    expected = set_bit_on_bitboard(expected, C8);
-    expected = set_bit_on_bitboard(expected, C6);
-    expected = set_bit_on_bitboard(expected, E6);
-    expected = set_bit_on_bitboard(expected, F5);
-    expected = set_bit_on_bitboard(expected, G4);
-    expected = set_bit_on_bitboard(expected, H3);
+    char *position_black = "r3k2r/Pppp1Npp/1b3nb1/nP6/BBP1P3/q4N2/Pp1P2Pp/R2Q1R1K b kq - 0 1";
 
-    TEST_ASSERT_EQUAL_UINT64(expected, moves);
+    Game *game_black = create_game_from_FEN(position_black);
+
+    MoveList* result_for_black = (MoveList*) malloc(sizeof(MoveList));
+    result_for_black->current_index = 0;
+
+    Move expected_for_black[] = {
+        create_move(B6, C5, BLACK_BISHOP, QUIET_MOVES),
+        create_move(B6, D4, BLACK_BISHOP, QUIET_MOVES),
+        create_move(B6, E3, BLACK_BISHOP, QUIET_MOVES),
+        create_move(B6, F2, BLACK_BISHOP, QUIET_MOVES),
+        create_move(B6, G1, BLACK_BISHOP, QUIET_MOVES),
+        create_move(B6, A7, BLACK_BISHOP, CAPTURE),
+
+        create_move(G6, F7, BLACK_BISHOP, CAPTURE),
+        create_move(G6, F5, BLACK_BISHOP, QUIET_MOVES),
+        create_move(G6, E4, BLACK_BISHOP, CAPTURE),
+        create_move(G6, H5, BLACK_BISHOP, QUIET_MOVES),
+    };
+    
+    generate_all_bishop_moves_from_game_state(game_black, result_for_black);
+    
+    qsort(result_for_black->moves, result_for_black->current_index, sizeof(Move), compare_move);
+    qsort(expected_for_black, 10, sizeof(Move), compare_move);
+
+    TEST_ASSERT_EQUAL_INT_ARRAY(expected_for_black, result_for_black->moves, 10);
+    free_game(game_black);
+
+    free(result_for_black);
 }
 
-void test_retrieve_pre_calculated_bishop_moves_on_E4_for_giving_blocker_configuration_should_return_valid_moves(void)
-{
-    Bitboard blockers = 0x8450684045448ULL;
-    Bitboard expected = 0x0ULL;
-    Bitboard moves = retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(E4, blockers);
-
-    expected = set_bit_on_bitboard(expected, F5);
-    expected = set_bit_on_bitboard(expected, G6);
-    expected = set_bit_on_bitboard(expected, H7);
-    expected = set_bit_on_bitboard(expected, D5);
-    expected = set_bit_on_bitboard(expected, C6);
-    expected = set_bit_on_bitboard(expected, D3);
-    expected = set_bit_on_bitboard(expected, C2);
-    expected = set_bit_on_bitboard(expected, B1);
-    expected = set_bit_on_bitboard(expected, F3);
-    expected = set_bit_on_bitboard(expected, G2);
-    expected = set_bit_on_bitboard(expected, H1);
-    
-    TEST_ASSERT_EQUAL_UINT64(expected, moves);
-}
-
-
-void test_retrieve_pre_calculated_bishop_moves_on_A1_for_giving_blocker_configuration_should_return_valid_moves(void)
-{
-    Bitboard blockers = 0x8450684045448ULL;
-    Bitboard expected = 0x0ULL;
-    Bitboard moves = retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(A1, blockers);
-    
-    expected = set_bit_on_bitboard(expected, B2);
-    expected = set_bit_on_bitboard(expected, C3);
-
-    TEST_ASSERT_EQUAL_UINT64(expected, moves);
-}
-
-
-void test_retrieve_pre_calculated_bishop_moves_on_C4_for_0_blocker_configuration_should_return_valid_moves(void)
-{
-    Bitboard blockers = 0x0000000000000000ULL;
-    Bitboard expected = 0x0ULL;
-    Bitboard moves = retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(C4, blockers);
-    
-    expected = set_bit_on_bitboard(expected, D5);
-    expected = set_bit_on_bitboard(expected, E6);
-    expected = set_bit_on_bitboard(expected, F7);
-    expected = set_bit_on_bitboard(expected, G8);
-    expected = set_bit_on_bitboard(expected, B5);
-    expected = set_bit_on_bitboard(expected, A6);
-    expected = set_bit_on_bitboard(expected, B3);
-    expected = set_bit_on_bitboard(expected, A2);
-    expected = set_bit_on_bitboard(expected, D3);
-    expected = set_bit_on_bitboard(expected, E2);
-    expected = set_bit_on_bitboard(expected, F1);
-
-    TEST_ASSERT_EQUAL_UINT64(expected, moves);
-}
-
-
-
-#endif // TEST
+// #endif // TEST

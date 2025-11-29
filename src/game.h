@@ -4,6 +4,11 @@
 
 #include "board.h"
 
+#define BLACK_OCCUPENCY(game) (game->black_pawns | game->black_knights | game->black_bishops | game->black_rooks | game->black_queens | game->black_king)
+#define WHITE_OCCUPENCY(game) (game->white_pawns | game->white_knights | game->white_bishops | game->white_rooks | game->white_queens | game->white_king)
+#define ALL_OCCUPENCY(game) (BLACK_OCCUPENCY(game) | WHITE_OCCUPENCY(game))
+#define REVOK_CASTLING_RIGHT(game, rights) (game->castling_rights &= ~(rights))
+
 typedef enum TURN {
     BLACK_TURN,
     WHITE_TURN

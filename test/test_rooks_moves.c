@@ -1,11 +1,14 @@
 
-#ifdef TEST
+// #ifdef TEST
 
 #include "unity.h"
 
 #include "rooks_moves.h"
 #include "board.h"
 #include "binary_tools.h"
+#include "game.h"
+#include "moves.h"
+#include "pieces.h"
 
 void setUp(void)
 {
@@ -14,6 +17,12 @@ void setUp(void)
 
 void tearDown(void)
 {
+}
+
+static int compare_move(const void *a, const void *b) {
+    int ia = *(const Move*)a;
+    int ib = *(const Move*)b;
+    return ia - ib;
 }
 
 void test_generate_rooks_move_from_a1_without_blocking_piece_should_return_valid_bitboard(void)
@@ -383,4 +392,77 @@ void test_retrieve_pre_calculated_rook_moves_on_C4_for_0_blocker_configuration_s
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
 
-#endif // TEST
+void test_retrieve_pre_calculated_rook_moves_on_59_for_a9cb21170362ef91_blocker_configuration_should_return_valid_moves(void)
+{
+    Bitboard blockers = 0xa9cb21170362ef91ULL;
+    Bitboard expected = 0x0ULL;
+    Bitboard moves = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(59, blockers);
+
+    expected = set_bit_on_bitboard(expected, D2);
+    expected = set_bit_on_bitboard(expected, C1);
+    expected = set_bit_on_bitboard(expected, B1);
+    expected = set_bit_on_bitboard(expected, A1);
+    expected = set_bit_on_bitboard(expected, E1);
+    expected = set_bit_on_bitboard(expected, F1);
+
+    TEST_ASSERT_EQUAL_UINT64(expected, moves);
+}
+
+void test_generate_all_white_rook_move_from_tricky_position(void)
+{
+    char *position_white = "r3k2r/Pppp1Npp/1b3nb1/nP6/BBP1P3/q4N2/Pp1P2Pp/R2Q1R1K w kq - 0 1";
+    
+    Game *game_white = create_game_from_FEN(position_white);
+
+    MoveList* result_for_white = (MoveList*) malloc(sizeof(MoveList));
+    result_for_white->current_index = 0;
+
+    Move expected_for_white[] = {
+        create_move(A1, B1, WHITE_ROOK, QUIET_MOVES),
+        create_move(A1, C1, WHITE_ROOK, QUIET_MOVES),
+        create_move(F1, E1, WHITE_ROOK, QUIET_MOVES),
+        create_move(F1, G1, WHITE_ROOK, QUIET_MOVES),
+        create_move(F1, F2, WHITE_ROOK, QUIET_MOVES),
+    };
+    
+    generate_all_rooks_moves_from_game_state(game_white, result_for_white);
+
+    qsort(result_for_white->moves, result_for_white->current_index, sizeof(Move), compare_move);
+    qsort(expected_for_white, 5, sizeof(Move), compare_move);    
+
+    TEST_ASSERT_EQUAL_INT_ARRAY(expected_for_white, result_for_white->moves, 5);
+
+    free_game(game_white);
+    free(result_for_white);
+}
+
+void test_generate_all_black_rook_move_from_tricky_position(void)
+{
+    char *position_black = "r3k2r/Pppp1Npp/1b3nb1/nP6/BBP1P3/q4N2/Pp1P2Pp/R2Q1R1K b kq - 0 1";
+
+    Game *game_black = create_game_from_FEN(position_black);
+
+    MoveList* result_for_black = (MoveList*) malloc(sizeof(MoveList));
+    result_for_black->current_index = 0;
+
+    Move expected_for_black[] = {
+        create_move(A8, B8, BLACK_ROOK, QUIET_MOVES),
+        create_move(A8, C8, BLACK_ROOK, QUIET_MOVES),
+        create_move(A8, D8, BLACK_ROOK, QUIET_MOVES),
+        create_move(A8, A7, BLACK_ROOK, CAPTURE),
+        create_move(H8, G8, BLACK_ROOK, QUIET_MOVES),
+        create_move(H8, F8, BLACK_ROOK, QUIET_MOVES),
+    };
+    
+    generate_all_rooks_moves_from_game_state(game_black, result_for_black);
+    
+    qsort(result_for_black->moves, result_for_black->current_index, sizeof(Move), compare_move);
+    qsort(expected_for_black, 6, sizeof(Move), compare_move);
+
+    TEST_ASSERT_EQUAL_INT_ARRAY(expected_for_black, result_for_black->moves, 6);
+    free_game(game_black);
+
+    free(result_for_black);
+}
+
+// #endif // TEST

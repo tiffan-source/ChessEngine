@@ -1,7 +1,6 @@
 
 
 #include "bishops_moves.h"
-#include "binary_tools.h"
 
 const int number_of_bit_in_bishop_mask_for_square[64] = {
     6, 5, 5, 5, 5, 5, 5, 6,
@@ -316,4 +315,72 @@ Bitboard retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(S
     int index_by_magic = hash_function_for_indexing_U64_configuration(know_blocker_configuration, bishop_magic_numbers[square], number_of_bit_in_bishop_mask_for_square[square]);
     blocker = pre_calculated_bishop_moves_database[square][index_by_magic];
     return blocker;
+}
+
+void generate_all_bishop_moves_from_game_state(Game* board_state, MoveList* moves_list)
+{
+    Square source_square, target_square;
+    Bitboard white_bishops = board_state->white_bishops;
+    Bitboard black_bishops = board_state->black_bishops;
+    Bitboard move, attack;
+
+    if (board_state->turn == WHITE)
+    {
+        while(white_bishops){
+            source_square = get_lsb_index(white_bishops);
+
+            move = retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(
+                source_square,
+                ALL_OCCUPENCY(board_state)
+            );
+
+
+            while(move){
+                target_square = get_lsb_index(move);
+
+                if((1ULL << target_square) & (WHITE_OCCUPENCY(board_state))){
+                    move = clear_bit_on_bitboard(move, target_square);
+                    continue;
+                } else {
+                    moves_list->moves[moves_list->current_index++] = create_move(
+                        source_square,
+                        target_square,
+                        WHITE_BISHOP,
+                        (1ULL << target_square) & (BLACK_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
+                    );
+                    move = clear_bit_on_bitboard(move, target_square);
+                }
+            }
+
+            white_bishops = clear_bit_on_bitboard(white_bishops, source_square);
+        }
+    } else {
+        while(black_bishops){
+            source_square = get_lsb_index(black_bishops);
+
+            move = retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(
+                source_square,
+                ALL_OCCUPENCY(board_state)
+            );
+
+            while(move){
+                target_square = get_lsb_index(move);
+
+                if((1ULL << target_square) & (BLACK_OCCUPENCY(board_state))){
+                    move = clear_bit_on_bitboard(move, target_square);
+                    continue;
+                } else {
+                    moves_list->moves[moves_list->current_index++] = create_move(
+                        source_square,
+                        target_square,
+                        BLACK_BISHOP,
+                        (1ULL << target_square) & (WHITE_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
+                    );
+                    move = clear_bit_on_bitboard(move, target_square);
+                }
+            }
+
+            black_bishops = clear_bit_on_bitboard(black_bishops, source_square);
+        }
+    }
 }

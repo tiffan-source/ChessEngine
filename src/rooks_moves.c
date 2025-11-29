@@ -357,3 +357,70 @@ Bitboard retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(Squ
         , rook_magic_numbers[square], number_of_bit_in_rook_mask_for_square[square]);
     return pre_calculated_rook_moves_database[square][index_by_magic];
 }
+
+void generate_all_rooks_moves_from_game_state(Game* board_state, MoveList* moves_list)
+{
+    Square source_square, target_square;
+    Bitboard white_rooks = board_state->white_rooks;
+    Bitboard black_rooks = board_state->black_rooks;
+    Bitboard move, attack;
+
+    if (board_state->turn == WHITE)
+    {
+        while(white_rooks){
+            source_square = get_lsb_index(white_rooks);
+
+            move = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(
+                source_square,
+                ALL_OCCUPENCY(board_state)
+            );
+
+
+            while(move){
+                target_square = get_lsb_index(move);
+
+                if((1ULL << target_square) & (WHITE_OCCUPENCY(board_state))){
+                    move = clear_bit_on_bitboard(move, target_square);
+                    continue;
+                } else {
+                    moves_list->moves[moves_list->current_index++] = create_move(
+                        source_square,
+                        target_square,
+                        WHITE_ROOK,
+                        (1ULL << target_square) & (BLACK_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
+                    );
+                    move = clear_bit_on_bitboard(move, target_square);
+                }
+            }
+
+            white_rooks = clear_bit_on_bitboard(white_rooks, source_square);
+        }
+    } else {
+        while(black_rooks){
+            source_square = get_lsb_index(black_rooks);
+
+            move = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(
+                source_square,
+                ALL_OCCUPENCY(board_state)
+            );
+
+            while(move){
+                target_square = get_lsb_index(move);
+
+                if((1ULL << target_square) & (BLACK_OCCUPENCY(board_state))){
+                    move = clear_bit_on_bitboard(move, target_square);
+                    continue;
+                } else {
+                    moves_list->moves[moves_list->current_index++] = create_move(
+                        source_square,
+                        target_square,
+                        BLACK_ROOK,
+                        (1ULL << target_square) & (WHITE_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
+                    );
+                    move = clear_bit_on_bitboard(move, target_square);
+                }
+            }
+            black_rooks = clear_bit_on_bitboard(black_rooks, source_square);
+        }
+    }
+}

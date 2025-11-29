@@ -29,6 +29,8 @@ typedef enum Square {
     A1, B1, C1, D1, E1, F1, G1, H1
 }Square;
 
+extern const char* square_to_string[64];
+
 typedef enum Side {
     BLACK,
     WHITE

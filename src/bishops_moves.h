@@ -2,7 +2,9 @@
 #ifndef BISHOPS_MOVES_H
 #define BISHOPS_MOVES_H
 
-#include "board.h"
+#include "moves.h"
+#include "game.h"
+
 
 extern const int number_of_bit_in_bishop_mask_for_square[64];
 extern const Bitboard bishop_magic_numbers[64];
@@ -36,5 +38,7 @@ void initialize_pre_calculated_bishop_moves_database();
  * @return Bitboard The bitboard representing the possible moves for the bishop.
  */
 Bitboard retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(Square square, Bitboard blocker);
+
+void generate_all_bishop_moves_from_game_state(Game* board_state, MoveList* moves_list);
 
 #endif // BISHOPS_MOVES_H
