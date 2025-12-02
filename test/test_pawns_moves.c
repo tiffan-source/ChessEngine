@@ -31,8 +31,8 @@ void test_generate_pawns_quiet_moves_from_square_a2_for_white(void)
     Bitboard moves = generate_pawns_quiet_moves_from_square(WHITE, A2);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, A3);
-    expected = set_bit_on_bitboard(expected, A4);
+    expected = SET_BIT_ON_BITBOARD(expected, A3);
+    expected = SET_BIT_ON_BITBOARD(expected, A4);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -42,7 +42,7 @@ void test_generate_pawns_quiet_moves_from_square_b3_for_white(void)
     Bitboard moves = generate_pawns_quiet_moves_from_square(WHITE, B3);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, B4);
+    expected = SET_BIT_ON_BITBOARD(expected, B4);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -52,7 +52,7 @@ void test_generate_pawns_quiet_moves_from_square_g7_for_white(void)
     Bitboard moves = generate_pawns_quiet_moves_from_square(WHITE, G7);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, G8);
+    expected = SET_BIT_ON_BITBOARD(expected, G8);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -71,8 +71,8 @@ void test_generate_pawns_quiet_moves_from_square_a7_for_black(void)
     Bitboard moves = generate_pawns_quiet_moves_from_square(BLACK, A7);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, A6);
-    expected = set_bit_on_bitboard(expected, A5);
+    expected = SET_BIT_ON_BITBOARD(expected, A6);
+    expected = SET_BIT_ON_BITBOARD(expected, A5);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -82,7 +82,7 @@ void test_generate_pawns_quiet_moves_from_square_d5_for_black(void)
     Bitboard moves = generate_pawns_quiet_moves_from_square(BLACK, D5);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, D4);
+    expected = SET_BIT_ON_BITBOARD(expected, D4);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -100,7 +100,7 @@ void test_generate_pawns_quiet_moves_from_square_c2_for_black(void)
     Bitboard moves = generate_pawns_quiet_moves_from_square(BLACK, C2);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, C1);
+    expected = SET_BIT_ON_BITBOARD(expected, C1);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -112,8 +112,8 @@ void test_generate_pawns_capture_moves_from_square_e3_for_white(void)
     Bitboard moves = generate_pawns_capture_moves_from_square(WHITE, E3);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, D4);
-    expected = set_bit_on_bitboard(expected, F4);
+    expected = SET_BIT_ON_BITBOARD(expected, D4);
+    expected = SET_BIT_ON_BITBOARD(expected, F4);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -123,7 +123,7 @@ void test_generate_pawns_capture_moves_from_square_a7_for_white(void)
     Bitboard moves = generate_pawns_capture_moves_from_square(WHITE, A7);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, B8);
+    expected = SET_BIT_ON_BITBOARD(expected, B8);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -133,7 +133,7 @@ void test_generate_pawns_capture_moves_from_square_h4_for_white(void)
     Bitboard moves = generate_pawns_capture_moves_from_square(WHITE, H4);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, G5);
+    expected = SET_BIT_ON_BITBOARD(expected, G5);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -143,8 +143,8 @@ void test_generate_pawns_capture_moves_from_square_c5_for_white(void)
     Bitboard moves = generate_pawns_capture_moves_from_square(WHITE, C5);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, B6);
-    expected = set_bit_on_bitboard(expected, D6);
+    expected = SET_BIT_ON_BITBOARD(expected, B6);
+    expected = SET_BIT_ON_BITBOARD(expected, D6);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -154,7 +154,7 @@ void test_generate_pawns_capture_moves_from_square_h7_for_black(void)
     Bitboard moves = generate_pawns_capture_moves_from_square(BLACK, H7);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, G6);
+    expected = SET_BIT_ON_BITBOARD(expected, G6);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -164,8 +164,8 @@ void test_generate_pawns_capture_moves_from_square_b2_for_black(void)
     Bitboard moves = generate_pawns_capture_moves_from_square(BLACK, B2);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, A1);
-    expected = set_bit_on_bitboard(expected, C1);
+    expected = SET_BIT_ON_BITBOARD(expected, A1);
+    expected = SET_BIT_ON_BITBOARD(expected, C1);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -175,8 +175,8 @@ void test_generate_pawns_capture_moves_from_square_f6_for_black(void)
     Bitboard moves = generate_pawns_capture_moves_from_square(BLACK, F6);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, E5);
-    expected = set_bit_on_bitboard(expected, G5);
+    expected = SET_BIT_ON_BITBOARD(expected, E5);
+    expected = SET_BIT_ON_BITBOARD(expected, G5);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -186,7 +186,7 @@ void test_generate_pawns_capture_moves_from_square_a5_for_black(void)
     Bitboard moves = generate_pawns_capture_moves_from_square(BLACK, A5);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, B4);
+    expected = SET_BIT_ON_BITBOARD(expected, B4);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -196,7 +196,7 @@ void test_retrieve_pre_calculated_pawn_moves_for_white_from_e4_should_return_val
     Bitboard moves = pre_calculated_pawn_moves[WHITE][E4];
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, E5);
+    expected = SET_BIT_ON_BITBOARD(expected, E5);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -206,7 +206,7 @@ void test_retrieve_pre_calculated_pawn_moves_for_black_from_d5_should_return_val
     Bitboard moves = pre_calculated_pawn_moves[BLACK][D5];
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, D4);
+    expected = SET_BIT_ON_BITBOARD(expected, D4);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -217,8 +217,8 @@ void test_retrieve_pre_calculated_pawn_moves_for_white_from_a2_should_return_val
     Bitboard moves = pre_calculated_pawn_moves[WHITE][A2];
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, A3);
-    expected = set_bit_on_bitboard(expected, A4);
+    expected = SET_BIT_ON_BITBOARD(expected, A3);
+    expected = SET_BIT_ON_BITBOARD(expected, A4);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -228,8 +228,8 @@ void test_retrieve_pre_calculated_pawn_moves_for_black_from_g7_should_return_val
     Bitboard moves = pre_calculated_pawn_moves[BLACK][G7];
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, G6);
-    expected = set_bit_on_bitboard(expected, G5);
+    expected = SET_BIT_ON_BITBOARD(expected, G6);
+    expected = SET_BIT_ON_BITBOARD(expected, G5);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -239,8 +239,8 @@ void test_retrieve_pre_calculated_pawn_attacks_for_white_from_c3_should_return_v
     Bitboard moves = pre_calculated_pawn_attacks[WHITE][C3];
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, B4);
-    expected = set_bit_on_bitboard(expected, D4);
+    expected = SET_BIT_ON_BITBOARD(expected, B4);
+    expected = SET_BIT_ON_BITBOARD(expected, D4);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -250,8 +250,8 @@ void test_retrieve_pre_calculated_pawn_attacks_for_black_from_f6_should_return_v
     Bitboard moves = pre_calculated_pawn_attacks[BLACK][F6];
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, E5);
-    expected = set_bit_on_bitboard(expected, G5);
+    expected = SET_BIT_ON_BITBOARD(expected, E5);
+    expected = SET_BIT_ON_BITBOARD(expected, G5);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -261,7 +261,7 @@ void test_retrieve_pre_calculated_pawn_attacks_for_white_from_h7_should_return_v
     Bitboard moves = pre_calculated_pawn_attacks[WHITE][H7];
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, G8);
+    expected = SET_BIT_ON_BITBOARD(expected, G8);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -271,7 +271,7 @@ void test_retrieve_pre_calculated_pawn_attacks_for_black_from_a2_should_return_v
     Bitboard moves = pre_calculated_pawn_attacks[BLACK][A2];
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, B1);
+    expected = SET_BIT_ON_BITBOARD(expected, B1);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }

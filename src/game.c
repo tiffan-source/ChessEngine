@@ -68,51 +68,51 @@ Game* create_game_from_FEN(char* FEN)
         switch (*(FEN + i))
         {
             case 'p':
-                game->black_pawns = set_bit_on_bitboard(game->black_pawns, (Square)((8 - rank) * 8 + file));
+                game->black_pawns = SET_BIT_ON_BITBOARD(game->black_pawns, (Square)((8 - rank) * 8 + file));
                 break;
 
             case 'r':
-                game->black_rooks = set_bit_on_bitboard(game->black_rooks, (Square)((8 - rank) * 8 + file));
+                game->black_rooks = SET_BIT_ON_BITBOARD(game->black_rooks, (Square)((8 - rank) * 8 + file));
                 break;
 
             case 'n':
-                game->black_knights = set_bit_on_bitboard(game->black_knights, (Square)((8 - rank) * 8 + file));
+                game->black_knights = SET_BIT_ON_BITBOARD(game->black_knights, (Square)((8 - rank) * 8 + file));
                 break;
 
             case 'b':
-                game->black_bishops = set_bit_on_bitboard(game->black_bishops, (Square)((8 - rank) * 8 + file));
+                game->black_bishops = SET_BIT_ON_BITBOARD(game->black_bishops, (Square)((8 - rank) * 8 + file));
                 break;
 
             case 'q':
-                game->black_queens = set_bit_on_bitboard(game->black_queens, (Square)((8 - rank) * 8 + file));
+                game->black_queens = SET_BIT_ON_BITBOARD(game->black_queens, (Square)((8 - rank) * 8 + file));
                 break;
 
             case 'k':
-                game->black_king = set_bit_on_bitboard(game->black_king, (Square)((8 - rank) * 8 + file));
+                game->black_king = SET_BIT_ON_BITBOARD(game->black_king, (Square)((8 - rank) * 8 + file));
                 break;
 
             case 'P':
-                game->white_pawns = set_bit_on_bitboard(game->white_pawns, (Square)((8 - rank) * 8 + file));
+                game->white_pawns = SET_BIT_ON_BITBOARD(game->white_pawns, (Square)((8 - rank) * 8 + file));
                 break;
 
             case 'R':
-                game->white_rooks = set_bit_on_bitboard(game->white_rooks, (Square)((8 - rank) * 8 + file));
+                game->white_rooks = SET_BIT_ON_BITBOARD(game->white_rooks, (Square)((8 - rank) * 8 + file));
                 break;
 
             case 'N':
-                game->white_knights = set_bit_on_bitboard(game->white_knights, (Square)((8 - rank) * 8 + file));
+                game->white_knights = SET_BIT_ON_BITBOARD(game->white_knights, (Square)((8 - rank) * 8 + file));
                 break;
 
             case 'B':
-                game->white_bishops = set_bit_on_bitboard(game->white_bishops, (Square)((8 - rank) * 8 + file));
+                game->white_bishops = SET_BIT_ON_BITBOARD(game->white_bishops, (Square)((8 - rank) * 8 + file));
                 break;
 
             case 'Q':
-                game->white_queens = set_bit_on_bitboard(game->white_queens, (Square)((8 - rank) * 8 + file));
+                game->white_queens = SET_BIT_ON_BITBOARD(game->white_queens, (Square)((8 - rank) * 8 + file));
                 break;
 
             case 'K':
-                game->white_king = set_bit_on_bitboard(game->white_king, (Square)((8 - rank) * 8 + file));
+                game->white_king = SET_BIT_ON_BITBOARD(game->white_king, (Square)((8 - rank) * 8 + file));
                 break;
 
             default:

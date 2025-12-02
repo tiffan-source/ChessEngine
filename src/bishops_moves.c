@@ -157,22 +157,22 @@ Bitboard generate_bishop_moves_from_square_without_blocking_piece(Square square)
 
     // Up-right diagonal
     for (r = rank + 1, f = file + 1; r < 8 && f < 8; r++, f++) {
-        moves = set_bit_on_bitboard(moves, r * 8 + f);
+        moves = SET_BIT_ON_BITBOARD(moves, r * 8 + f);
     }
 
     // Down-left diagonal
     for (r = rank - 1, f = file - 1; r >= 0 && f >= 0; r--, f--) {
-        moves = set_bit_on_bitboard(moves, r * 8 + f);
+        moves = SET_BIT_ON_BITBOARD(moves, r * 8 + f);
     }
 
     // Up-left diagonal
     for (r = rank + 1, f = file - 1; r < 8 && f >= 0; r++, f--) {
-        moves = set_bit_on_bitboard(moves, r * 8 + f);
+        moves = SET_BIT_ON_BITBOARD(moves, r * 8 + f);
     }
 
     // Down-right diagonal
     for (r = rank - 1, f = file + 1; r >= 0 && f < 8; r--, f++) {
-        moves = set_bit_on_bitboard(moves, r * 8 + f);
+        moves = SET_BIT_ON_BITBOARD(moves, r * 8 + f);
     }
 
     return moves;
@@ -195,7 +195,7 @@ Bitboard get_bishop_blocker_configuration_for_square_giving_index(Square square,
     {
         if (index & (1 << i))
         {
-            result = set_bit_on_bitboard(result, (Square)index_bit);
+            result = SET_BIT_ON_BITBOARD(result, (Square)index_bit);
         }
         
         i++;
@@ -269,25 +269,25 @@ Bitboard generate_bishop_moves_for_giving_blocker_configuration(Square square, B
 
     // Up-right diagonal
     for (r = rank + 1, f = file + 1; r < 8 && f < 8; r++, f++) {
-        moves = set_bit_on_bitboard(moves, r * 8 + f);
+        moves = SET_BIT_ON_BITBOARD(moves, r * 8 + f);
         if (blocker & (1ULL << (r * 8 + f))) break;
     }
 
     // Down-left diagonal
     for (r = rank - 1, f = file - 1; r >= 0 && f >= 0; r--, f--) {
-        moves = set_bit_on_bitboard(moves, r * 8 + f);
+        moves = SET_BIT_ON_BITBOARD(moves, r * 8 + f);
         if (blocker & (1ULL << (r * 8 + f))) break;
     }
 
     // Up-left diagonal
     for (r = rank + 1, f = file - 1; r < 8 && f >= 0; r++, f--) {
-        moves = set_bit_on_bitboard(moves, r * 8 + f);
+        moves = SET_BIT_ON_BITBOARD(moves, r * 8 + f);
         if (blocker & (1ULL << (r * 8 + f))) break;
     }
 
     // Down-right diagonal
     for (r = rank - 1, f = file + 1; r >= 0 && f < 8; r--, f++) {
-        moves = set_bit_on_bitboard(moves, r * 8 + f);
+        moves = SET_BIT_ON_BITBOARD(moves, r * 8 + f);
         if (blocker & (1ULL << (r * 8 + f))) break;
     }
 

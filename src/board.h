@@ -16,6 +16,8 @@
 
 #define CHESS_BOARDER 0xFF818181818181FFULL
 
+#define SET_BIT_ON_BITBOARD(bitboard, square) ((bitboard) | (1ULL << (square)))
+
 typedef U64 Bitboard;
 
 typedef enum Square {
@@ -38,7 +40,7 @@ typedef enum Side {
 
 char* string_bitboard_on_chess_board(Bitboard position);
 
-Bitboard set_bit_on_bitboard(Bitboard bitboard, Square square);
+// Bitboard SET_BIT_ON_BITBOARD(Bitboard bitboard, Square square);
 Bitboard clear_bit_on_bitboard(Bitboard bitboard, Square square);
 
 int bit_on_bitboard_hit_8_rank(Bitboard bitboard);

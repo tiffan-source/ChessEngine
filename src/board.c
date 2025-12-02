@@ -38,10 +38,6 @@ char* string_bitboard_on_chess_board(Bitboard position)
     return result;
 }
 
-Bitboard set_bit_on_bitboard(Bitboard bitboard, Square square)
-{
-    return bitboard | (1ULL << square);
-}
 
 Bitboard clear_bit_on_bitboard(Bitboard bitboard, Square square)
 {

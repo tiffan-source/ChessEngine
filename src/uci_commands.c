@@ -77,9 +77,12 @@ void handle_go_command(Game* game, const char* input, char* response)
     if (perf != NULL)
     {
         int depth = atoi(perf + 6);
-        U64 nodes = test_helper_generate_moves_from_position_at_depth(game, depth, depth);
-        snprintf(response, UCI_RESPONSE_MAX_LENGTH, "nodes %llu\n", nodes);
-        free(input_copy);
+        if ((depth > 0))
+        {
+            U64 nodes = test_helper_generate_moves_from_position_at_depth(game, depth, depth);
+            snprintf(response, UCI_RESPONSE_MAX_LENGTH, "nodes %llu\n", nodes);
+            free(input_copy);
+        }
         return;
     }
 

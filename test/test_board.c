@@ -64,27 +64,27 @@ void test_board_should_return_bitboard_0x754AFF64A76C7B8D_on_chess_board(void)
 
 // Test board set bit on bitboard
 
-void test_board_should_set_bit_on_bitboard_at_square_e4(void)
+void test_board_should_SET_BIT_ON_BITBOARD_at_square_e4(void)
 {
     Bitboard bitboard = 0x0ULL;
-    Bitboard updated_bitboard = set_bit_on_bitboard(bitboard, E4);
+    Bitboard updated_bitboard = SET_BIT_ON_BITBOARD(bitboard, E4);
 
     TEST_ASSERT_EQUAL_UINT64(0x1000000000ULL, updated_bitboard);
 }
 
-void test_board_should_set_bit_on_bitboard_at_square_a8(void)
+void test_board_should_SET_BIT_ON_BITBOARD_at_square_a8(void)
 {
     Bitboard bitboard = 0x0ULL;
-    Bitboard updated_bitboard = set_bit_on_bitboard(bitboard, A8);
+    Bitboard updated_bitboard = SET_BIT_ON_BITBOARD(bitboard, A8);
 
     TEST_ASSERT_EQUAL_UINT64(0x1ULL, updated_bitboard);
 }
 
 
-void test_board_should_set_bit_on_bitboard_at_square_b8(void)
+void test_board_should_SET_BIT_ON_BITBOARD_at_square_b8(void)
 {
     Bitboard bitboard = 0x1ULL;
-    Bitboard updated_bitboard = set_bit_on_bitboard(bitboard, B8);
+    Bitboard updated_bitboard = SET_BIT_ON_BITBOARD(bitboard, B8);
 
     TEST_ASSERT_EQUAL_UINT64(0x3ULL, updated_bitboard);
 }
@@ -126,7 +126,7 @@ void test_board_bit_on_bitboard_hit_8_rank_should_return_0_for_empty_bitboard(vo
 void test_board_bit_on_bitboard_hit_8_rank_should_return_1_for_bitboard_with_d8_set(void)
 {
     Bitboard bitboard = 0x0ULL;
-    bitboard = set_bit_on_bitboard(bitboard, D8);
+    bitboard = SET_BIT_ON_BITBOARD(bitboard, D8);
     int hits = bit_on_bitboard_hit_8_rank(bitboard);
 
     TEST_ASSERT_EQUAL_INT(1, hits);
@@ -135,7 +135,7 @@ void test_board_bit_on_bitboard_hit_8_rank_should_return_1_for_bitboard_with_d8_
 void test_board_bit_on_bitboard_hit_8_rank_should_return_0_for_bitboard_with_d5_set(void)
 {
     Bitboard bitboard = 0x0ULL;
-    bitboard = set_bit_on_bitboard(bitboard, D5);
+    bitboard = SET_BIT_ON_BITBOARD(bitboard, D5);
     int hits = bit_on_bitboard_hit_8_rank(bitboard);
 
     TEST_ASSERT_EQUAL_INT(0, hits);
@@ -152,7 +152,7 @@ void test_board_bit_on_bitboard_hit_7_rank_should_return_0_for_empty_bitboard(vo
 void test_board_bit_on_bitboard_hit_7_rank_should_return_1_for_bitboard_with_d7_set(void)
 {
     Bitboard bitboard = 0x0ULL;
-    bitboard = set_bit_on_bitboard(bitboard, D7);
+    bitboard = SET_BIT_ON_BITBOARD(bitboard, D7);
     int hits = bit_on_bitboard_hit_7_rank(bitboard);
 
     TEST_ASSERT_EQUAL_INT(1, hits);
@@ -161,7 +161,7 @@ void test_board_bit_on_bitboard_hit_7_rank_should_return_1_for_bitboard_with_d7_
 void test_board_bit_on_bitboard_hit_7_rank_should_return_0_for_bitboard_with_d6_set(void)
 {
     Bitboard bitboard = 0x0ULL;
-    bitboard = set_bit_on_bitboard(bitboard, D6);
+    bitboard = SET_BIT_ON_BITBOARD(bitboard, D6);
     int hits = bit_on_bitboard_hit_7_rank(bitboard);
 
     TEST_ASSERT_EQUAL_INT(0, hits);
@@ -178,7 +178,7 @@ void test_board_bit_on_bitboard_hit_1_ranks_should_return_0_for_empty_bitboard(v
 void test_board_bit_on_bitboard_hit_1_rank_should_return_1_for_bitboard_with_e1_set(void)
 {
     Bitboard bitboard = 0x0ULL;
-    bitboard = set_bit_on_bitboard(bitboard, E1);
+    bitboard = SET_BIT_ON_BITBOARD(bitboard, E1);
     int hits = bit_on_bitboard_hit_1_rank(bitboard);
 
     TEST_ASSERT_EQUAL_INT(1, hits);
@@ -187,7 +187,7 @@ void test_board_bit_on_bitboard_hit_1_rank_should_return_1_for_bitboard_with_e1_
 void test_board_bit_on_bitboard_hit_1_rank_should_return_0_for_bitboard_with_f4_set(void)
 {
     Bitboard bitboard = 0x0ULL;
-    bitboard = set_bit_on_bitboard(bitboard, F4);
+    bitboard = SET_BIT_ON_BITBOARD(bitboard, F4);
     int hits = bit_on_bitboard_hit_1_rank(bitboard);
 
     TEST_ASSERT_EQUAL_INT(0, hits);
@@ -204,7 +204,7 @@ void test_board_bit_on_bitboard_hit_2_ranks_should_return_0_for_empty_bitboard(v
 void test_board_bit_on_bitboard_hit_2_rank_should_return_1_for_bitboard_with_e2_set(void)
 {
     Bitboard bitboard = 0x0ULL;
-    bitboard = set_bit_on_bitboard(bitboard, E2);
+    bitboard = SET_BIT_ON_BITBOARD(bitboard, E2);
     int hits = bit_on_bitboard_hit_2_rank(bitboard);
 
     TEST_ASSERT_EQUAL_INT(1, hits);
@@ -213,7 +213,7 @@ void test_board_bit_on_bitboard_hit_2_rank_should_return_1_for_bitboard_with_e2_
 void test_board_bit_on_bitboard_hit_2_rank_should_return_0_for_bitboard_with_f4_set(void)
 {
     Bitboard bitboard = 0x0ULL;
-    bitboard = set_bit_on_bitboard(bitboard, F4);
+    bitboard = SET_BIT_ON_BITBOARD(bitboard, F4);
     int hits = bit_on_bitboard_hit_2_rank(bitboard);
 
     TEST_ASSERT_EQUAL_INT(0, hits);
@@ -230,7 +230,7 @@ void test_board_bit_on_bitboard_hit_a_file_should_return_0_for_empty_bitboard(vo
 void test_board_bit_on_bitboard_hit_a_file_should_return_1_for_bitboard_with_a5_set(void)
 {
     Bitboard bitboard = 0x0ULL;
-    bitboard = set_bit_on_bitboard(bitboard, A5);
+    bitboard = SET_BIT_ON_BITBOARD(bitboard, A5);
     int hits = bit_on_bitboard_hit_a_file(bitboard);
 
     TEST_ASSERT_EQUAL_INT(1, hits);
@@ -239,7 +239,7 @@ void test_board_bit_on_bitboard_hit_a_file_should_return_1_for_bitboard_with_a5_
 void test_board_bit_on_bitboard_hit_a_file_should_return_0_for_bitboard_with_b5_set(void)
 {
     Bitboard bitboard = 0x0ULL;
-    bitboard = set_bit_on_bitboard(bitboard, B5);
+    bitboard = SET_BIT_ON_BITBOARD(bitboard, B5);
     int hits = bit_on_bitboard_hit_a_file(bitboard);
 
     TEST_ASSERT_EQUAL_INT(0, hits);
@@ -256,7 +256,7 @@ void test_board_bit_on_bitboard_hit_b_file_should_return_0_for_empty_bitboard(vo
 void test_board_bit_on_bitboard_hit_b_file_should_return_1_for_bitboard_with_b5_set(void)
 {
     Bitboard bitboard = 0x0ULL;
-    bitboard = set_bit_on_bitboard(bitboard, B5);
+    bitboard = SET_BIT_ON_BITBOARD(bitboard, B5);
     int hits = bit_on_bitboard_hit_b_file(bitboard);
 
     TEST_ASSERT_EQUAL_INT(1, hits);
@@ -265,7 +265,7 @@ void test_board_bit_on_bitboard_hit_b_file_should_return_1_for_bitboard_with_b5_
 void test_board_bit_on_bitboard_hit_b_file_should_return_0_for_bitboard_with_f5_set(void)
 {
     Bitboard bitboard = 0x0ULL;
-    bitboard = set_bit_on_bitboard(bitboard, F5);
+    bitboard = SET_BIT_ON_BITBOARD(bitboard, F5);
     int hits = bit_on_bitboard_hit_b_file(bitboard);
 
     TEST_ASSERT_EQUAL_INT(0, hits);
@@ -282,7 +282,7 @@ void test_board_bit_on_bitboard_hit_h_file_should_return_0_for_empty_bitboard(vo
 void test_board_bit_on_bitboard_hit_h_file_should_return_1_for_bitboard_with_h5_set(void)
 {
     Bitboard bitboard = 0x0ULL;
-    bitboard = set_bit_on_bitboard(bitboard, H5);
+    bitboard = SET_BIT_ON_BITBOARD(bitboard, H5);
     int hits = bit_on_bitboard_hit_h_file(bitboard);
 
     TEST_ASSERT_EQUAL_INT(1, hits);
@@ -291,7 +291,7 @@ void test_board_bit_on_bitboard_hit_h_file_should_return_1_for_bitboard_with_h5_
 void test_board_bit_on_bitboard_hit_h_file_should_return_0_for_bitboard_with_d5_set(void)
 {
     Bitboard bitboard = 0x0ULL;
-    bitboard = set_bit_on_bitboard(bitboard, D5);
+    bitboard = SET_BIT_ON_BITBOARD(bitboard, D5);
     int hits = bit_on_bitboard_hit_a_file(bitboard);
 
     TEST_ASSERT_EQUAL_INT(0, hits);
@@ -308,7 +308,7 @@ void test_board_bit_on_bitboard_hit_g_file_should_return_0_for_empty_bitboard(vo
 void test_board_bit_on_bitboard_hit_g_file_should_return_1_for_bitboard_with_g5_set(void)
 {
     Bitboard bitboard = 0x0ULL;
-    bitboard = set_bit_on_bitboard(bitboard, G5);
+    bitboard = SET_BIT_ON_BITBOARD(bitboard, G5);
     int hits = bit_on_bitboard_hit_g_file(bitboard);
 
     TEST_ASSERT_EQUAL_INT(1, hits);
@@ -317,7 +317,7 @@ void test_board_bit_on_bitboard_hit_g_file_should_return_1_for_bitboard_with_g5_
 void test_board_bit_on_bitboard_hit_g_file_should_return_0_for_bitboard_with_d5_set(void)
 {
     Bitboard bitboard = 0x0ULL;
-    bitboard = set_bit_on_bitboard(bitboard, D5);
+    bitboard = SET_BIT_ON_BITBOARD(bitboard, D5);
     int hits = bit_on_bitboard_hit_g_file(bitboard);
 
     TEST_ASSERT_EQUAL_INT(0, hits);

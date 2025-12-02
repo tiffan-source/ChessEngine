@@ -163,7 +163,7 @@ Bitboard generate_rook_moves_from_square_without_blocking_piece(Square square)
         if (i != index_of_file)
         {
             Square target_square = (Square)(index_of_rank * 8 + i);
-            moves = set_bit_on_bitboard(moves, target_square);
+            moves = SET_BIT_ON_BITBOARD(moves, target_square);
         }
     }
 
@@ -173,7 +173,7 @@ Bitboard generate_rook_moves_from_square_without_blocking_piece(Square square)
         if (i != index_of_rank)
         {
             Square target_square = (Square)(i * 8 + index_of_file);
-            moves = set_bit_on_bitboard(moves, target_square);
+            moves = SET_BIT_ON_BITBOARD(moves, target_square);
         }
     }
     
@@ -194,7 +194,7 @@ Bitboard generate_rook_moves_from_square_without_blocking_piece_edge_remove(Squa
         if (i != index_of_file)
         {
             Square target_square = (Square)(index_of_rank * 8 + i);
-            moves = set_bit_on_bitboard(moves, target_square);
+            moves = SET_BIT_ON_BITBOARD(moves, target_square);
         }
     }
 
@@ -204,7 +204,7 @@ Bitboard generate_rook_moves_from_square_without_blocking_piece_edge_remove(Squa
         if (i != index_of_rank)
         {
             Square target_square = (Square)(i * 8 + index_of_file);
-            moves = set_bit_on_bitboard(moves, target_square);
+            moves = SET_BIT_ON_BITBOARD(moves, target_square);
         }
     }
     
@@ -223,7 +223,7 @@ Bitboard get_rook_blocker_configuration_for_square_giving_index(Square square, i
     {
         if (index & (1 << i))
         {
-            result = set_bit_on_bitboard(result, (Square)index_bit);
+            result = SET_BIT_ON_BITBOARD(result, (Square)index_bit);
         }
         
         i++;
@@ -300,7 +300,7 @@ Bitboard generate_rook_moves_for_giving_blocker_configuration(Square square, Bit
     for (i = index_of_rank + 1; i < 8; i++)
     {
         Square target_square = (Square)(i * 8 + index_of_file);
-        moves = set_bit_on_bitboard(moves, target_square);
+        moves = SET_BIT_ON_BITBOARD(moves, target_square);
         if (blocker & (1ULL << target_square))
             break;
     }
@@ -309,7 +309,7 @@ Bitboard generate_rook_moves_for_giving_blocker_configuration(Square square, Bit
     for (i = index_of_rank - 1; i >= 0; i--)
     {
         Square target_square = (Square)(i * 8 + index_of_file);
-        moves = set_bit_on_bitboard(moves, target_square);
+        moves = SET_BIT_ON_BITBOARD(moves, target_square);
         if (blocker & (1ULL << target_square))
             break;
     }
@@ -317,7 +317,7 @@ Bitboard generate_rook_moves_for_giving_blocker_configuration(Square square, Bit
     for (i = index_of_file + 1; i < 8; i++)
     {
         Square target_square = (Square)(index_of_rank * 8 + i);
-        moves = set_bit_on_bitboard(moves, target_square);
+        moves = SET_BIT_ON_BITBOARD(moves, target_square);
         if (blocker & (1ULL << target_square))
             break;
     }
@@ -325,7 +325,7 @@ Bitboard generate_rook_moves_for_giving_blocker_configuration(Square square, Bit
     for (i = index_of_file - 1; i >= 0; i--)
     {
         Square target_square = (Square)(index_of_rank * 8 + i);
-        moves = set_bit_on_bitboard(moves, target_square);
+        moves = SET_BIT_ON_BITBOARD(moves, target_square);
         if (blocker & (1ULL << target_square))
             break;
     }

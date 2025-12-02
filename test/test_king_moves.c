@@ -38,9 +38,9 @@ void test_generate_king_moves_from_a8_should_return_valid_bitboard(void)
     Bitboard moves = generate_king_moves_from_square(A8);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, A7);
-    expected = set_bit_on_bitboard(expected, B7);
-    expected = set_bit_on_bitboard(expected, B8);
+    expected = SET_BIT_ON_BITBOARD(expected, A7);
+    expected = SET_BIT_ON_BITBOARD(expected, B7);
+    expected = SET_BIT_ON_BITBOARD(expected, B8);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -50,14 +50,14 @@ void test_generate_king_moves_from_d5_should_return_valid_bitboard(void)
     Bitboard moves = generate_king_moves_from_square(D5);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, C4);
-    expected = set_bit_on_bitboard(expected, D4);
-    expected = set_bit_on_bitboard(expected, E4);
-    expected = set_bit_on_bitboard(expected, C5);
-    expected = set_bit_on_bitboard(expected, E5);
-    expected = set_bit_on_bitboard(expected, C6);
-    expected = set_bit_on_bitboard(expected, D6);
-    expected = set_bit_on_bitboard(expected, E6);
+    expected = SET_BIT_ON_BITBOARD(expected, C4);
+    expected = SET_BIT_ON_BITBOARD(expected, D4);
+    expected = SET_BIT_ON_BITBOARD(expected, E4);
+    expected = SET_BIT_ON_BITBOARD(expected, C5);
+    expected = SET_BIT_ON_BITBOARD(expected, E5);
+    expected = SET_BIT_ON_BITBOARD(expected, C6);
+    expected = SET_BIT_ON_BITBOARD(expected, D6);
+    expected = SET_BIT_ON_BITBOARD(expected, E6);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -67,11 +67,11 @@ void test_generate_king_moves_from_h7_should_return_valid_bitboard(void)
     Bitboard moves = generate_king_moves_from_square(H7);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, G6);
-    expected = set_bit_on_bitboard(expected, H6);
-    expected = set_bit_on_bitboard(expected, G7);
-    expected = set_bit_on_bitboard(expected, G8);
-    expected = set_bit_on_bitboard(expected, H8);
+    expected = SET_BIT_ON_BITBOARD(expected, G6);
+    expected = SET_BIT_ON_BITBOARD(expected, H6);
+    expected = SET_BIT_ON_BITBOARD(expected, G7);
+    expected = SET_BIT_ON_BITBOARD(expected, G8);
+    expected = SET_BIT_ON_BITBOARD(expected, H8);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -81,11 +81,11 @@ void test_retrieve_pre_calculated_king_moves_from_h7_should_return_valid_bitboar
     Bitboard moves = pre_calculated_king_moves[H7];
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, G6);
-    expected = set_bit_on_bitboard(expected, H6);
-    expected = set_bit_on_bitboard(expected, G7);
-    expected = set_bit_on_bitboard(expected, G8);
-    expected = set_bit_on_bitboard(expected, H8);
+    expected = SET_BIT_ON_BITBOARD(expected, G6);
+    expected = SET_BIT_ON_BITBOARD(expected, H6);
+    expected = SET_BIT_ON_BITBOARD(expected, G7);
+    expected = SET_BIT_ON_BITBOARD(expected, G8);
+    expected = SET_BIT_ON_BITBOARD(expected, H8);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -95,14 +95,14 @@ void test_retrieve_pre_calculated_king_moves_from_c3_should_return_valid_bitboar
     Bitboard moves = pre_calculated_king_moves[C3];
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, B2);
-    expected = set_bit_on_bitboard(expected, C2);
-    expected = set_bit_on_bitboard(expected, D2);
-    expected = set_bit_on_bitboard(expected, B3);
-    expected = set_bit_on_bitboard(expected, D3);
-    expected = set_bit_on_bitboard(expected, B4);
-    expected = set_bit_on_bitboard(expected, C4);
-    expected = set_bit_on_bitboard(expected, D4);
+    expected = SET_BIT_ON_BITBOARD(expected, B2);
+    expected = SET_BIT_ON_BITBOARD(expected, C2);
+    expected = SET_BIT_ON_BITBOARD(expected, D2);
+    expected = SET_BIT_ON_BITBOARD(expected, B3);
+    expected = SET_BIT_ON_BITBOARD(expected, D3);
+    expected = SET_BIT_ON_BITBOARD(expected, B4);
+    expected = SET_BIT_ON_BITBOARD(expected, C4);
+    expected = SET_BIT_ON_BITBOARD(expected, D4);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -112,11 +112,11 @@ void test_retrieve_pre_calculated_king_moves_from_e1_should_return_valid_bitboar
     Bitboard moves = pre_calculated_king_moves[E1];
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, D1);
-    expected = set_bit_on_bitboard(expected, F1);
-    expected = set_bit_on_bitboard(expected, D2);
-    expected = set_bit_on_bitboard(expected, E2);
-    expected = set_bit_on_bitboard(expected, F2);
+    expected = SET_BIT_ON_BITBOARD(expected, D1);
+    expected = SET_BIT_ON_BITBOARD(expected, F1);
+    expected = SET_BIT_ON_BITBOARD(expected, D2);
+    expected = SET_BIT_ON_BITBOARD(expected, E2);
+    expected = SET_BIT_ON_BITBOARD(expected, F2);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -126,9 +126,9 @@ void test_retrieve_pre_calculated_king_moves_from_h8_should_return_valid_bitboar
     Bitboard moves = pre_calculated_king_moves[H8];
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, G7);
-    expected = set_bit_on_bitboard(expected, H7);
-    expected = set_bit_on_bitboard(expected, G8);
+    expected = SET_BIT_ON_BITBOARD(expected, G7);
+    expected = SET_BIT_ON_BITBOARD(expected, H7);
+    expected = SET_BIT_ON_BITBOARD(expected, G8);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }

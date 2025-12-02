@@ -175,71 +175,71 @@ void test_game_should_create_game_from_FEN_tricky_position_game_from_string_test
     TEST_ASSERT_NOT_NULL(game);
 
     Bitboard expected_black_pawns = 0;
-    expected_black_pawns = set_bit_on_bitboard(expected_black_pawns, A6);
-    expected_black_pawns = set_bit_on_bitboard(expected_black_pawns, B7);
-    expected_black_pawns = set_bit_on_bitboard(expected_black_pawns, C7);
-    expected_black_pawns = set_bit_on_bitboard(expected_black_pawns, D6);
-    expected_black_pawns = set_bit_on_bitboard(expected_black_pawns, E5);
-    expected_black_pawns = set_bit_on_bitboard(expected_black_pawns, F7);
-    expected_black_pawns = set_bit_on_bitboard(expected_black_pawns, G7);
-    expected_black_pawns = set_bit_on_bitboard(expected_black_pawns, H7);
+    expected_black_pawns = SET_BIT_ON_BITBOARD(expected_black_pawns, A6);
+    expected_black_pawns = SET_BIT_ON_BITBOARD(expected_black_pawns, B7);
+    expected_black_pawns = SET_BIT_ON_BITBOARD(expected_black_pawns, C7);
+    expected_black_pawns = SET_BIT_ON_BITBOARD(expected_black_pawns, D6);
+    expected_black_pawns = SET_BIT_ON_BITBOARD(expected_black_pawns, E5);
+    expected_black_pawns = SET_BIT_ON_BITBOARD(expected_black_pawns, F7);
+    expected_black_pawns = SET_BIT_ON_BITBOARD(expected_black_pawns, G7);
+    expected_black_pawns = SET_BIT_ON_BITBOARD(expected_black_pawns, H7);
     TEST_ASSERT_EQUAL_UINT64(expected_black_pawns, game->black_pawns);
 
     Bitboard expected_white_pawns = 0;
-    expected_white_pawns = set_bit_on_bitboard(expected_white_pawns, A3);
-    expected_white_pawns = set_bit_on_bitboard(expected_white_pawns, B2);
-    expected_white_pawns = set_bit_on_bitboard(expected_white_pawns, C2);
-    expected_white_pawns = set_bit_on_bitboard(expected_white_pawns, D3);
-    expected_white_pawns = set_bit_on_bitboard(expected_white_pawns, E4);
-    expected_white_pawns = set_bit_on_bitboard(expected_white_pawns, F2);
-    expected_white_pawns = set_bit_on_bitboard(expected_white_pawns, G2);
-    expected_white_pawns = set_bit_on_bitboard(expected_white_pawns, H2);
+    expected_white_pawns = SET_BIT_ON_BITBOARD(expected_white_pawns, A3);
+    expected_white_pawns = SET_BIT_ON_BITBOARD(expected_white_pawns, B2);
+    expected_white_pawns = SET_BIT_ON_BITBOARD(expected_white_pawns, C2);
+    expected_white_pawns = SET_BIT_ON_BITBOARD(expected_white_pawns, D3);
+    expected_white_pawns = SET_BIT_ON_BITBOARD(expected_white_pawns, E4);
+    expected_white_pawns = SET_BIT_ON_BITBOARD(expected_white_pawns, F2);
+    expected_white_pawns = SET_BIT_ON_BITBOARD(expected_white_pawns, G2);
+    expected_white_pawns = SET_BIT_ON_BITBOARD(expected_white_pawns, H2);
     TEST_ASSERT_EQUAL_UINT64(expected_white_pawns, game->white_pawns);
 
     Bitboard expected_black_knights = 0;
-    expected_black_knights = set_bit_on_bitboard(expected_black_knights, C6);
-    expected_black_knights = set_bit_on_bitboard(expected_black_knights, F6);
+    expected_black_knights = SET_BIT_ON_BITBOARD(expected_black_knights, C6);
+    expected_black_knights = SET_BIT_ON_BITBOARD(expected_black_knights, F6);
     TEST_ASSERT_EQUAL_UINT64(expected_black_knights, game->black_knights);
 
     Bitboard expected_white_knights = 0;
-    expected_white_knights = set_bit_on_bitboard(expected_white_knights, C3);
-    expected_white_knights = set_bit_on_bitboard(expected_white_knights, F3);
+    expected_white_knights = SET_BIT_ON_BITBOARD(expected_white_knights, C3);
+    expected_white_knights = SET_BIT_ON_BITBOARD(expected_white_knights, F3);
     TEST_ASSERT_EQUAL_UINT64(expected_white_knights, game->white_knights);
 
     Bitboard expected_black_bishops = 0;
-    expected_black_bishops = set_bit_on_bitboard(expected_black_bishops, C5);
-    expected_black_bishops = set_bit_on_bitboard(expected_black_bishops, G4);
+    expected_black_bishops = SET_BIT_ON_BITBOARD(expected_black_bishops, C5);
+    expected_black_bishops = SET_BIT_ON_BITBOARD(expected_black_bishops, G4);
     TEST_ASSERT_EQUAL_UINT64(expected_black_bishops, game->black_bishops);
 
     Bitboard expected_white_bishops = 0;
-    expected_white_bishops = set_bit_on_bitboard(expected_white_bishops, C4);
-    expected_white_bishops = set_bit_on_bitboard(expected_white_bishops, G5);
+    expected_white_bishops = SET_BIT_ON_BITBOARD(expected_white_bishops, C4);
+    expected_white_bishops = SET_BIT_ON_BITBOARD(expected_white_bishops, G5);
     TEST_ASSERT_EQUAL_UINT64(expected_white_bishops, game->white_bishops);
 
     Bitboard expected_black_rooks = 0;
-    expected_black_rooks = set_bit_on_bitboard(expected_black_rooks, A8);
-    expected_black_rooks = set_bit_on_bitboard(expected_black_rooks, F8);
+    expected_black_rooks = SET_BIT_ON_BITBOARD(expected_black_rooks, A8);
+    expected_black_rooks = SET_BIT_ON_BITBOARD(expected_black_rooks, F8);
     TEST_ASSERT_EQUAL_UINT64(expected_black_rooks, game->black_rooks);
 
     Bitboard expected_white_rooks = 0;
-    expected_white_rooks = set_bit_on_bitboard(expected_white_rooks, A1);
-    expected_white_rooks = set_bit_on_bitboard(expected_white_rooks, F1);
+    expected_white_rooks = SET_BIT_ON_BITBOARD(expected_white_rooks, A1);
+    expected_white_rooks = SET_BIT_ON_BITBOARD(expected_white_rooks, F1);
     TEST_ASSERT_EQUAL_UINT64(expected_white_rooks, game->white_rooks);
 
     Bitboard expected_black_queens = 0;
-    expected_black_queens = set_bit_on_bitboard(expected_black_queens, E7);
+    expected_black_queens = SET_BIT_ON_BITBOARD(expected_black_queens, E7);
     TEST_ASSERT_EQUAL_UINT64(expected_black_queens, game->black_queens);
 
     Bitboard expected_white_queens = 0;
-    expected_white_queens = set_bit_on_bitboard(expected_white_queens, E2);
+    expected_white_queens = SET_BIT_ON_BITBOARD(expected_white_queens, E2);
     TEST_ASSERT_EQUAL_UINT64(expected_white_queens, game->white_queens);
 
     Bitboard expected_black_king = 0;
-    expected_black_king = set_bit_on_bitboard(expected_black_king, G8);
+    expected_black_king = SET_BIT_ON_BITBOARD(expected_black_king, G8);
     TEST_ASSERT_EQUAL_UINT64(expected_black_king, game->black_king);
 
     Bitboard expected_white_king = 0;
-    expected_white_king = set_bit_on_bitboard(expected_white_king, G1);
+    expected_white_king = SET_BIT_ON_BITBOARD(expected_white_king, G1);
     TEST_ASSERT_EQUAL_UINT64(expected_white_king, game->white_king);
 
     free_game(game);

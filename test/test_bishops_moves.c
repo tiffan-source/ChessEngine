@@ -30,13 +30,13 @@ void test_generate_bishop_move_from_a1_without_blocking_piece_should_return_vali
     Bitboard moves = generate_bishop_moves_from_square_without_blocking_piece(A1);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, B2);
-    expected = set_bit_on_bitboard(expected, C3);
-    expected = set_bit_on_bitboard(expected, D4);
-    expected = set_bit_on_bitboard(expected, E5);
-    expected = set_bit_on_bitboard(expected, F6);
-    expected = set_bit_on_bitboard(expected, G7);
-    expected = set_bit_on_bitboard(expected, H8);
+    expected = SET_BIT_ON_BITBOARD(expected, B2);
+    expected = SET_BIT_ON_BITBOARD(expected, C3);
+    expected = SET_BIT_ON_BITBOARD(expected, D4);
+    expected = SET_BIT_ON_BITBOARD(expected, E5);
+    expected = SET_BIT_ON_BITBOARD(expected, F6);
+    expected = SET_BIT_ON_BITBOARD(expected, G7);
+    expected = SET_BIT_ON_BITBOARD(expected, H8);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -47,25 +47,25 @@ void test_generate_bishop_move_from_d4_without_blocking_piece_should_return_vali
     Bitboard expected = 0x0ULL;
 
     // Up-right diagonal
-    expected = set_bit_on_bitboard(expected, E5);
-    expected = set_bit_on_bitboard(expected, F6);
-    expected = set_bit_on_bitboard(expected, G7);
-    expected = set_bit_on_bitboard(expected, H8);
+    expected = SET_BIT_ON_BITBOARD(expected, E5);
+    expected = SET_BIT_ON_BITBOARD(expected, F6);
+    expected = SET_BIT_ON_BITBOARD(expected, G7);
+    expected = SET_BIT_ON_BITBOARD(expected, H8);
     
     // Down-left diagonal
-    expected = set_bit_on_bitboard(expected, C3);
-    expected = set_bit_on_bitboard(expected, B2);
-    expected = set_bit_on_bitboard(expected, A1);
+    expected = SET_BIT_ON_BITBOARD(expected, C3);
+    expected = SET_BIT_ON_BITBOARD(expected, B2);
+    expected = SET_BIT_ON_BITBOARD(expected, A1);
     
     // Up-left diagonal
-    expected = set_bit_on_bitboard(expected, C5);
-    expected = set_bit_on_bitboard(expected, B6);
-    expected = set_bit_on_bitboard(expected, A7);
+    expected = SET_BIT_ON_BITBOARD(expected, C5);
+    expected = SET_BIT_ON_BITBOARD(expected, B6);
+    expected = SET_BIT_ON_BITBOARD(expected, A7);
     
     // Down-right diagonal
-    expected = set_bit_on_bitboard(expected, E3);
-    expected = set_bit_on_bitboard(expected, F2);
-    expected = set_bit_on_bitboard(expected, G1);
+    expected = SET_BIT_ON_BITBOARD(expected, E3);
+    expected = SET_BIT_ON_BITBOARD(expected, F2);
+    expected = SET_BIT_ON_BITBOARD(expected, G1);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -76,11 +76,11 @@ void test_generate_bishop_move_from_b7_without_blocking_piece_edge_remove_should
     Bitboard expected = 0x0ULL;
 
     // Up-right diagonal: C6, D5, E4, F3, G2
-    expected = set_bit_on_bitboard(expected, C6);
-    expected = set_bit_on_bitboard(expected, D5);
-    expected = set_bit_on_bitboard(expected, E4);
-    expected = set_bit_on_bitboard(expected, F3);
-    expected = set_bit_on_bitboard(expected, G2);
+    expected = SET_BIT_ON_BITBOARD(expected, C6);
+    expected = SET_BIT_ON_BITBOARD(expected, D5);
+    expected = SET_BIT_ON_BITBOARD(expected, E4);
+    expected = SET_BIT_ON_BITBOARD(expected, F3);
+    expected = SET_BIT_ON_BITBOARD(expected, G2);
     
     
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
@@ -92,19 +92,19 @@ void test_generate_bishop_move_from_c6_without_blocking_piece_edge_remove_should
     Bitboard expected = 0x0ULL;
 
     // Up-right diagonal (stops before edge)
-    expected = set_bit_on_bitboard(expected, D7);
+    expected = SET_BIT_ON_BITBOARD(expected, D7);
     
     // Down-left diagonal (stops after edge)
-    expected = set_bit_on_bitboard(expected, B5);
+    expected = SET_BIT_ON_BITBOARD(expected, B5);
     
     // Up-left diagonal (stops before edge)
-    expected = set_bit_on_bitboard(expected, B7);
+    expected = SET_BIT_ON_BITBOARD(expected, B7);
     
     // Down-right diagonal (stops after edge)
-    expected = set_bit_on_bitboard(expected, D5);
-    expected = set_bit_on_bitboard(expected, E4);
-    expected = set_bit_on_bitboard(expected, F3);
-    expected = set_bit_on_bitboard(expected, G2);
+    expected = SET_BIT_ON_BITBOARD(expected, D5);
+    expected = SET_BIT_ON_BITBOARD(expected, E4);
+    expected = SET_BIT_ON_BITBOARD(expected, F3);
+    expected = SET_BIT_ON_BITBOARD(expected, G2);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -114,15 +114,15 @@ void test_generate_bishop_move_from_d4_without_blocking_piece_edge_remove_should
     Bitboard moves = generate_bishop_moves_from_square_without_blocking_piece_edge_remove(D4);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, E3);
-    expected = set_bit_on_bitboard(expected, F2);
-    expected = set_bit_on_bitboard(expected, C5);
-    expected = set_bit_on_bitboard(expected, B6);
-    expected = set_bit_on_bitboard(expected, C3);
-    expected = set_bit_on_bitboard(expected, B2);
-    expected = set_bit_on_bitboard(expected, E5);
-    expected = set_bit_on_bitboard(expected, F6);
-    expected = set_bit_on_bitboard(expected, G7);
+    expected = SET_BIT_ON_BITBOARD(expected, E3);
+    expected = SET_BIT_ON_BITBOARD(expected, F2);
+    expected = SET_BIT_ON_BITBOARD(expected, C5);
+    expected = SET_BIT_ON_BITBOARD(expected, B6);
+    expected = SET_BIT_ON_BITBOARD(expected, C3);
+    expected = SET_BIT_ON_BITBOARD(expected, B2);
+    expected = SET_BIT_ON_BITBOARD(expected, E5);
+    expected = SET_BIT_ON_BITBOARD(expected, F6);
+    expected = SET_BIT_ON_BITBOARD(expected, G7);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -140,13 +140,13 @@ void test_get_bishop_blocker_configuration_for_c3_giving_index_127_should_return
     Bitboard blockers = get_bishop_blocker_configuration_for_square_giving_index(C3, 127);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, D4);      
-    expected = set_bit_on_bitboard(expected, E5);      
-    expected = set_bit_on_bitboard(expected, F6);      
-    expected = set_bit_on_bitboard(expected, G7);      
-    expected = set_bit_on_bitboard(expected, B2);      
-    expected = set_bit_on_bitboard(expected, B4);
-    expected = set_bit_on_bitboard(expected, D2);
+    expected = SET_BIT_ON_BITBOARD(expected, D4);      
+    expected = SET_BIT_ON_BITBOARD(expected, E5);      
+    expected = SET_BIT_ON_BITBOARD(expected, F6);      
+    expected = SET_BIT_ON_BITBOARD(expected, G7);      
+    expected = SET_BIT_ON_BITBOARD(expected, B2);      
+    expected = SET_BIT_ON_BITBOARD(expected, B4);
+    expected = SET_BIT_ON_BITBOARD(expected, D2);
 
     TEST_ASSERT_EQUAL_UINT64(expected, blockers);
 }
@@ -156,7 +156,7 @@ void test_get_bishop_blocker_configuration_for_d4_giving_index_16_should_return_
     Bitboard blockers = get_bishop_blocker_configuration_for_square_giving_index(D4, 16);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, E5);      
+    expected = SET_BIT_ON_BITBOARD(expected, E5);      
 
 
     TEST_ASSERT_EQUAL_UINT64(expected, blockers);
@@ -167,9 +167,9 @@ void test_get_bishop_blocker_configuration_for_c6_giving_index_7_should_return_v
     Bitboard blockers = get_bishop_blocker_configuration_for_square_giving_index(C6, 7);
     Bitboard expected = 0x0ULL;
 
-    expected = set_bit_on_bitboard(expected, D7);
-    expected = set_bit_on_bitboard(expected, B5);
-    expected = set_bit_on_bitboard(expected, B7);
+    expected = SET_BIT_ON_BITBOARD(expected, D7);
+    expected = SET_BIT_ON_BITBOARD(expected, B5);
+    expected = SET_BIT_ON_BITBOARD(expected, B7);
 
     TEST_ASSERT_EQUAL_UINT64(expected, blockers);
 }
@@ -223,12 +223,12 @@ void test_generate_bishop_moves_on_F6_for_giving_blocker_configuration_should_re
     Bitboard expected = 0x0ULL;
     Bitboard moves = generate_bishop_moves_for_giving_blocker_configuration(F6, blockers);
     
-    expected = set_bit_on_bitboard(expected, G7);
-    expected = set_bit_on_bitboard(expected, E7);
-    expected = set_bit_on_bitboard(expected, D8);
-    expected = set_bit_on_bitboard(expected, G5);
-    expected = set_bit_on_bitboard(expected, H4);
-    expected = set_bit_on_bitboard(expected, E5);
+    expected = SET_BIT_ON_BITBOARD(expected, G7);
+    expected = SET_BIT_ON_BITBOARD(expected, E7);
+    expected = SET_BIT_ON_BITBOARD(expected, D8);
+    expected = SET_BIT_ON_BITBOARD(expected, G5);
+    expected = SET_BIT_ON_BITBOARD(expected, H4);
+    expected = SET_BIT_ON_BITBOARD(expected, E5);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
@@ -239,10 +239,10 @@ void test_generate_bishop_moves_on_E7_for_giving_blocker_configuration_should_re
     Bitboard expected = 0x0ULL;
     Bitboard moves = generate_bishop_moves_for_giving_blocker_configuration(E7, blockers);
     
-    expected = set_bit_on_bitboard(expected, D8);
-    expected = set_bit_on_bitboard(expected, F8);
-    expected = set_bit_on_bitboard(expected, D6);
-    expected = set_bit_on_bitboard(expected, F6);
+    expected = SET_BIT_ON_BITBOARD(expected, D8);
+    expected = SET_BIT_ON_BITBOARD(expected, F8);
+    expected = SET_BIT_ON_BITBOARD(expected, D6);
+    expected = SET_BIT_ON_BITBOARD(expected, F6);
 
     TEST_ASSERT_EQUAL_UINT64(expected, moves);
 }
