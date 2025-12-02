@@ -74,28 +74,28 @@ Bitboard generate_king_moves_from_square(Square square)
     Bitboard moves = 0x0ULL;
 
     // Up
-    if(!bit_on_bitboard_hit_8_rank(source))
+    if(!BIT_ON_BITBOARD_HIT_8_RANK(source))
         moves = SET_BIT_ON_BITBOARD(moves, square - 8);
     // Down
-    if(!bit_on_bitboard_hit_1_rank(source))
+    if(!BIT_ON_BITBOARD_HIT_1_RANK(source))
         moves = SET_BIT_ON_BITBOARD(moves, square + 8);
     // Left
-    if(!bit_on_bitboard_hit_a_file(source))
+    if(!BIT_ON_BITBOARD_HIT_A_FILE(source))
         moves = SET_BIT_ON_BITBOARD(moves, square - 1);
     // Right
-    if(!bit_on_bitboard_hit_h_file(source))
+    if(!BIT_ON_BITBOARD_HIT_H_FILE(source))
         moves = SET_BIT_ON_BITBOARD(moves, square + 1);
     // Up-Left
-    if(!bit_on_bitboard_hit_8_rank(source) && !bit_on_bitboard_hit_a_file(source))
+    if(!BIT_ON_BITBOARD_HIT_8_RANK(source) && !BIT_ON_BITBOARD_HIT_A_FILE(source))
         moves = SET_BIT_ON_BITBOARD(moves, square - 9);
     // Up-Right
-    if(!bit_on_bitboard_hit_8_rank(source) && !bit_on_bitboard_hit_h_file(source))
+    if(!BIT_ON_BITBOARD_HIT_8_RANK(source) && !BIT_ON_BITBOARD_HIT_H_FILE(source))
         moves = SET_BIT_ON_BITBOARD(moves, square - 7);
     // Down-Left
-    if(!bit_on_bitboard_hit_1_rank(source) && !bit_on_bitboard_hit_a_file(source))
+    if(!BIT_ON_BITBOARD_HIT_1_RANK(source) && !BIT_ON_BITBOARD_HIT_A_FILE(source))
         moves = SET_BIT_ON_BITBOARD(moves, square + 7);
     // Down-Right
-    if(!bit_on_bitboard_hit_1_rank(source) && !bit_on_bitboard_hit_h_file(source))
+    if(!BIT_ON_BITBOARD_HIT_1_RANK(source) && !BIT_ON_BITBOARD_HIT_H_FILE(source))
         moves = SET_BIT_ON_BITBOARD(moves, square + 9);
 
     return moves;
@@ -111,17 +111,17 @@ void generate_all_king_quiet_and_capture_moves_from_game_state(Game* board_state
     if(board_state->turn == WHITE)
     {
         while(white_king){
-            source_square = get_lsb_index(white_king);
+            source_square = GET_LSB_INDEX(white_king);
 
             move = pre_calculated_king_moves[source_square];
             while(move){
-                target_square = get_lsb_index(move);
+                target_square = GET_LSB_INDEX(move);
 
                 if((1ULL << target_square) & (WHITE_OCCUPENCY(board_state))){
-                    move = clear_bit_on_bitboard(move, target_square);
+                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                     continue;
                 } else {
-                    moves_list->moves[moves_list->current_index++] = create_move(
+                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                         source_square,
                         target_square,
                         WHITE_KING,
@@ -129,24 +129,24 @@ void generate_all_king_quiet_and_capture_moves_from_game_state(Game* board_state
                     );
                 }
 
-                move = clear_bit_on_bitboard(move, target_square);
+                move = CLEAR_BIT_ON_BITBOARD(move, target_square);
             }
 
-            white_king = clear_bit_on_bitboard(white_king, source_square);
+            white_king = CLEAR_BIT_ON_BITBOARD(white_king, source_square);
         }
     } else {
         while(black_king){
-            source_square = get_lsb_index(black_king);
+            source_square = GET_LSB_INDEX(black_king);
 
             move = pre_calculated_king_moves[source_square];
             while(move){
-                target_square = get_lsb_index(move);
+                target_square = GET_LSB_INDEX(move);
 
                 if((1ULL << target_square) & (BLACK_OCCUPENCY(board_state))){
-                    move = clear_bit_on_bitboard(move, target_square);
+                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                     continue;
                 } else {
-                    moves_list->moves[moves_list->current_index++] = create_move(
+                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                         source_square,
                         target_square,
                         BLACK_KING,
@@ -154,10 +154,10 @@ void generate_all_king_quiet_and_capture_moves_from_game_state(Game* board_state
                     );
                 }
 
-                move = clear_bit_on_bitboard(move, target_square);
+                move = CLEAR_BIT_ON_BITBOARD(move, target_square);
             }
 
-            black_king = clear_bit_on_bitboard(black_king, source_square);
+            black_king = CLEAR_BIT_ON_BITBOARD(black_king, source_square);
         }
     }
 }
@@ -225,7 +225,7 @@ void generate_all_king_castling_moves_from_game_state(Game* board_state, MoveLis
                !is_square_attacked(board_state, F1, BLACK) )
             {
                 if(!(occupency & square_between_white_king_and_white_rook))
-                    moves_list->moves[moves_list->current_index++] = create_move(E1, G1, WHITE_KING, KING_CASTLE);
+                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(E1, G1, WHITE_KING, KING_CASTLE);
             }
         }
         if (board_state->castling_rights & WHITE_QUEEN_SIDE_CASTLING)
@@ -234,7 +234,7 @@ void generate_all_king_castling_moves_from_game_state(Game* board_state, MoveLis
                 !is_square_attacked(board_state, D1, BLACK) )
             {
                 if(!(occupency & square_between_white_king_and_white_queen_rook))
-                    moves_list->moves[moves_list->current_index++] = create_move(E1, C1, WHITE_KING, QUEEN_CASTLE);
+                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(E1, C1, WHITE_KING, QUEEN_CASTLE);
             }
         }
     } else{
@@ -244,7 +244,7 @@ void generate_all_king_castling_moves_from_game_state(Game* board_state, MoveLis
                !is_square_attacked(board_state, F8, WHITE) )
             {
                 if(!(occupency & square_between_black_king_and_black_rook))
-                    moves_list->moves[moves_list->current_index++] = create_move(E8, G8, BLACK_KING, KING_CASTLE);
+                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(E8, G8, BLACK_KING, KING_CASTLE);
             }
         }
         if (board_state->castling_rights & BLACK_QUEEN_SIDE_CASTLING)
@@ -253,7 +253,7 @@ void generate_all_king_castling_moves_from_game_state(Game* board_state, MoveLis
                 !is_square_attacked(board_state, D8, WHITE) )
             {
                 if(!(occupency & square_between_black_king_and_black_queen_rook))
-                    moves_list->moves[moves_list->current_index++] = create_move(E8, C8, BLACK_KING, QUEEN_CASTLE);
+                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE);
             }
         }
     }
@@ -263,10 +263,10 @@ int is_king_attacked(Game* board_state, Side side)
 {
     if (side == WHITE)
     {
-        Square king_pos = get_lsb_index(board_state->black_king);
+        Square king_pos = GET_LSB_INDEX(board_state->black_king);
         return is_square_attacked(board_state, king_pos, side);
     }else{
-        Square king_pos = get_lsb_index(board_state->white_king);
+        Square king_pos = GET_LSB_INDEX(board_state->white_king);
         return is_square_attacked(board_state, king_pos, side);
     }
 }

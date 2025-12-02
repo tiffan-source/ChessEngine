@@ -19,25 +19,6 @@ const char* move_type_to_string[14] = {
 };
 
 
-Move create_move(Square from_square, Square to_square, PieceType piece_type, MoveType move_type)
-{
-    Move move = 0;
-    
-    // Encode source square (6 bits)
-    move |= (from_square & 0x3F);
-    
-    // Encode destination square (6 bits, shifted by 6)
-    move |= ((to_square & 0x3F) << 6);
-    
-    // Encode piece type (4 bits, shifted by 12)
-    move |= ((piece_type & 0xF) << 12);
-    
-    // Encode move type (4 bits, shifted by 16)
-    move |= ((move_type & 0xF) << 16);
-    
-    return move;
-}
-
 void capture_piece_on_square(Game* game, Square square)
 {
     Bitboard square_bitboard = 1ULL << square;
@@ -379,11 +360,11 @@ void make_move(Game* game, Move move)
         case KING_CASTLE:
             move_piece(game, move);
             if(game->turn == WHITE_TURN){
-                move_piece(game, create_move(H1, F1, WHITE_ROOK, QUIET_MOVES));
+                move_piece(game, CREATE_MOVE(H1, F1, WHITE_ROOK, QUIET_MOVES));
                 REVOK_CASTLING_RIGHT(game, WHITE_KING_SIDE_CASTLING | WHITE_QUEEN_SIDE_CASTLING);
             }
             else{
-                move_piece(game, create_move(H8, F8, BLACK_ROOK, QUIET_MOVES));
+                move_piece(game, CREATE_MOVE(H8, F8, BLACK_ROOK, QUIET_MOVES));
                 REVOK_CASTLING_RIGHT(game, BLACK_KING_SIDE_CASTLING | BLACK_QUEEN_SIDE_CASTLING);
             }
             break;
@@ -391,11 +372,11 @@ void make_move(Game* game, Move move)
         case QUEEN_CASTLE:
             move_piece(game, move);
             if(game->turn == WHITE_TURN){
-                move_piece(game, create_move(A1, D1, WHITE_ROOK, QUIET_MOVES));
+                move_piece(game, CREATE_MOVE(A1, D1, WHITE_ROOK, QUIET_MOVES));
                 REVOK_CASTLING_RIGHT(game, WHITE_KING_SIDE_CASTLING | WHITE_QUEEN_SIDE_CASTLING);
             }
             else{
-                move_piece(game, create_move(A8, D8, BLACK_ROOK, QUIET_MOVES));
+                move_piece(game, CREATE_MOVE(A8, D8, BLACK_ROOK, QUIET_MOVES));
                 REVOK_CASTLING_RIGHT(game, BLACK_KING_SIDE_CASTLING | BLACK_QUEEN_SIDE_CASTLING);
             }
             break;

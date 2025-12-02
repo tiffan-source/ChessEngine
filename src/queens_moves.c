@@ -7,73 +7,70 @@ void generate_all_queens_moves_from_game_state(Game* board_state, MoveList* move
     Bitboard white_queens = board_state->white_queens;
     Bitboard black_queens = board_state->black_queens;
     Bitboard move, attack;
+    Bitboard all_occupency = ALL_OCCUPENCY(board_state);
 
     if (board_state->turn == WHITE)
     {
         while(white_queens){;
 
-            source_square = get_lsb_index(white_queens);
+            source_square = GET_LSB_INDEX(white_queens);
 
             move = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(
                 source_square,
-            ALL_OCCUPENCY(board_state)
+            all_occupency
             ) | retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(
                 source_square,
-                ALL_OCCUPENCY(board_state)
+                all_occupency
             );
 
-            Bitboard str = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(
-                source_square,
-                ALL_OCCUPENCY(board_state)
-            );
             while(move){
-                target_square = get_lsb_index(move);
+                target_square = GET_LSB_INDEX(move);
 
                 if((1ULL << target_square) & (WHITE_OCCUPENCY(board_state))){
-                    move = clear_bit_on_bitboard(move, target_square);
+                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                     continue;
                 } else {
-                    moves_list->moves[moves_list->current_index++] = create_move(
+                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                         source_square,
                         target_square,
                         WHITE_QUEEN,
                         (1ULL << target_square) & (BLACK_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
                     );
-                    move = clear_bit_on_bitboard(move, target_square);
+                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                 }
             }
 
-            white_queens = clear_bit_on_bitboard(white_queens, source_square);
+            white_queens = CLEAR_BIT_ON_BITBOARD(white_queens, source_square);
         }
     } else {
         while(black_queens){
-            source_square = get_lsb_index(black_queens);
+            source_square = GET_LSB_INDEX(black_queens);
 
             move = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(
                 source_square,
-                ALL_OCCUPENCY(board_state)
+                all_occupency
             ) | retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(
                 source_square,
                 ALL_OCCUPENCY(board_state)
             );
 
             while(move){
-                target_square = get_lsb_index(move);
+                target_square = GET_LSB_INDEX(move);
 
                 if((1ULL << target_square) & (BLACK_OCCUPENCY(board_state))){
-                    move = clear_bit_on_bitboard(move, target_square);
+                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                     continue;
                 } else {
-                    moves_list->moves[moves_list->current_index++] = create_move(
+                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                         source_square,
                         target_square,
                         BLACK_QUEEN,
                         (1ULL << target_square) & (WHITE_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
                     );
-                    move = clear_bit_on_bitboard(move, target_square);
+                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                 }
             }
-            black_queens = clear_bit_on_bitboard(black_queens, source_square);
+            black_queens = CLEAR_BIT_ON_BITBOARD(black_queens, source_square);
         }
     }
 }

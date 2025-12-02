@@ -27,6 +27,12 @@
 #define GET_PIECE_TYPE(move)         (((move) & PIECE_TYPE_MASK) >> 12)
 #define GET_MOVE_TYPE(move)          (((move) & MOVE_TYPE_MASK) >> 16)
 
+#define CREATE_MOVE(from_square, to_square, piece_type, move_type) \
+    ( (Move)( (((from_square) & 0x3FULL)                         ) \
+           | ((((to_square)   & 0x3FULL) << 6)                    ) \
+           | ((((piece_type)  & 0xFULL)  << 12)                   ) \
+           | ((((move_type)   & 0xFULL)  << 16)                   ) ) )
+
 
 typedef unsigned int Move;
 
@@ -55,7 +61,6 @@ typedef enum MoveType {
 extern const char* move_type_to_string[14];
 
 // Function to create a move from its components
-Move create_move(Square from_square, Square to_square, PieceType piece_type, MoveType move_type);
 void print_move(Move move);
 void print_move_as_uci(Move move);
 void build_move_as_uci(Move move,char* result);

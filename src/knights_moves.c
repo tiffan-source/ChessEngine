@@ -74,28 +74,28 @@ Bitboard generate_knights_moves_from_square(Square square)
     Bitboard moves = 0x0ULL;
 
     // Up-Left-Left
-    if(!bit_on_bitboard_hit_8_rank(source) && !bit_on_bitboard_hit_a_file(source) && !bit_on_bitboard_hit_b_file(source))
+    if(!BIT_ON_BITBOARD_HIT_8_RANK(source) && !BIT_ON_BITBOARD_HIT_A_FILE(source) && !BIT_ON_BITBOARD_HIT_B_FILE(source))
         moves = SET_BIT_ON_BITBOARD(moves, square - 10);
     // Up-Up-Left
-    if(!bit_on_bitboard_hit_8_rank(source) && !bit_on_bitboard_hit_7_rank(source) && !bit_on_bitboard_hit_a_file(source))
+    if(!BIT_ON_BITBOARD_HIT_8_RANK(source) && !BIT_ON_BITBOARD_HIT_7_RANK(source) && !BIT_ON_BITBOARD_HIT_A_FILE(source))
         moves = SET_BIT_ON_BITBOARD(moves, square - 17);
     // Up-Up-Right
-    if(!bit_on_bitboard_hit_8_rank(source) && !bit_on_bitboard_hit_7_rank(source) && !bit_on_bitboard_hit_h_file(source))
+    if(!BIT_ON_BITBOARD_HIT_8_RANK(source) && !BIT_ON_BITBOARD_HIT_7_RANK(source) && !BIT_ON_BITBOARD_HIT_H_FILE(source))
         moves = SET_BIT_ON_BITBOARD(moves, square - 15);
     // Up-Right-Right
-    if(!bit_on_bitboard_hit_8_rank(source) && !bit_on_bitboard_hit_g_file(source) && !bit_on_bitboard_hit_h_file(source))
+    if(!BIT_ON_BITBOARD_HIT_8_RANK(source) && !BIT_ON_BITBOARD_HIT_G_FILE(source) && !BIT_ON_BITBOARD_HIT_H_FILE(source))
         moves = SET_BIT_ON_BITBOARD(moves, square - 6);
     // Down-Right-Right
-    if(!bit_on_bitboard_hit_1_rank(source) && !bit_on_bitboard_hit_g_file(source) && !bit_on_bitboard_hit_h_file(source))
+    if(!BIT_ON_BITBOARD_HIT_1_RANK(source) && !BIT_ON_BITBOARD_HIT_G_FILE(source) && !BIT_ON_BITBOARD_HIT_H_FILE(source))
         moves = SET_BIT_ON_BITBOARD(moves, square + 10);
     // Down-Down-Right
-    if(!bit_on_bitboard_hit_1_rank(source) && !bit_on_bitboard_hit_2_rank(source) && !bit_on_bitboard_hit_h_file(source))
+    if(!BIT_ON_BITBOARD_HIT_1_RANK(source) && !BIT_ON_BITBOARD_HIT_2_RANK(source) && !BIT_ON_BITBOARD_HIT_H_FILE(source))
         moves = SET_BIT_ON_BITBOARD(moves, square + 17);
     // Down-Down-Left
-    if(!bit_on_bitboard_hit_1_rank(source) && !bit_on_bitboard_hit_2_rank(source) && !bit_on_bitboard_hit_a_file(source))
+    if(!BIT_ON_BITBOARD_HIT_1_RANK(source) && !BIT_ON_BITBOARD_HIT_2_RANK(source) && !BIT_ON_BITBOARD_HIT_A_FILE(source))
         moves = SET_BIT_ON_BITBOARD(moves, square + 15);
     // Down-Left-Left
-    if(!bit_on_bitboard_hit_1_rank(source) && !bit_on_bitboard_hit_a_file(source) && !bit_on_bitboard_hit_b_file(source))
+    if(!BIT_ON_BITBOARD_HIT_1_RANK(source) && !BIT_ON_BITBOARD_HIT_A_FILE(source) && !BIT_ON_BITBOARD_HIT_B_FILE(source))
         moves = SET_BIT_ON_BITBOARD(moves, square + 6);
     return moves;
 }
@@ -127,7 +127,7 @@ void generate_all_knight_moves_from_game_state(Game* board_state, MoveList* move
 
     while (knights)
     {
-        from_square = (Square)get_lsb_index(knights);
+        from_square = (Square)GET_LSB_INDEX(knights);
         possible_moves = generate_knights_moves_from_square(from_square);
         // Remove moves that land on own pieces
         possible_moves &= ~own_pieces;
@@ -135,18 +135,18 @@ void generate_all_knight_moves_from_game_state(Game* board_state, MoveList* move
         temp_moves = possible_moves;
         while (temp_moves)
         {
-            to_square = (Square)get_lsb_index(temp_moves);
+            to_square = (Square)GET_LSB_INDEX(temp_moves);
             if (opponent_pieces & (1ULL << to_square))
             {
-                moves_list->moves[moves_list->current_index++] = create_move(from_square, to_square, (side == WHITE) ? WHITE_KNIGHT : BLACK_KNIGHT, CAPTURE);
+                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(from_square, to_square, (side == WHITE) ? WHITE_KNIGHT : BLACK_KNIGHT, CAPTURE);
             }
             else
             {
-                moves_list->moves[moves_list->current_index++] = create_move(from_square, to_square, (side == WHITE) ? WHITE_KNIGHT : BLACK_KNIGHT, QUIET_MOVES);
+                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(from_square, to_square, (side == WHITE) ? WHITE_KNIGHT : BLACK_KNIGHT, QUIET_MOVES);
             }
-            temp_moves = clear_bit_on_bitboard(temp_moves, to_square);
+            temp_moves = CLEAR_BIT_ON_BITBOARD(temp_moves, to_square);
         }
 
-        knights = clear_bit_on_bitboard(knights, from_square);
+        knights = CLEAR_BIT_ON_BITBOARD(knights, from_square);
     }
 }

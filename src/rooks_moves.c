@@ -219,7 +219,7 @@ Bitboard get_rook_blocker_configuration_for_square_giving_index(Square square, i
     
     Bitboard result = 0x0ULL;
 
-    while ((index_bit = get_lsb_index(blockers)) != -1)
+    while ((index_bit = GET_LSB_INDEX(blockers)) != -1)
     {
         if (index & (1 << i))
         {
@@ -227,7 +227,7 @@ Bitboard get_rook_blocker_configuration_for_square_giving_index(Square square, i
         }
         
         i++;
-        blockers = clear_bit_on_bitboard(blockers, (Square)index_bit);
+        blockers = CLEAR_BIT_ON_BITBOARD(blockers, (Square)index_bit);
     }
     
     return result;
@@ -243,7 +243,7 @@ int test_candidate_magic_bitboard_rook(Square square, Bitboard magic_number)
     {
         Bitboard blockers = get_rook_blocker_configuration_for_square_giving_index(square, i);
 
-        index_found = hash_function_for_indexing_U64_configuration(blockers, magic_number, number_of_bit_in_rook_mask_for_square[square]);
+        index_found = HASH_FUNCTION_FOR_INDEXING_U64_CONFIGURATION(blockers, magic_number, number_of_bit_in_rook_mask_for_square[square]);
 
         if (index_table[index_found] != 0)
         {
@@ -268,7 +268,7 @@ Bitboard generate_magic_number_for_rook_on_square(Square square)
     int test = 0;
 
     do{
-        magic = random_U64_fewbits();
+        magic = RANDOM_U64_FEWBITS();
         test = test_candidate_magic_bitboard_rook(square, magic);
     }while (test == 0);
 
@@ -344,7 +344,7 @@ void initialize_pre_calculated_rook_moves_database()
         {
             Bitboard blocker_configuration = get_rook_blocker_configuration_for_square_giving_index((Square)square, i);
             Bitboard moves = generate_rook_moves_for_giving_blocker_configuration((Square)square, blocker_configuration);
-            index_by_magic = hash_function_for_indexing_U64_configuration(blocker_configuration, rook_magic_numbers[square], number_of_bit_in_rook_mask_for_square[square]);
+            index_by_magic = HASH_FUNCTION_FOR_INDEXING_U64_CONFIGURATION(blocker_configuration, rook_magic_numbers[square], number_of_bit_in_rook_mask_for_square[square]);
             pre_calculated_rook_moves_database[square][index_by_magic] = moves;
         }
     }
@@ -368,7 +368,7 @@ void generate_all_rooks_moves_from_game_state(Game* board_state, MoveList* moves
     if (board_state->turn == WHITE)
     {
         while(white_rooks){
-            source_square = get_lsb_index(white_rooks);
+            source_square = GET_LSB_INDEX(white_rooks);
 
             move = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(
                 source_square,
@@ -377,27 +377,27 @@ void generate_all_rooks_moves_from_game_state(Game* board_state, MoveList* moves
 
 
             while(move){
-                target_square = get_lsb_index(move);
+                target_square = GET_LSB_INDEX(move);
 
                 if((1ULL << target_square) & (WHITE_OCCUPENCY(board_state))){
-                    move = clear_bit_on_bitboard(move, target_square);
+                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                     continue;
                 } else {
-                    moves_list->moves[moves_list->current_index++] = create_move(
+                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                         source_square,
                         target_square,
                         WHITE_ROOK,
                         (1ULL << target_square) & (BLACK_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
                     );
-                    move = clear_bit_on_bitboard(move, target_square);
+                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                 }
             }
 
-            white_rooks = clear_bit_on_bitboard(white_rooks, source_square);
+            white_rooks = CLEAR_BIT_ON_BITBOARD(white_rooks, source_square);
         }
     } else {
         while(black_rooks){
-            source_square = get_lsb_index(black_rooks);
+            source_square = GET_LSB_INDEX(black_rooks);
 
             move = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(
                 source_square,
@@ -405,22 +405,22 @@ void generate_all_rooks_moves_from_game_state(Game* board_state, MoveList* moves
             );
 
             while(move){
-                target_square = get_lsb_index(move);
+                target_square = GET_LSB_INDEX(move);
 
                 if((1ULL << target_square) & (BLACK_OCCUPENCY(board_state))){
-                    move = clear_bit_on_bitboard(move, target_square);
+                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                     continue;
                 } else {
-                    moves_list->moves[moves_list->current_index++] = create_move(
+                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                         source_square,
                         target_square,
                         BLACK_ROOK,
                         (1ULL << target_square) & (WHITE_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
                     );
-                    move = clear_bit_on_bitboard(move, target_square);
+                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                 }
             }
-            black_rooks = clear_bit_on_bitboard(black_rooks, source_square);
+            black_rooks = CLEAR_BIT_ON_BITBOARD(black_rooks, source_square);
         }
     }
 }

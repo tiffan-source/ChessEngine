@@ -45,7 +45,7 @@ void test_min_max_should_identify_checkmate_in_one_move(void)
 
     // Checkmate should return a very high positive evaluation
     TEST_ASSERT_EQUAL_INT(INT_MAX - 1, evaluation.score);
-    TEST_ASSERT_EQUAL_UINT(create_move(D1, H5, WHITE_QUEEN, QUIET_MOVES), evaluation.move);
+    TEST_ASSERT_EQUAL_UINT(CREATE_MOVE(D1, H5, WHITE_QUEEN, QUIET_MOVES), evaluation.move);
 }
 
 void test_min_max_should_identify_checkmate_in_two_move(void)
@@ -57,7 +57,7 @@ void test_min_max_should_identify_checkmate_in_two_move(void)
     // Checkmate should return a very high positive evaluation
     TEST_ASSERT_EQUAL_INT(INT_MIN + 1, evaluation.score);
     print_move(evaluation.move);
-    TEST_ASSERT_EQUAL_UINT(create_move(B6, E6, BLACK_QUEEN, QUIET_MOVES), evaluation.move);
+    TEST_ASSERT_EQUAL_UINT(CREATE_MOVE(B6, E6, BLACK_QUEEN, QUIET_MOVES), evaluation.move);
 }
 
 

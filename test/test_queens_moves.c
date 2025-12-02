@@ -38,12 +38,12 @@ void test_generate_all_white_queens_move_from_tricky_position(void)
     result_for_white->current_index = 0;
 
     Move expected_for_white[] = {
-        create_move(D1, C2, WHITE_QUEEN, QUIET_MOVES),
-        create_move(D1, B3, WHITE_QUEEN, QUIET_MOVES),
-        create_move(D1, C1, WHITE_QUEEN, QUIET_MOVES),
-        create_move(D1, B1, WHITE_QUEEN, QUIET_MOVES),
-        create_move(D1, E1, WHITE_QUEEN, QUIET_MOVES),
-        create_move(D1, E2, WHITE_QUEEN, QUIET_MOVES),
+        CREATE_MOVE(D1, C2, WHITE_QUEEN, QUIET_MOVES),
+        CREATE_MOVE(D1, B3, WHITE_QUEEN, QUIET_MOVES),
+        CREATE_MOVE(D1, C1, WHITE_QUEEN, QUIET_MOVES),
+        CREATE_MOVE(D1, B1, WHITE_QUEEN, QUIET_MOVES),
+        CREATE_MOVE(D1, E1, WHITE_QUEEN, QUIET_MOVES),
+        CREATE_MOVE(D1, E2, WHITE_QUEEN, QUIET_MOVES),
     };
     
     generate_all_queens_moves_from_game_state(game_white, result_for_white);
@@ -67,14 +67,14 @@ void test_generate_all_black_queens_move_from_tricky_position(void)
     result_for_black->current_index = 0;
 
     Move expected_for_black[] = {
-        create_move(A3, A4, BLACK_QUEEN, CAPTURE),
-        create_move(A3, B4, BLACK_QUEEN, CAPTURE),
-        create_move(A3, B3, BLACK_QUEEN, QUIET_MOVES),
-        create_move(A3, C3, BLACK_QUEEN, QUIET_MOVES),
-        create_move(A3, D3, BLACK_QUEEN, QUIET_MOVES),
-        create_move(A3, E3, BLACK_QUEEN, QUIET_MOVES),
-        create_move(A3, F3, BLACK_QUEEN, CAPTURE),
-        create_move(A3, A2, BLACK_QUEEN, CAPTURE),
+        CREATE_MOVE(A3, A4, BLACK_QUEEN, CAPTURE),
+        CREATE_MOVE(A3, B4, BLACK_QUEEN, CAPTURE),
+        CREATE_MOVE(A3, B3, BLACK_QUEEN, QUIET_MOVES),
+        CREATE_MOVE(A3, C3, BLACK_QUEEN, QUIET_MOVES),
+        CREATE_MOVE(A3, D3, BLACK_QUEEN, QUIET_MOVES),
+        CREATE_MOVE(A3, E3, BLACK_QUEEN, QUIET_MOVES),
+        CREATE_MOVE(A3, F3, BLACK_QUEEN, CAPTURE),
+        CREATE_MOVE(A3, A2, BLACK_QUEEN, CAPTURE),
     };
     
     generate_all_queens_moves_from_game_state(game_black, result_for_black);

@@ -18,6 +18,33 @@
 
 #define SET_BIT_ON_BITBOARD(bitboard, square) ((bitboard) | (1ULL << (square)))
 
+#define CLEAR_BIT_ON_BITBOARD(bitboard, square) \
+    ((bitboard) & ~(1ULL << (square)))
+
+#define BIT_ON_BITBOARD_HIT_8_RANK(bitboard) \
+    (((bitboard) & RANK_8) ? 1 : 0)
+
+#define BIT_ON_BITBOARD_HIT_7_RANK(bitboard) \
+    (((bitboard) & RANK_7) ? 1 : 0)
+
+#define BIT_ON_BITBOARD_HIT_1_RANK(bitboard) \
+    (((bitboard) & RANK_1) ? 1 : 0)
+
+#define BIT_ON_BITBOARD_HIT_2_RANK(bitboard) \
+    (((bitboard) & RANK_2) ? 1 : 0)
+
+#define BIT_ON_BITBOARD_HIT_A_FILE(bitboard) \
+    (((bitboard) & FILE_A) ? 1 : 0)
+
+#define BIT_ON_BITBOARD_HIT_B_FILE(bitboard) \
+    (((bitboard) & FILE_B) ? 1 : 0)
+
+#define BIT_ON_BITBOARD_HIT_H_FILE(bitboard) \
+    (((bitboard) & FILE_H) ? 1 : 0)
+
+#define BIT_ON_BITBOARD_HIT_G_FILE(bitboard) \
+    (((bitboard) & FILE_G) ? 1 : 0)
+
 typedef U64 Bitboard;
 
 typedef enum Square {
@@ -40,17 +67,5 @@ typedef enum Side {
 
 char* string_bitboard_on_chess_board(Bitboard position);
 
-// Bitboard SET_BIT_ON_BITBOARD(Bitboard bitboard, Square square);
-Bitboard clear_bit_on_bitboard(Bitboard bitboard, Square square);
-
-int bit_on_bitboard_hit_8_rank(Bitboard bitboard);
-int bit_on_bitboard_hit_7_rank(Bitboard bitboard);
-int bit_on_bitboard_hit_1_rank(Bitboard bitboard);
-int bit_on_bitboard_hit_2_rank(Bitboard bitboard);
-
-int bit_on_bitboard_hit_a_file(Bitboard bitboard);
-int bit_on_bitboard_hit_b_file(Bitboard bitboard);
-int bit_on_bitboard_hit_h_file(Bitboard bitboard);
-int bit_on_bitboard_hit_g_file(Bitboard bitboard);
 
 #endif // BOARD_H

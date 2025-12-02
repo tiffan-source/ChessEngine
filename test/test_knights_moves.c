@@ -162,20 +162,20 @@ void test_generate_all_white_knight_move_from_tricky_position(void)
     result_for_white->current_index = 0;
 
     Move expected_for_white[] = {
-        create_move(F7, D8, WHITE_KNIGHT, QUIET_MOVES),
-        create_move(F7, D6, WHITE_KNIGHT, QUIET_MOVES),
-        create_move(F7, E5, WHITE_KNIGHT, QUIET_MOVES),
-        create_move(F7, G5, WHITE_KNIGHT, QUIET_MOVES),
-        create_move(F7, H6, WHITE_KNIGHT, QUIET_MOVES),
-        create_move(F7, H8, WHITE_KNIGHT, CAPTURE),
+        CREATE_MOVE(F7, D8, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F7, D6, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F7, E5, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F7, G5, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F7, H6, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F7, H8, WHITE_KNIGHT, CAPTURE),
 
-        create_move(F3, D4, WHITE_KNIGHT, QUIET_MOVES),
-        create_move(F3, E5, WHITE_KNIGHT, QUIET_MOVES),
-        create_move(F3, G5, WHITE_KNIGHT, QUIET_MOVES),
-        create_move(F3, H4, WHITE_KNIGHT, QUIET_MOVES),
-        create_move(F3, H2, WHITE_KNIGHT, CAPTURE),
-        create_move(F3, G1, WHITE_KNIGHT, QUIET_MOVES),
-        create_move(F3, E1, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F3, D4, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F3, E5, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F3, G5, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F3, H4, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F3, H2, WHITE_KNIGHT, CAPTURE),
+        CREATE_MOVE(F3, G1, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F3, E1, WHITE_KNIGHT, QUIET_MOVES),
     };
 
     generate_all_knight_moves_from_game_state(game_white, result_for_white);
@@ -201,15 +201,15 @@ void test_generate_all_black_knight_move_from_tricky_position(void)
     result_for_black->current_index = 0;
 
     Move expected_for_black[] = {
-        create_move(F6, D5, BLACK_KNIGHT, QUIET_MOVES),
-        create_move(F6, E4, BLACK_KNIGHT, CAPTURE),
-        create_move(F6, G4, BLACK_KNIGHT, QUIET_MOVES),
-        create_move(F6, H5, BLACK_KNIGHT, QUIET_MOVES),
-        create_move(F6, G8, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F6, D5, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F6, E4, BLACK_KNIGHT, CAPTURE),
+        CREATE_MOVE(F6, G4, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F6, H5, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F6, G8, BLACK_KNIGHT, QUIET_MOVES),
 
-        create_move(A5, B3, BLACK_KNIGHT, QUIET_MOVES),
-        create_move(A5, C4, BLACK_KNIGHT, CAPTURE),
-        create_move(A5, C6, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(A5, B3, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(A5, C4, BLACK_KNIGHT, CAPTURE),
+        CREATE_MOVE(A5, C6, BLACK_KNIGHT, QUIET_MOVES),
     };
 
     generate_all_knight_moves_from_game_state(game_black, result_for_black);
@@ -234,13 +234,13 @@ void test_generate_all_knight_moves_whith_capture(void)
     result->current_index = 0;
 
     Move expected[] = {
-        create_move(F6, G8, BLACK_KNIGHT, QUIET_MOVES),
-        create_move(F6, H5, BLACK_KNIGHT, QUIET_MOVES),
-        create_move(F6, G4, BLACK_KNIGHT, QUIET_MOVES),
-        create_move(F6, E4, BLACK_KNIGHT, QUIET_MOVES),
-        create_move(F6, D5, BLACK_KNIGHT, CAPTURE),
-        create_move(B8, C6, BLACK_KNIGHT, QUIET_MOVES),
-        create_move(B8, A6, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F6, G8, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F6, H5, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F6, G4, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F6, E4, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(F6, D5, BLACK_KNIGHT, CAPTURE),
+        CREATE_MOVE(B8, C6, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_MOVE(B8, A6, BLACK_KNIGHT, QUIET_MOVES),
     };
 
     generate_all_knight_moves_from_game_state(game, result);

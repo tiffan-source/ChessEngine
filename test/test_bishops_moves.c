@@ -257,16 +257,16 @@ void test_generate_all_white_bishop_move_from_tricky_position(void)
     result_for_white->current_index = 0;
 
     Move expected_for_white[] = {
-        create_move(A4, B3, WHITE_BISHOP, QUIET_MOVES),
-        create_move(A4, C2, WHITE_BISHOP, QUIET_MOVES),
+        CREATE_MOVE(A4, B3, WHITE_BISHOP, QUIET_MOVES),
+        CREATE_MOVE(A4, C2, WHITE_BISHOP, QUIET_MOVES),
 
-        create_move(B4, A3, WHITE_BISHOP, CAPTURE),
-        create_move(B4, A5, WHITE_BISHOP, CAPTURE),
-        create_move(B4, C3, WHITE_BISHOP, QUIET_MOVES),
-        create_move(B4, C5, WHITE_BISHOP, QUIET_MOVES),
-        create_move(B4, D6, WHITE_BISHOP, QUIET_MOVES),
-        create_move(B4, E7, WHITE_BISHOP, QUIET_MOVES),
-        create_move(B4, F8, WHITE_BISHOP, QUIET_MOVES),
+        CREATE_MOVE(B4, A3, WHITE_BISHOP, CAPTURE),
+        CREATE_MOVE(B4, A5, WHITE_BISHOP, CAPTURE),
+        CREATE_MOVE(B4, C3, WHITE_BISHOP, QUIET_MOVES),
+        CREATE_MOVE(B4, C5, WHITE_BISHOP, QUIET_MOVES),
+        CREATE_MOVE(B4, D6, WHITE_BISHOP, QUIET_MOVES),
+        CREATE_MOVE(B4, E7, WHITE_BISHOP, QUIET_MOVES),
+        CREATE_MOVE(B4, F8, WHITE_BISHOP, QUIET_MOVES),
     };
     
     generate_all_bishop_moves_from_game_state(game_white, result_for_white);
@@ -290,17 +290,17 @@ void test_generate_all_black_bishop_move_from_tricky_position(void)
     result_for_black->current_index = 0;
 
     Move expected_for_black[] = {
-        create_move(B6, C5, BLACK_BISHOP, QUIET_MOVES),
-        create_move(B6, D4, BLACK_BISHOP, QUIET_MOVES),
-        create_move(B6, E3, BLACK_BISHOP, QUIET_MOVES),
-        create_move(B6, F2, BLACK_BISHOP, QUIET_MOVES),
-        create_move(B6, G1, BLACK_BISHOP, QUIET_MOVES),
-        create_move(B6, A7, BLACK_BISHOP, CAPTURE),
+        CREATE_MOVE(B6, C5, BLACK_BISHOP, QUIET_MOVES),
+        CREATE_MOVE(B6, D4, BLACK_BISHOP, QUIET_MOVES),
+        CREATE_MOVE(B6, E3, BLACK_BISHOP, QUIET_MOVES),
+        CREATE_MOVE(B6, F2, BLACK_BISHOP, QUIET_MOVES),
+        CREATE_MOVE(B6, G1, BLACK_BISHOP, QUIET_MOVES),
+        CREATE_MOVE(B6, A7, BLACK_BISHOP, CAPTURE),
 
-        create_move(G6, F7, BLACK_BISHOP, CAPTURE),
-        create_move(G6, F5, BLACK_BISHOP, QUIET_MOVES),
-        create_move(G6, E4, BLACK_BISHOP, CAPTURE),
-        create_move(G6, H5, BLACK_BISHOP, QUIET_MOVES),
+        CREATE_MOVE(G6, F7, BLACK_BISHOP, CAPTURE),
+        CREATE_MOVE(G6, F5, BLACK_BISHOP, QUIET_MOVES),
+        CREATE_MOVE(G6, E4, BLACK_BISHOP, CAPTURE),
+        CREATE_MOVE(G6, H5, BLACK_BISHOP, QUIET_MOVES),
     };
     
     generate_all_bishop_moves_from_game_state(game_black, result_for_black);

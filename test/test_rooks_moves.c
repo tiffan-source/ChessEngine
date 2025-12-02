@@ -418,11 +418,11 @@ void test_generate_all_white_rook_move_from_tricky_position(void)
     result_for_white->current_index = 0;
 
     Move expected_for_white[] = {
-        create_move(A1, B1, WHITE_ROOK, QUIET_MOVES),
-        create_move(A1, C1, WHITE_ROOK, QUIET_MOVES),
-        create_move(F1, E1, WHITE_ROOK, QUIET_MOVES),
-        create_move(F1, G1, WHITE_ROOK, QUIET_MOVES),
-        create_move(F1, F2, WHITE_ROOK, QUIET_MOVES),
+        CREATE_MOVE(A1, B1, WHITE_ROOK, QUIET_MOVES),
+        CREATE_MOVE(A1, C1, WHITE_ROOK, QUIET_MOVES),
+        CREATE_MOVE(F1, E1, WHITE_ROOK, QUIET_MOVES),
+        CREATE_MOVE(F1, G1, WHITE_ROOK, QUIET_MOVES),
+        CREATE_MOVE(F1, F2, WHITE_ROOK, QUIET_MOVES),
     };
     
     generate_all_rooks_moves_from_game_state(game_white, result_for_white);
@@ -446,12 +446,12 @@ void test_generate_all_black_rook_move_from_tricky_position(void)
     result_for_black->current_index = 0;
 
     Move expected_for_black[] = {
-        create_move(A8, B8, BLACK_ROOK, QUIET_MOVES),
-        create_move(A8, C8, BLACK_ROOK, QUIET_MOVES),
-        create_move(A8, D8, BLACK_ROOK, QUIET_MOVES),
-        create_move(A8, A7, BLACK_ROOK, CAPTURE),
-        create_move(H8, G8, BLACK_ROOK, QUIET_MOVES),
-        create_move(H8, F8, BLACK_ROOK, QUIET_MOVES),
+        CREATE_MOVE(A8, B8, BLACK_ROOK, QUIET_MOVES),
+        CREATE_MOVE(A8, C8, BLACK_ROOK, QUIET_MOVES),
+        CREATE_MOVE(A8, D8, BLACK_ROOK, QUIET_MOVES),
+        CREATE_MOVE(A8, A7, BLACK_ROOK, CAPTURE),
+        CREATE_MOVE(H8, G8, BLACK_ROOK, QUIET_MOVES),
+        CREATE_MOVE(H8, F8, BLACK_ROOK, QUIET_MOVES),
     };
     
     generate_all_rooks_moves_from_game_state(game_black, result_for_black);

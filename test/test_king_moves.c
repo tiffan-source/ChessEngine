@@ -144,8 +144,8 @@ void test_generate_all_white_king_move_from_tricky_position(void)
     result_for_white->current_index = 0;
 
     Move expected_for_white[] = {
-        create_move(H1, G1, WHITE_KING, QUIET_MOVES),
-        create_move(H1, H2, WHITE_KING, CAPTURE),
+        CREATE_MOVE(H1, G1, WHITE_KING, QUIET_MOVES),
+        CREATE_MOVE(H1, H2, WHITE_KING, CAPTURE),
     };
     
     generate_all_king_quiet_and_capture_moves_from_game_state(game_white, result_for_white);
@@ -171,10 +171,10 @@ void test_generate_all_black_pawn_move_from_tricky_position(void)
 
 
     Move expected_for_black[] = {
-        create_move(E8, D8, BLACK_KING, QUIET_MOVES),
-        create_move(E8, F8, BLACK_KING, QUIET_MOVES),
-        create_move(E8, E7, BLACK_KING, QUIET_MOVES),
-        create_move(E8, F7, BLACK_KING, CAPTURE),
+        CREATE_MOVE(E8, D8, BLACK_KING, QUIET_MOVES),
+        CREATE_MOVE(E8, F8, BLACK_KING, QUIET_MOVES),
+        CREATE_MOVE(E8, E7, BLACK_KING, QUIET_MOVES),
+        CREATE_MOVE(E8, F7, BLACK_KING, CAPTURE),
     };
     
     generate_all_king_quiet_and_capture_moves_from_game_state(game_black, result_for_black);
@@ -240,8 +240,8 @@ void test_generate_all_white_king_castling_moves_initial(void)
     generate_all_king_castling_moves_from_game_state(game, result);
 
     Move expected[] = {
-        create_move(E1, G1, WHITE_KING, KING_CASTLE),
-        create_move(E1, C1, WHITE_KING, QUEEN_CASTLE),
+        CREATE_MOVE(E1, G1, WHITE_KING, KING_CASTLE),
+        CREATE_MOVE(E1, C1, WHITE_KING, QUEEN_CASTLE),
     };
 
     // assert_move_list_contains_only(result, expected, 2);
@@ -262,8 +262,8 @@ void test_generate_all_black_king_castling_moves_initial(void)
     generate_all_king_castling_moves_from_game_state(game, result);
 
     Move expected[] = {
-        create_move(E8, G8, BLACK_KING, KING_CASTLE),
-        create_move(E8, C8, BLACK_KING, QUEEN_CASTLE),
+        CREATE_MOVE(E8, G8, BLACK_KING, KING_CASTLE),
+        CREATE_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE),
     };
 
     qsort(result->moves, result->current_index, sizeof(Move), compare_move);
@@ -306,7 +306,7 @@ void test_only_black_queen_side_castling_due_to_fen_rights(void)
     generate_all_king_castling_moves_from_game_state(game, result);
 
     Move expected[] = {
-        create_move(E8, C8, BLACK_KING, QUEEN_CASTLE),
+        CREATE_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE),
     };
 
     TEST_ASSERT_EQUAL_INT_ARRAY(expected, result->moves, 1);
@@ -329,7 +329,7 @@ void test_no_white_king_side_castling_blocked_by_piece(void)
     generate_all_king_castling_moves_from_game_state(game, result);
 
     Move expected[] = {
-        create_move(E1, C1, WHITE_KING, QUEEN_CASTLE),
+        CREATE_MOVE(E1, C1, WHITE_KING, QUEEN_CASTLE),
     };
 
     qsort(result->moves, result->current_index, sizeof(Move), compare_move);
@@ -353,7 +353,7 @@ void test_no_white_queen_side_castling_blocked_by_piece(void)
     generate_all_king_castling_moves_from_game_state(game, result);
 
     Move expected[] = {
-        create_move(E1, G1, WHITE_KING, KING_CASTLE),
+        CREATE_MOVE(E1, G1, WHITE_KING, KING_CASTLE),
     };
 
     qsort(result->moves, result->current_index, sizeof(Move), compare_move);
@@ -377,7 +377,7 @@ void test_no_black_king_side_castling_blocked_by_piece(void)
     generate_all_king_castling_moves_from_game_state(game, result);
 
     Move expected[] = {
-        create_move(E8, C8, BLACK_KING, QUEEN_CASTLE),
+        CREATE_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE),
     };
 
     qsort(result->moves, result->current_index, sizeof(Move), compare_move);
@@ -440,7 +440,7 @@ void test_generate_black_castling_when_squares_attacked_pseudo_legal(void)
     generate_all_king_castling_moves_from_game_state(game, result);
 
     Move expected[] = {
-        create_move(E8, C8, BLACK_KING, QUEEN_CASTLE),
+        CREATE_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE),
     };
 
     qsort(result->moves, result->current_index, sizeof(Move), compare_move);

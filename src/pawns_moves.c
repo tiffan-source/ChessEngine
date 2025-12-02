@@ -12,12 +12,12 @@ Bitboard generate_pawns_quiet_moves_from_square(Side side, Square square)
     if(side == WHITE)
     {
         // One square forward
-        if(!bit_on_bitboard_hit_8_rank(source))
+        if(!BIT_ON_BITBOARD_HIT_8_RANK(source))
         {
             moves = SET_BIT_ON_BITBOARD(moves, square - 8);
 
             // Two squares forward
-            if(bit_on_bitboard_hit_2_rank(source))
+            if(BIT_ON_BITBOARD_HIT_2_RANK(source))
             {
                 moves = SET_BIT_ON_BITBOARD(moves, square - 16);
             }
@@ -26,12 +26,12 @@ Bitboard generate_pawns_quiet_moves_from_square(Side side, Square square)
     else // BLACK
     {
         // One square forward
-        if(!bit_on_bitboard_hit_1_rank(source))
+        if(!BIT_ON_BITBOARD_HIT_1_RANK(source))
         {
             moves = SET_BIT_ON_BITBOARD(moves, square + 8);
 
             // Two squares forward from starting position
-            if(bit_on_bitboard_hit_7_rank(source))
+            if(BIT_ON_BITBOARD_HIT_7_RANK(source))
             {
                 moves = SET_BIT_ON_BITBOARD(moves, square + 16);
             }
@@ -45,28 +45,28 @@ Bitboard generate_pawns_capture_moves_from_square(Side side, Square square)
     Bitboard source = SET_BIT_ON_BITBOARD(0x0ULL, square);
     Bitboard moves = 0x0ULL;
 
-    if(side == WHITE && !bit_on_bitboard_hit_8_rank(source))
+    if(side == WHITE && !BIT_ON_BITBOARD_HIT_8_RANK(source))
     {
         // Capture to the left
-        if(!bit_on_bitboard_hit_a_file(source))
+        if(!BIT_ON_BITBOARD_HIT_A_FILE(source))
         {
             moves = SET_BIT_ON_BITBOARD(moves, square - 9);
         }
         // Capture to the right
-        if(!bit_on_bitboard_hit_h_file(source))
+        if(!BIT_ON_BITBOARD_HIT_H_FILE(source))
         {
             moves = SET_BIT_ON_BITBOARD(moves, square - 7);
         }
     }
-    else if(side == BLACK && !bit_on_bitboard_hit_1_rank(source)) // BLACK
+    else if(side == BLACK && !BIT_ON_BITBOARD_HIT_1_RANK(source)) // BLACK
     {
         // Capture to the left
-        if(!bit_on_bitboard_hit_a_file(source))
+        if(!BIT_ON_BITBOARD_HIT_A_FILE(source))
         {
             moves = SET_BIT_ON_BITBOARD(moves, square + 7);
         }
         // Capture to the right
-        if(!bit_on_bitboard_hit_h_file(source))
+        if(!BIT_ON_BITBOARD_HIT_H_FILE(source))
         {
             moves = SET_BIT_ON_BITBOARD(moves, square + 9);
         }
@@ -99,57 +99,64 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
     Bitboard black_pawns;
     Bitboard attack, move;
     Bitboard en_passant_bitboard;
+    Bitboard black_occupency = BLACK_OCCUPENCY(board_state);
+    Bitboard white_occupency = WHITE_OCCUPENCY(board_state);
+    Bitboard all_occupency = black_occupency | white_occupency;
+    int diff_source_tag;
 
     if (board_state->turn == WHITE_TURN)
     {        
         white_pawns = board_state->white_pawns;
 
         while(white_pawns){
-            source_square = get_lsb_index(white_pawns);
+            source_square = GET_LSB_INDEX(white_pawns);
 
             // Pawn moves
             move = pre_calculated_pawn_moves[WHITE][source_square];
             while(move){
-                target_square = get_lsb_index(move);
+                target_square = GET_LSB_INDEX(move);
 
-                if((1ULL << target_square) & (BLACK_OCCUPENCY(board_state) | WHITE_OCCUPENCY(board_state))){
-                    move = clear_bit_on_bitboard(move, target_square);
+                if((1ULL << target_square) & all_occupency){
+                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                     continue;
                 } else {
                     if ((1ULL << target_square) & RANK_8)
                     {
-                        moves_list->moves[moves_list->current_index++] = create_move(
+                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
                             WHITE_PAWN, QUEEN_PROMOTION
                         );
 
-                        moves_list->moves[moves_list->current_index++] = create_move(
+                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
                             WHITE_PAWN, ROOK_PROMOTION
                         );
 
-                        moves_list->moves[moves_list->current_index++] = create_move(
+                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
                             WHITE_PAWN, BISHOP_PROMOTION
                         );
 
-                        moves_list->moves[moves_list->current_index++] = create_move(
+                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
                             WHITE_PAWN, KNIGHT_PROMOTION
                         );
-                    }else{
-                        if (abs(source_square - target_square) == 16 && ((1ULL << (target_square + 8)) & (BLACK_OCCUPENCY(board_state) | WHITE_OCCUPENCY(board_state))) == 0 ){
-                            moves_list->moves[moves_list->current_index++] = create_move(
+                    }
+                    else
+                    {
+                        diff_source_tag = abs(source_square - target_square);
+                        if (diff_source_tag == 16 && ((1ULL << (target_square + 8)) & all_occupency) == 0 ){
+                            moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                                 source_square,
                                 target_square,
                                 WHITE_PAWN, DOUBLE_PAWN_PUSH
                             );
-                        }else if (abs(source_square - target_square) != 16){
-                            moves_list->moves[moves_list->current_index++] = create_move(
+                        }else if (diff_source_tag != 16){
+                            moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                                 source_square,
                                 target_square,
                                 WHITE_PAWN, QUIET_MOVES
@@ -158,51 +165,51 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
                     }
                 }
 
-                move = clear_bit_on_bitboard(move, target_square);
+                move = CLEAR_BIT_ON_BITBOARD(move, target_square);
             }
 
             // Pawn attacks
             attack = pre_calculated_pawn_attacks[WHITE][source_square];
             while(attack){
-                target_square = get_lsb_index(attack);
+                target_square = GET_LSB_INDEX(attack);
 
-                if((1ULL << target_square) & BLACK_OCCUPENCY(board_state)){
+                if((1ULL << target_square) & black_occupency){
                     if ((1ULL << target_square) & RANK_8){
-                        moves_list->moves[moves_list->current_index++] = create_move(
+                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
                             WHITE_PAWN, QUEEN_PROMOTION_CAPTURE
                         );
 
-                        moves_list->moves[moves_list->current_index++] = create_move(
+                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
                             WHITE_PAWN, ROOK_PROMOTION_CAPTURE
                         );
 
-                        moves_list->moves[moves_list->current_index++] = create_move(
+                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
                             WHITE_PAWN, BISHOP_PROMOTION_CAPTURE
                         );
 
-                        moves_list->moves[moves_list->current_index++] = create_move(
+                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
                             WHITE_PAWN, KNIGHT_PROMOTION_CAPTURE
                         );
                     }else{
-                        moves_list->moves[moves_list->current_index++] = create_move(
+                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
                             WHITE_PAWN, CAPTURE);
                     }
                 }
 
-                attack = clear_bit_on_bitboard(attack, target_square);
+                attack = CLEAR_BIT_ON_BITBOARD(attack, target_square);
             }
 
-            white_pawns = clear_bit_on_bitboard(white_pawns, source_square);
+            white_pawns = CLEAR_BIT_ON_BITBOARD(white_pawns, source_square);
         }
 
         // En Passant capture
@@ -213,70 +220,71 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
 
             while (source_attack)
             {
-                Square pawn_square = get_lsb_index(source_attack);
-                moves_list->moves[moves_list->current_index++] = create_move(
+                Square pawn_square = GET_LSB_INDEX(source_attack);
+                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                     pawn_square,
                     en_passant_square,
                     WHITE_PAWN,
                     EN_PASSANT_CAPTURE
                 );
-                source_attack = clear_bit_on_bitboard(source_attack, pawn_square);
+                source_attack = CLEAR_BIT_ON_BITBOARD(source_attack, pawn_square);
             }
         }
     } else {
         black_pawns = board_state->black_pawns;
 
         while(black_pawns){
-            source_square = get_lsb_index(black_pawns);
+            source_square = GET_LSB_INDEX(black_pawns);
 
             // Pawn moves
             move = pre_calculated_pawn_moves[BLACK][source_square];
             while(move){
-                target_square = get_lsb_index(move);
+                target_square = GET_LSB_INDEX(move);
 
-                if((1ULL << target_square) & (WHITE_OCCUPENCY(board_state) | BLACK_OCCUPENCY(board_state))){
-                    move = clear_bit_on_bitboard(move, target_square);
+                if((1ULL << target_square) & all_occupency){
+                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                     continue;
                 } else {
                     if ((1ULL << target_square) & RANK_1)
                     {
-                        moves_list->moves[moves_list->current_index++] = create_move(
+                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
                             BLACK_PAWN, QUEEN_PROMOTION
                         );
 
-                        moves_list->moves[moves_list->current_index++] = create_move(
+                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
                             BLACK_PAWN, ROOK_PROMOTION
                         );
 
-                        moves_list->moves[moves_list->current_index++] = create_move(
+                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
                             BLACK_PAWN, BISHOP_PROMOTION
                         );
 
-                        moves_list->moves[moves_list->current_index++] = create_move(
+                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
                             BLACK_PAWN, KNIGHT_PROMOTION
                         );
                     }else{
+                        diff_source_tag = abs(source_square - target_square);
                         if (
-                            abs(source_square - target_square) == 16
+                            diff_source_tag == 16
                             &&
-                            ((1ULL << (target_square - 8)) & (BLACK_OCCUPENCY(board_state) | WHITE_OCCUPENCY(board_state))) == 0
+                            ((1ULL << (target_square - 8)) & all_occupency) == 0
                         )
                         {
-                            moves_list->moves[moves_list->current_index++] = create_move(
+                            moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                                 source_square,
                                 target_square,
                                 BLACK_PAWN, DOUBLE_PAWN_PUSH
                             );
-                        }else if (abs(source_square - target_square) != 16){
-                            moves_list->moves[moves_list->current_index++] = create_move(
+                        }else if (diff_source_tag != 16){
+                            moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                                 source_square,
                                 target_square,
                                 BLACK_PAWN, QUIET_MOVES
@@ -287,51 +295,51 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
                     
                 }
 
-                move = clear_bit_on_bitboard(move, target_square);
+                move = CLEAR_BIT_ON_BITBOARD(move, target_square);
             }
 
             // Pawn attacks
             attack = pre_calculated_pawn_attacks[BLACK][source_square];
             while(attack){
-                target_square = get_lsb_index(attack);
+                target_square = GET_LSB_INDEX(attack);
 
-                if((1ULL << target_square) & WHITE_OCCUPENCY(board_state)){
+                if((1ULL << target_square) & white_occupency){
                     if ((1ULL << target_square) & RANK_1){
-                        moves_list->moves[moves_list->current_index++] = create_move(
+                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
                             BLACK_PAWN, QUEEN_PROMOTION_CAPTURE
                         );
 
-                        moves_list->moves[moves_list->current_index++] = create_move(
+                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
                             BLACK_PAWN, ROOK_PROMOTION_CAPTURE
                         );
 
-                        moves_list->moves[moves_list->current_index++] = create_move(
+                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
                             BLACK_PAWN, BISHOP_PROMOTION_CAPTURE
                         );
 
-                        moves_list->moves[moves_list->current_index++] = create_move(
+                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
                             BLACK_PAWN, KNIGHT_PROMOTION_CAPTURE
                         );
                     }else{
-                        moves_list->moves[moves_list->current_index++] = create_move(
+                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
                             BLACK_PAWN, CAPTURE);
                     }
                 }
 
-                attack = clear_bit_on_bitboard(attack, target_square);
+                attack = CLEAR_BIT_ON_BITBOARD(attack, target_square);
             }
 
-            black_pawns = clear_bit_on_bitboard(black_pawns, source_square);
+            black_pawns = CLEAR_BIT_ON_BITBOARD(black_pawns, source_square);
         }
     
     
@@ -343,14 +351,14 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
 
             while (source_attack)
             {
-                Square pawn_square = get_lsb_index(source_attack);
-                moves_list->moves[moves_list->current_index++] = create_move(
+                Square pawn_square = GET_LSB_INDEX(source_attack);
+                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                     pawn_square,
                     en_passant_square,
                     BLACK_PAWN,
                     EN_PASSANT_CAPTURE
                 );
-                source_attack = clear_bit_on_bitboard(source_attack, pawn_square);
+                source_attack = CLEAR_BIT_ON_BITBOARD(source_attack, pawn_square);
             }
         }
     }
