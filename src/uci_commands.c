@@ -65,10 +65,23 @@ void handle_position_command(Game** game, const char* input)
     free(input_copy);
 }
 
-void handle_go_command(Game* game, char* response)
+void handle_go_command(Game* game, const char* input, char* response)
 {
     ScoredMove result;
     char move_uci[6];
+    int input_size = strlen(input);
+    char *input_copy = malloc(input_size + 1);
+    memcpy(input_copy, input, input_size + 1);
+
+    char* perf = strstr(input_copy, "perft ");
+    if (perf != NULL)
+    {
+        int depth = atoi(perf + 6);
+        U64 nodes = test_helper_generate_moves_from_position_at_depth(game, depth, depth);
+        snprintf(response, UCI_RESPONSE_MAX_LENGTH, "nodes %llu\n", nodes);
+        free(input_copy);
+        return;
+    }
 
     if (game->turn == WHITE_TURN)
     {
@@ -100,7 +113,7 @@ void handle_command(Game** game, const char* command, char* response)
         handle_position_command(game, command + 8);
     } else if (strncmp(command, "go", 2) == 0)
     {
-        handle_go_command(*game, response);
+        handle_go_command(*game, command, response);
     } else if(strncmp(command, "quit", 4) == 0)
     {
         handle_quit_command(response);

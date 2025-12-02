@@ -64,6 +64,9 @@ U64 test_helper_generate_moves_from_position_at_depth(Game* game, int depth, int
     MoveList* move_list = malloc(sizeof(MoveList));
     move_list->current_index = 0;
 
+    int init_time = get_time_ms();
+    printf("Depth %d:\n", depth);
+
     generate_all_pseudo_legal_moves_from_game_state(game, move_list);
 
     for (int i = 0; i < move_list->current_index; i++)
@@ -75,7 +78,7 @@ U64 test_helper_generate_moves_from_position_at_depth(Game* game, int depth, int
 
         if(!is_king_attacked(game_cp, game_cp->turn == WHITE_TURN ? WHITE : BLACK)){
             if(depth > 1){
-                new_node = test_helper_generate_moves_from_position_at_depth(game_cp, depth - 1, original_depth);
+                new_node = generate_moves_from_position_at_depth(game_cp, depth - 1);
                 result += new_node;
                 if(depth == original_depth){
                     printf("Move ");
@@ -97,6 +100,10 @@ U64 test_helper_generate_moves_from_position_at_depth(Game* game, int depth, int
     }
 
     free(move_list);
+
+    printf("Total nodes at depth %d: %llu\n", depth, result);
+    int end_time = get_time_ms() - init_time;
+    printf("End time: %d ms\n", end_time);
 
     return result;
 }
