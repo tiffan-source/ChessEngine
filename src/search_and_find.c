@@ -12,7 +12,7 @@ ScoredMove min_max_best_move_min(Game* game, int depth)
 
     if (depth == 0)
     {
-        scored_move = (ScoredMove){ .score = -material_evaluation(game) };
+        scored_move = (ScoredMove){ .score = material_evaluation(game) };
         return scored_move;
     }
     
