@@ -39,4 +39,6 @@ int is_square_attacked(Game* board_state, Square square, Side side);
  */
 int is_king_attacked(Game* board_state, Side side);
 
+int is_king_mate(Game* board_state);
+
 #endif // KING_MOVES_H

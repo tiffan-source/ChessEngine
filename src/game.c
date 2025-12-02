@@ -20,7 +20,7 @@ Game* create_game()
     game->white_king = 0x1000000000000000ULL;
 
     game->turn = WHITE_TURN;
-    game->castling_rights = WHITE_KING_SIDE_CASTLING | WHITE_QUEEN_SIDE_CASTLING | BLACK_KING_SIDE_CASTLING | BLACK_QUEEN_SIDE_CASTLING;
+    game->castling_rights = ALL_CASTLING_RIGHTS;
     game->en_passant_target_square = -1;
     return game;
 }

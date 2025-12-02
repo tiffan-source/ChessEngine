@@ -58,6 +58,7 @@ extern const char* move_type_to_string[14];
 Move create_move(Square from_square, Square to_square, PieceType piece_type, MoveType move_type);
 void print_move(Move move);
 void print_move_as_uci(Move move);
+void build_move_as_uci(Move move,char* result);
 
 void make_move(Game* game, Move move);
 

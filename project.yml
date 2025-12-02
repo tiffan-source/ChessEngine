@@ -15,7 +15,7 @@
   :use_mocks: TRUE
   :use_test_preprocessor: :none  # options are :none, :mocks, :tests, or :all
   :use_deep_preprocessor: :none  # options are :none, :mocks, :tests, or :all
-  :use_backtrace: :simple        # options are :none, :simple, or :gdb
+  :use_backtrace: :gdb        # options are :none, :simple, or :gdb
   :use_decorators: :auto         # decorate Ceedling's output text. options are :auto, :all, or :none
 
   # tweak the way ceedling handles automatic tasks
@@ -122,6 +122,8 @@
 :defines:
   :test:
     - TEST # Simple list option to add symbol 'TEST' to compilation of all files in all test executables
+    - UNITY_INCLUDE_DOUBLE
+    - UNITY_DOUBLE_PRECISION 0.001f
   :release: []
 
   # Enable to inject name of a test as a unique compilation symbol into its respective executable build. 

@@ -7,5 +7,7 @@
 #include <time.h>
 #include <math.h>
 #include <sys/time.h>
+#include <limits.h>
+#include <string.h>
 
 #endif

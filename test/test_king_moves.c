@@ -309,11 +309,6 @@ void test_only_black_queen_side_castling_due_to_fen_rights(void)
         create_move(E8, C8, BLACK_KING, QUEEN_CASTLE),
     };
 
-    printf("Expected\n");
-    print_move(expected[0]);
-    printf("Get\n");
-    print_move(result->moves[0]);
-
     TEST_ASSERT_EQUAL_INT_ARRAY(expected, result->moves, 1);
 
     free_game(game);

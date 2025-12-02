@@ -8,6 +8,7 @@
 #define WHITE_OCCUPENCY(game) (game->white_pawns | game->white_knights | game->white_bishops | game->white_rooks | game->white_queens | game->white_king)
 #define ALL_OCCUPENCY(game) (BLACK_OCCUPENCY(game) | WHITE_OCCUPENCY(game))
 #define REVOK_CASTLING_RIGHT(game, rights) (game->castling_rights &= ~(rights))
+#define ALL_CASTLING_RIGHTS (WHITE_KING_SIDE_CASTLING | WHITE_QUEEN_SIDE_CASTLING | BLACK_KING_SIDE_CASTLING | BLACK_QUEEN_SIDE_CASTLING)
 
 typedef enum TURN {
     BLACK_TURN,

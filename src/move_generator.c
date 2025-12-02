@@ -8,8 +8,15 @@ int get_time_ms()
     return time_value.tv_sec * 1000 + time_value.tv_usec / 1000;
 }
 
+void initialize_move_generation_databases()
+{
+    initialize_pre_calculated_bishop_moves_database();
+    initialize_pre_calculated_rook_moves_database();
+    initialize_pre_calculated_pawn_attacks_database();
+    initialize_pre_calculated_pawn_moves_database();
+}
 
-void generate_all_moves_from_game_state(Game* game, MoveList* move_list)
+void generate_all_pseudo_legal_moves_from_game_state(Game* game, MoveList* move_list)
 {
     generate_all_pawns_moves_from_game_state(game, move_list);
     generate_all_rooks_moves_from_game_state(game, move_list);
@@ -26,7 +33,7 @@ U64 generate_moves_from_position_at_depth(Game* game, int depth)
     MoveList* move_list = malloc(sizeof(MoveList));
     move_list->current_index = 0;
 
-    generate_all_moves_from_game_state(game, move_list);
+    generate_all_pseudo_legal_moves_from_game_state(game, move_list);
 
     for (int i = 0; i < move_list->current_index; i++)
     {
@@ -46,8 +53,6 @@ U64 generate_moves_from_position_at_depth(Game* game, int depth)
         free(game_cp);
     }
 
-    // result = move_list->current_index;
-
     free(move_list);
     
     return result;
@@ -59,7 +64,7 @@ U64 test_helper_generate_moves_from_position_at_depth(Game* game, int depth, int
     MoveList* move_list = malloc(sizeof(MoveList));
     move_list->current_index = 0;
 
-    generate_all_moves_from_game_state(game, move_list);
+    generate_all_pseudo_legal_moves_from_game_state(game, move_list);
 
     for (int i = 0; i < move_list->current_index; i++)
     {
@@ -73,7 +78,7 @@ U64 test_helper_generate_moves_from_position_at_depth(Game* game, int depth, int
                 new_node = test_helper_generate_moves_from_position_at_depth(game_cp, depth - 1, original_depth);
                 result += new_node;
                 if(depth == original_depth){
-                    printf("Move %s ", move_type_to_string[GET_MOVE_TYPE(move_list->moves[i])]);
+                    printf("Move ");
                     print_move_as_uci(move_list->moves[i]);
                     printf(": %llu\n", new_node);
                 }
@@ -81,7 +86,7 @@ U64 test_helper_generate_moves_from_position_at_depth(Game* game, int depth, int
                 result++;
                 if (original_depth == 1)
                 {
-                    printf("Move %s ", move_type_to_string[GET_MOVE_TYPE(move_list->moves[i])]);
+                    printf("Move ");
                     print_move_as_uci(move_list->moves[i]);
                     printf(": 1\n");
                 }
@@ -94,4 +99,53 @@ U64 test_helper_generate_moves_from_position_at_depth(Game* game, int depth, int
     free(move_list);
 
     return result;
+}
+
+Move retrieve_uci_move_from_move_list(const char* uci_move_str, MoveList* move_list)
+{
+    for (int i = 0; i < move_list->current_index; i++)
+    {
+        Square from_square = GET_SOURCE_SQUARE(move_list->moves[i]);
+        Square to_square = GET_DESTINATION_SQUARE(move_list->moves[i]);
+        char promotion_char = '\0';
+        switch (GET_MOVE_TYPE(move_list->moves[i]))
+        {
+            case QUEEN_PROMOTION:
+            case QUEEN_PROMOTION_CAPTURE:
+                promotion_char = 'q';
+                break;
+
+            case ROOK_PROMOTION:
+            case ROOK_PROMOTION_CAPTURE:
+                promotion_char = 'r';
+                break;
+
+            case BISHOP_PROMOTION:
+            case BISHOP_PROMOTION_CAPTURE:
+                promotion_char = 'b';
+                break;
+
+            case KNIGHT_PROMOTION:
+            case KNIGHT_PROMOTION_CAPTURE:
+                promotion_char = 'n';
+                break;
+
+            default:
+                break;
+        }
+
+        char generated_uci_str[6];
+        snprintf(generated_uci_str, sizeof(generated_uci_str), "%s%s%c",
+                 square_to_string[from_square],
+                 square_to_string[to_square],
+                 promotion_char);
+
+
+        if (strcmp(uci_move_str, generated_uci_str) == 0)
+        {
+            return move_list->moves[i];
+        }
+    }
+
+    return 0; // Return 0 if no matching move is found
 }

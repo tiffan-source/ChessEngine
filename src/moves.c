@@ -205,8 +205,74 @@ void print_move_as_uci(Move move)
 {
     Square from_square = GET_SOURCE_SQUARE(move);
     Square to_square = GET_DESTINATION_SQUARE(move);
+    char promotion_char = '\0';
 
     printf("%s%s", square_to_string[from_square], square_to_string[to_square]);
+
+    switch (GET_MOVE_TYPE(move))
+    {
+        case KNIGHT_PROMOTION:
+        case KNIGHT_PROMOTION_CAPTURE:
+            promotion_char = 'n';
+            break;
+        case BISHOP_PROMOTION:
+        case BISHOP_PROMOTION_CAPTURE:
+            promotion_char = 'b';
+            break;
+        case ROOK_PROMOTION:
+        case ROOK_PROMOTION_CAPTURE:
+            promotion_char = 'r';
+            break;
+        case QUEEN_PROMOTION:
+        case QUEEN_PROMOTION_CAPTURE:
+            promotion_char = 'q';
+            break;
+        default:
+            /* code */
+            break;
+    }
+    if (promotion_char != '\0')
+    {
+        printf("%c", promotion_char);
+    }
+}
+
+void build_move_as_uci(Move move,char* result)
+{
+    Square from_square = GET_SOURCE_SQUARE(move);
+    Square to_square = GET_DESTINATION_SQUARE(move);
+    char promotion_char = '\0';
+
+    // printf("%s%s", square_to_string[from_square], square_to_string[to_square]);
+
+    switch (GET_MOVE_TYPE(move))
+    {
+        case KNIGHT_PROMOTION:
+        case KNIGHT_PROMOTION_CAPTURE:
+            promotion_char = 'n';
+            break;
+        case BISHOP_PROMOTION:
+        case BISHOP_PROMOTION_CAPTURE:
+            promotion_char = 'b';
+            break;
+        case ROOK_PROMOTION:
+        case ROOK_PROMOTION_CAPTURE:
+            promotion_char = 'r';
+            break;
+        case QUEEN_PROMOTION:
+        case QUEEN_PROMOTION_CAPTURE:
+            promotion_char = 'q';
+            break;
+        default:
+            /* code */
+            break;
+    }
+    if (promotion_char != '\0')
+    {
+        // printf("%c", promotion_char);
+    }
+
+    snprintf(result, 6, "%s%s%c", square_to_string[from_square], square_to_string[to_square], promotion_char);
 }
 
 void promote_to_piece(Game* game, Move move, PieceType new_piece_type)
