@@ -61,8 +61,8 @@ typedef enum Square {
 extern const char* square_to_string[64];
 
 typedef enum Side {
-    BLACK,
-    WHITE
+    BLACK = 0,
+    WHITE = 1
 }Side;
 
 char* string_bitboard_on_chess_board(Bitboard position);

@@ -353,7 +353,7 @@ void initialize_pre_calculated_rook_moves_database()
 Bitboard retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(Square square, Bitboard blocker)
 {
     Bitboard know_blocker_configuration = blocker & pre_calculated_rook_masks[square];
-    int index_by_magic = hash_function_for_indexing_U64_configuration(know_blocker_configuration
+    int index_by_magic = HASH_FUNCTION_FOR_INDEXING_U64_CONFIGURATION(know_blocker_configuration
         , rook_magic_numbers[square], number_of_bit_in_rook_mask_for_square[square]);
     return pre_calculated_rook_moves_database[square][index_by_magic];
 }
