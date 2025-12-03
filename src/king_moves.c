@@ -117,7 +117,7 @@ void generate_all_king_quiet_and_capture_moves_from_game_state(Game* board_state
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                if((1ULL << target_square) & (WHITE_OCCUPENCY(board_state))){
+                if((pre_calculated_bit_shifts[target_square]) & (WHITE_OCCUPENCY(board_state))){
                     move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                     continue;
                 } else {
@@ -125,7 +125,7 @@ void generate_all_king_quiet_and_capture_moves_from_game_state(Game* board_state
                         source_square,
                         target_square,
                         WHITE_KING,
-                        (1ULL << target_square) & (BLACK_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
+                        (pre_calculated_bit_shifts[target_square]) & (BLACK_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
                     );
                 }
 
@@ -142,7 +142,7 @@ void generate_all_king_quiet_and_capture_moves_from_game_state(Game* board_state
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                if((1ULL << target_square) & (BLACK_OCCUPENCY(board_state))){
+                if((pre_calculated_bit_shifts[target_square]) & (BLACK_OCCUPENCY(board_state))){
                     move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                     continue;
                 } else {
@@ -150,7 +150,7 @@ void generate_all_king_quiet_and_capture_moves_from_game_state(Game* board_state
                         source_square,
                         target_square,
                         BLACK_KING,
-                        (1ULL << target_square) & (WHITE_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES    
+                        (pre_calculated_bit_shifts[target_square]) & (WHITE_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES    
                     );
                 }
 

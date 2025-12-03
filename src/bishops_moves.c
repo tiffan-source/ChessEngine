@@ -270,25 +270,25 @@ Bitboard generate_bishop_moves_for_giving_blocker_configuration(Square square, B
     // Up-right diagonal
     for (r = rank + 1, f = file + 1; r < 8 && f < 8; r++, f++) {
         moves = SET_BIT_ON_BITBOARD(moves, r * 8 + f);
-        if (blocker & (1ULL << (r * 8 + f))) break;
+        if (blocker & (pre_calculated_bit_shifts[r * 8 + f])) break;
     }
 
     // Down-left diagonal
     for (r = rank - 1, f = file - 1; r >= 0 && f >= 0; r--, f--) {
         moves = SET_BIT_ON_BITBOARD(moves, r * 8 + f);
-        if (blocker & (1ULL << (r * 8 + f))) break;
+        if (blocker & (pre_calculated_bit_shifts[r * 8 + f])) break;
     }
 
     // Up-left diagonal
     for (r = rank + 1, f = file - 1; r < 8 && f >= 0; r++, f--) {
         moves = SET_BIT_ON_BITBOARD(moves, r * 8 + f);
-        if (blocker & (1ULL << (r * 8 + f))) break;
+        if (blocker & (pre_calculated_bit_shifts[r * 8 + f])) break;
     }
 
     // Down-right diagonal
     for (r = rank - 1, f = file + 1; r >= 0 && f < 8; r--, f++) {
         moves = SET_BIT_ON_BITBOARD(moves, r * 8 + f);
-        if (blocker & (1ULL << (r * 8 + f))) break;
+        if (blocker & (pre_calculated_bit_shifts[r * 8 + f])) break;
     }
 
     return moves;
@@ -338,7 +338,7 @@ void generate_all_bishop_moves_from_game_state(Game* board_state, MoveList* move
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                if((1ULL << target_square) & (WHITE_OCCUPENCY(board_state))){
+                if((pre_calculated_bit_shifts[target_square]) & (WHITE_OCCUPENCY(board_state))){
                     move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                     continue;
                 } else {
@@ -346,7 +346,7 @@ void generate_all_bishop_moves_from_game_state(Game* board_state, MoveList* move
                         source_square,
                         target_square,
                         WHITE_BISHOP,
-                        (1ULL << target_square) & (BLACK_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
+                        (pre_calculated_bit_shifts[target_square]) & (BLACK_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
                     );
                     move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                 }
@@ -366,7 +366,7 @@ void generate_all_bishop_moves_from_game_state(Game* board_state, MoveList* move
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                if((1ULL << target_square) & (BLACK_OCCUPENCY(board_state))){
+                if((pre_calculated_bit_shifts[target_square]) & (BLACK_OCCUPENCY(board_state))){
                     move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                     continue;
                 } else {
@@ -374,7 +374,7 @@ void generate_all_bishop_moves_from_game_state(Game* board_state, MoveList* move
                         source_square,
                         target_square,
                         BLACK_BISHOP,
-                        (1ULL << target_square) & (WHITE_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
+                        (pre_calculated_bit_shifts[target_square]) & (WHITE_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
                     );
                     move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                 }

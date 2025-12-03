@@ -136,7 +136,7 @@ void generate_all_knight_moves_from_game_state(Game* board_state, MoveList* move
         while (temp_moves)
         {
             to_square = (Square)GET_LSB_INDEX(temp_moves);
-            if (opponent_pieces & (1ULL << to_square))
+            if (opponent_pieces & pre_calculated_bit_shifts[to_square])
             {
                 moves_list->moves[moves_list->current_index++] = CREATE_MOVE(from_square, to_square, (side == WHITE) ? WHITE_KNIGHT : BLACK_KNIGHT, CAPTURE);
             }

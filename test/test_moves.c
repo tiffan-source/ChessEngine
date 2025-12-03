@@ -5,6 +5,7 @@
 #include "moves.h"
 #include "pieces.h"
 #include "board.h"
+#include "binary_tools.h"
 
 void setUp(void)
 {
@@ -293,7 +294,7 @@ void test_make_move_should_make_white_pawn_double_push(void)
     game.turn = WHITE;
 
     Move move = CREATE_MOVE(E2, E4, WHITE_PAWN, DOUBLE_PAWN_PUSH);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << E2)); // Pawn should no longer be on E2
     TEST_ASSERT_EQUAL(1ULL << E4, game.white_pawns & (1ULL << E4)); // Pawn should be on E4
@@ -308,7 +309,7 @@ void test_make_move_should_make_black_pawn_double_push(void)
     game.turn = BLACK;
 
     Move move = CREATE_MOVE(E7, E5, BLACK_PAWN, DOUBLE_PAWN_PUSH);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << E7)); // Pawn should no longer be on E7
     TEST_ASSERT_EQUAL(1ULL << E5, game.black_pawns & (1ULL << E5)); // Pawn should be on E5
@@ -323,7 +324,7 @@ void test_make_move_should_make_white_pawn_quiet_move(void)
     game.turn = WHITE;
 
     Move move = CREATE_MOVE(E4, E5, WHITE_PAWN, QUIET_MOVES);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << E4)); // Pawn should no longer be on E4
     TEST_ASSERT_EQUAL(1ULL << E5, game.white_pawns & (1ULL << E5)); // Pawn should be on E5
@@ -338,7 +339,7 @@ void test_make_move_should_make_black_pawn_quiet_move(void)
     game.turn = BLACK;
 
     Move move = CREATE_MOVE(E5, E4, BLACK_PAWN, QUIET_MOVES);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << E5)); // Pawn should no longer be on E5
     TEST_ASSERT_EQUAL(1ULL << E4, game.black_pawns & (1ULL << E4)); // Pawn should be on E4
@@ -354,7 +355,7 @@ void test_make_move_should_make_white_pawn_capture(void)
     game.turn = WHITE;
 
     Move move = CREATE_MOVE(E4, D5, WHITE_PAWN, CAPTURE);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << E4)); // White pawn should no longer be on E4
     TEST_ASSERT_EQUAL(1ULL << D5, game.white_pawns & (1ULL << D5)); // White pawn should be on D5
@@ -372,7 +373,7 @@ void test_make_move_should_make_white_pawn_capture_on_bishop(void)
     game.turn = WHITE;
 
     Move move = CREATE_MOVE(E4, D5, WHITE_PAWN, CAPTURE);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << E4)); // White pawn should no longer be on E4
     TEST_ASSERT_EQUAL(1ULL << D5, game.white_pawns & (1ULL << D5)); // White pawn should be on D5
@@ -389,7 +390,7 @@ void test_make_move_should_make_black_pawn_capture(void)
     game.turn = BLACK;
 
     Move move = CREATE_MOVE(E5, D4, BLACK_PAWN, CAPTURE);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << E5)); // Le pion noir ne doit plus être sur E5
     TEST_ASSERT_EQUAL(1ULL << D4, game.black_pawns & (1ULL << D4)); // Le pion noir doit être sur D4
@@ -406,7 +407,7 @@ void test_make_move_should_make_black_pawn_capture_on_bishop(void)
     game.turn = BLACK;
 
     Move move = CREATE_MOVE(E5, D4, BLACK_PAWN, CAPTURE);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << E5)); // Le pion noir ne doit plus être sur E5
     TEST_ASSERT_EQUAL(1ULL << D4, game.black_pawns & (1ULL << D4)); // Le pion noir doit être sur D4
@@ -424,7 +425,7 @@ void test_make_move_should_make_white_pawn_en_passant_capture(void)
     game.en_passant_target_square = D6; // La cible En Passant est D6 (case vide après le déplacement double)
 
     Move move = CREATE_MOVE(E5, D6, WHITE_PAWN, EN_PASSANT_CAPTURE);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << E5)); // Le pion blanc ne doit plus être sur E5
     TEST_ASSERT_EQUAL(1ULL << D6, game.white_pawns & (1ULL << D6)); // Le pion blanc doit être sur D6
@@ -442,7 +443,7 @@ void test_make_move_should_make_black_pawn_en_passant_capture(void)
     game.en_passant_target_square = D3; // La cible En Passant est D3
 
     Move move = CREATE_MOVE(E4, D3, BLACK_PAWN, EN_PASSANT_CAPTURE);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << E4)); // Le pion noir ne doit plus être sur E4
     TEST_ASSERT_EQUAL(1ULL << D3, game.black_pawns & (1ULL << D3)); // Le pion noir doit être sur D3
@@ -458,7 +459,7 @@ void test_make_move_should_make_white_pawn_promotion_to_queen_quiet_move(void)
     game.turn = WHITE;
 
     Move move = CREATE_MOVE(E7, E8, WHITE_PAWN, QUEEN_PROMOTION);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << E7)); // Le pion ne doit plus être sur E7
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << E8)); // Le pion ne doit pas être sur E8
@@ -475,7 +476,7 @@ void test_make_move_should_make_black_pawn_promotion_to_knight_capture(void)
     game.turn = BLACK;
 
     Move move = CREATE_MOVE(E2, D1, BLACK_PAWN, KNIGHT_PROMOTION_CAPTURE);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << E2)); // Le pion ne doit plus être sur E2
     TEST_ASSERT_EQUAL(0ULL, game.white_rooks & (1ULL << D1)); // La Tour blanche doit être capturée
@@ -492,7 +493,7 @@ void test_make_move_should_make_white_pawn_promotion_to_rook_quiet_move(void)
     game.turn = WHITE;
 
     Move move = CREATE_MOVE(H7, H8, WHITE_PAWN, ROOK_PROMOTION);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << H7));
     TEST_ASSERT_EQUAL(1ULL << H8, game.white_rooks & (1ULL << H8)); // Vérifie la Tour
@@ -507,7 +508,7 @@ void test_make_move_should_make_white_pawn_promotion_to_bishop_quiet_move(void)
     game.turn = WHITE;
 
     Move move = CREATE_MOVE(A7, A8, WHITE_PAWN, BISHOP_PROMOTION);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << A7));
     TEST_ASSERT_EQUAL(1ULL << A8, game.white_bishops & (1ULL << A8)); // Vérifie le Fou
@@ -522,7 +523,7 @@ void test_make_move_should_make_white_pawn_promotion_to_knight_quiet_move(void)
     game.turn = WHITE;
 
     Move move = CREATE_MOVE(B7, B8, WHITE_PAWN, KNIGHT_PROMOTION);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << B7));
     TEST_ASSERT_EQUAL(1ULL << B8, game.white_knights & (1ULL << B8)); // Vérifie le Cavalier
@@ -537,7 +538,7 @@ void test_make_move_should_make_white_pawn_promotion_to_queen_capture(void)
     game.turn = WHITE;
 
     Move move = CREATE_MOVE(G7, H8, WHITE_PAWN, QUEEN_PROMOTION_CAPTURE);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << G7));
     TEST_ASSERT_EQUAL(0ULL, game.black_rooks & (1ULL << H8)); // La pièce noire est capturée
@@ -554,7 +555,7 @@ void test_make_move_should_make_white_pawn_promotion_to_rook_capture(void)
     game.turn = WHITE;
 
     Move move = CREATE_MOVE(B7, A8, WHITE_PAWN, ROOK_PROMOTION_CAPTURE);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << B7));
     TEST_ASSERT_EQUAL(0ULL, game.black_knights & (1ULL << A8)); // Le Cavalier est capturé
@@ -569,7 +570,7 @@ void test_make_move_should_make_black_pawn_promotion_to_queen_quiet_move(void)
     game.turn = BLACK;
 
     Move move = CREATE_MOVE(E2, E1, BLACK_PAWN, QUEEN_PROMOTION);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << E2));
     TEST_ASSERT_EQUAL(1ULL << E1, game.black_queens & (1ULL << E1)); // Vérifie la Dame noire
@@ -584,7 +585,7 @@ void test_make_move_should_make_black_pawn_promotion_to_knight_quiet_move(void)
     game.turn = BLACK;
 
     Move move = CREATE_MOVE(G2, G1, BLACK_PAWN, KNIGHT_PROMOTION);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << G2));
     TEST_ASSERT_EQUAL(1ULL << G1, game.black_knights & (1ULL << G1)); // Vérifie le Cavalier noir
@@ -599,7 +600,7 @@ void test_make_move_should_make_black_pawn_promotion_to_rook_capture(void)
     game.turn = BLACK;
 
     Move move = CREATE_MOVE(D2, E1, BLACK_PAWN, ROOK_PROMOTION_CAPTURE);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << D2));
     TEST_ASSERT_EQUAL(0ULL, game.white_bishops & (1ULL << E1)); // Le Fou est capturé
@@ -616,7 +617,7 @@ void test_make_move_should_make_black_pawn_promotion_to_bishop_capture(void)
     game.turn = BLACK;
 
     Move move = CREATE_MOVE(B2, A1, BLACK_PAWN, BISHOP_PROMOTION_CAPTURE);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << B2));
     TEST_ASSERT_EQUAL(0ULL, game.white_queens & (1ULL << A1)); // La Dame est capturée
@@ -633,7 +634,7 @@ void test_make_move_should_make_white_king_castle_king_side(void)
     game.castling_rights = 15; // Supposons une variable pour les droits de roque
 
     Move move = CREATE_MOVE(E1, G1, WHITE_KING, KING_CASTLE);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     // Vérification du déplacement du Roi : E1 -> G1
     TEST_ASSERT_EQUAL(0ULL, game.white_king & (1ULL << E1));
@@ -661,7 +662,7 @@ void test_make_move_should_make_white_king_castle_queen_side(void)
     game.castling_rights = 15;
 
     Move move = CREATE_MOVE(E1, C1, WHITE_KING, QUEEN_CASTLE);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     // Vérification du déplacement du Roi : E1 -> C1
     TEST_ASSERT_EQUAL(0ULL, game.white_king & (1ULL << E1));
@@ -687,7 +688,7 @@ void test_make_move_should_make_black_king_castle_king_side(void)
     game.castling_rights = 15;
 
     Move move = CREATE_MOVE(E8, G8, BLACK_KING, KING_CASTLE);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     // Vérification du déplacement du Roi : E8 -> G8
     TEST_ASSERT_EQUAL(0ULL, game.black_king & (1ULL << E8));
@@ -713,7 +714,7 @@ void test_make_move_should_make_black_king_castle_queen_side(void)
     game.castling_rights = 15;
 
     Move move = CREATE_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     // Vérification du déplacement du Roi : E8 -> C8
     TEST_ASSERT_EQUAL(0ULL, game.black_king & (1ULL << E8));
@@ -738,7 +739,7 @@ void test_make_move_should_revoke_white_castling_rights_when_white_king_moves(vo
     game.castling_rights = 15; // Tous les droits sont actifs
 
     Move move = CREATE_MOVE(E1, D1, WHITE_KING, QUIET_MOVES); // Mouvement tranquille du Roi
-    make_move(&game, move);
+    game = make_move(game, move);
 
     // Les droits de roque blancs doivent être révoqués
     TEST_ASSERT_FALSE(game.castling_rights & WHITE_KING_SIDE_CASTLING); 
@@ -759,7 +760,7 @@ void test_make_move_should_revoke_black_castling_rights_when_black_king_moves(vo
     game.castling_rights = 15;
 
     Move move = CREATE_MOVE(E8, D8, BLACK_KING, QUIET_MOVES); // Mouvement tranquille du Roi
-    make_move(&game, move);
+    game = make_move(game, move);
 
     // Les droits de roque noirs doivent être révoqués
     TEST_ASSERT_FALSE(game.castling_rights & BLACK_KING_SIDE_CASTLING);
@@ -780,7 +781,7 @@ void test_make_move_should_revoke_white_kingside_castling_when_h1_rook_moves(voi
     game.castling_rights = 15;
 
     Move move = CREATE_MOVE(H1, H2, WHITE_ROOK, QUIET_MOVES);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     // Droit K-side Blanc révoqué
     TEST_ASSERT_FALSE(game.castling_rights & WHITE_KING_SIDE_CASTLING); 
@@ -799,7 +800,7 @@ void test_make_move_should_revoke_white_queenside_castling_when_a1_rook_moves(vo
     game.castling_rights = 15;
 
     Move move = CREATE_MOVE(A1, A2, WHITE_ROOK, QUIET_MOVES);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     // Droit Q-side Blanc révoqué
     TEST_ASSERT_FALSE(game.castling_rights & WHITE_QUEEN_SIDE_CASTLING);
@@ -818,7 +819,7 @@ void test_make_move_should_revoke_black_kingside_castling_when_h8_rook_moves(voi
     game.castling_rights = 15;
 
     Move move = CREATE_MOVE(H8, H7, BLACK_ROOK, QUIET_MOVES);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     // Droit K-side Noir révoqué
     TEST_ASSERT_FALSE(game.castling_rights & BLACK_KING_SIDE_CASTLING);
@@ -837,7 +838,7 @@ void test_make_move_should_revoke_black_queenside_castling_when_a8_rook_moves(vo
     game.castling_rights = 15;
 
     Move move = CREATE_MOVE(A8, A7, BLACK_ROOK, QUIET_MOVES);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     // Droit Q-side Noir révoqué
     TEST_ASSERT_FALSE(game.castling_rights & BLACK_QUEEN_SIDE_CASTLING);
@@ -857,7 +858,7 @@ void test_make_move_should_revoke_white_kingside_castling_when_h1_rook_is_captur
     game.castling_rights = 15;
 
     Move move = CREATE_MOVE(G2, H1, BLACK_PAWN, CAPTURE);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     // Droit K-side Blanc révoqué
     TEST_ASSERT_FALSE(game.castling_rights & WHITE_KING_SIDE_CASTLING); 
@@ -877,7 +878,7 @@ void test_make_move_should_revoke_white_queenside_castling_when_a1_rook_is_captu
     game.castling_rights = 15;
 
     Move move = CREATE_MOVE(B3, A1, BLACK_KNIGHT, CAPTURE); // Attention: Le type de pièce dans la Move est l'ATTAQUANT
-    make_move(&game, move);
+    game = make_move(game, move);
 
     // Droit Q-side Blanc révoqué
     TEST_ASSERT_FALSE(game.castling_rights & WHITE_QUEEN_SIDE_CASTLING); 
@@ -897,7 +898,7 @@ void test_make_move_should_revoke_black_kingside_castling_when_h8_rook_is_captur
     game.castling_rights = 15;
 
     Move move = CREATE_MOVE(F6, H8, WHITE_BISHOP, CAPTURE);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     // Droit K-side Noir révoqué
     TEST_ASSERT_FALSE(game.castling_rights & BLACK_KING_SIDE_CASTLING);
@@ -917,7 +918,7 @@ void test_make_move_should_revoke_black_queenside_castling_when_a8_rook_is_captu
     game.castling_rights = 15;
 
     Move move = CREATE_MOVE(A4, A8, WHITE_ROOK, CAPTURE);
-    make_move(&game, move);
+    game = make_move(game, move);
 
     // Droit Q-side Noir révoqué
     TEST_ASSERT_FALSE(game.castling_rights & BLACK_QUEEN_SIDE_CASTLING);

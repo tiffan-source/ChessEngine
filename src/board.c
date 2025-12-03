@@ -28,7 +28,7 @@ char* string_bitboard_on_chess_board(Bitboard position)
         for (int j = 1; j <= 8; j++)
         {
             index = (i * 8 + (j - 1));
-            bit = (position & (1ULL << index)) ? 1 : 0;
+            bit = (position & pre_calculated_bit_shifts[index]) ? 1 : 0;
 
             sprintf(result + (i * 18 + j * 2), "%d%c", bit, (j == 8) ? '\n' : ' ');
         }

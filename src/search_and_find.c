@@ -22,20 +22,18 @@ ScoredMove min_max_best_move_min(Game* game, int depth)
     
     for (int i = 0; i < moves_list.current_index; i++)
     {
-        Game* new_game_state = malloc(sizeof(Game));
-        *new_game_state = *game;
-        make_move(new_game_state, moves_list.moves[i]);
 
-        if(!is_king_attacked(new_game_state, new_game_state->turn == WHITE_TURN ? WHITE : BLACK)){
+        Game new_game_state = make_move(*game, moves_list.moves[i]);
+
+        if(!is_king_attacked(&new_game_state, new_game_state.turn == WHITE_TURN ? WHITE : BLACK)){
             move_found = 1;
-            scored_move = min_max_best_move_max(new_game_state, depth - 1);
+            scored_move = min_max_best_move_max(&new_game_state, depth - 1);
             if (scored_move.score < min)
             {
                 min = scored_move.score;
                 min_move = moves_list.moves[i];
             }
         }
-        free_game(new_game_state);
     }
 
     if (!move_found)
@@ -76,20 +74,17 @@ ScoredMove min_max_best_move_max(Game* game, int depth)
 
     for (int i = 0; i < moves_list.current_index; i++)
     {
-        Game* new_game_state = malloc(sizeof(Game));
-        *new_game_state = *game;
-        make_move(new_game_state, moves_list.moves[i]);
+        Game new_game_state = make_move(*game, moves_list.moves[i]);
 
-        if(!is_king_attacked(new_game_state, new_game_state->turn == WHITE_TURN ? WHITE : BLACK)){
+        if(!is_king_attacked(&new_game_state, new_game_state.turn == WHITE_TURN ? WHITE : BLACK)){
             move_found = 1;
-            scored_move = min_max_best_move_min(new_game_state, depth - 1);
+            scored_move = min_max_best_move_min(&new_game_state, depth - 1);
             if (scored_move.score > max)
             {
                 max = scored_move.score;
                 max_move= moves_list.moves[i];
             }
         }
-        free_game(new_game_state);
     }
 
     if (!move_found)

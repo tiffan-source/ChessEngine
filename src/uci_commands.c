@@ -59,7 +59,7 @@ void handle_position_command(Game** game, const char* input)
             printf("Invalid move: %s\n", token_moves);
             continue;
         }
-        make_move(*game, move);
+        **game = make_move(**game, move);
     }
 
     free(input_copy);

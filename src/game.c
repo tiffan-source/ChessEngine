@@ -199,29 +199,29 @@ void print_representation_of_chess_game(Game* game)
         for (int j = 1; j <= 8; j++)
         {
             index = (i * 8 + (j - 1));
-            if (game->black_pawns & (1ULL << index))
+            if (game->black_pawns & pre_calculated_bit_shifts[index])
                 printf("♟%c", (j == 8) ? '\n' : ' ');
-            else if (game->black_rooks & (1ULL << index))
+            else if (game->black_rooks & pre_calculated_bit_shifts[index])
                 printf("♜%c", (j == 8) ? '\n' : ' ');
-            else if (game->black_knights & (1ULL << index))
+            else if (game->black_knights & pre_calculated_bit_shifts[index])
                 printf("♞%c", (j == 8) ? '\n' : ' ');
-            else if (game->black_bishops & (1ULL << index))
+            else if (game->black_bishops & pre_calculated_bit_shifts[index])
                 printf("♝%c", (j == 8) ? '\n' : ' ');
-            else if (game->black_queens & (1ULL << index))
+            else if (game->black_queens & pre_calculated_bit_shifts[index])
                 printf("♛%c", (j == 8) ? '\n' : ' ');
-            else if (game->black_king & (1ULL << index))
+            else if (game->black_king & pre_calculated_bit_shifts[index])
                 printf("♚%c", (j == 8) ? '\n' : ' ');
-            else if (game->white_pawns & (1ULL << index))
+            else if (game->white_pawns & pre_calculated_bit_shifts[index])
                 printf("♙%c", (j == 8) ? '\n' : ' ');
-            else if (game->white_rooks & (1ULL << index))
+            else if (game->white_rooks & pre_calculated_bit_shifts[index])
                 printf("♖%c", (j == 8) ? '\n' : ' ');
-            else if (game->white_knights & (1ULL << index))
+            else if (game->white_knights & pre_calculated_bit_shifts[index])
                 printf("♘%c", (j == 8) ? '\n' : ' ');
-            else if (game->white_bishops & (1ULL << index))
+            else if (game->white_bishops & pre_calculated_bit_shifts[index])
                 printf("♗%c", (j == 8) ? '\n' : ' ');
-            else if (game->white_queens & (1ULL << index))
+            else if (game->white_queens & pre_calculated_bit_shifts[index])
                 printf("♕%c", (j == 8) ? '\n' : ' ');
-            else if (game->white_king & (1ULL << index))
+            else if (game->white_king & pre_calculated_bit_shifts[index])
                 printf("♔%c", (j == 8) ? '\n' : ' ');
             else
                 printf(".%c", (j == 8) ? '\n' : ' ');

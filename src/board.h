@@ -16,10 +16,10 @@
 
 #define CHESS_BOARDER 0xFF818181818181FFULL
 
-#define SET_BIT_ON_BITBOARD(bitboard, square) ((bitboard) | (1ULL << (square)))
+#define SET_BIT_ON_BITBOARD(bitboard, square) ((bitboard) | (pre_calculated_bit_shifts[square]))
 
 #define CLEAR_BIT_ON_BITBOARD(bitboard, square) \
-    ((bitboard) & ~(1ULL << (square)))
+    ((bitboard) & ~(pre_calculated_bit_shifts[square]))
 
 #define BIT_ON_BITBOARD_HIT_8_RANK(bitboard) \
     (((bitboard) & RANK_8) ? 1 : 0)

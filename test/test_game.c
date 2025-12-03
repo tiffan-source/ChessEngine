@@ -5,6 +5,7 @@
 
 #include "game.h"
 #include "board.h"
+#include "binary_tools.h"
 
 void setUp(void)
 {

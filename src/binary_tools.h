@@ -17,6 +17,9 @@
 
 typedef unsigned long long int U64;
 
+extern const U64 pre_calculated_bit_shifts[64];
+
 char* string_representation_of_U64(U64 value);
 U64 random_U64();
+
 #endif // BINARY_TOOLS_H

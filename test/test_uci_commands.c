@@ -84,8 +84,8 @@ void test_handle_position_startpos_moves_e2e4_e7e5_command_should_initialize_gam
 
     handle_command(&test_game, "position startpos moves e2e4 e7e5\n", response);
 
-    make_move(expected_game, CREATE_MOVE(E2, E4, WHITE_PAWN, DOUBLE_PAWN_PUSH));
-    make_move(expected_game, CREATE_MOVE(E7, E5, BLACK_PAWN, DOUBLE_PAWN_PUSH));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(E2, E4, WHITE_PAWN, DOUBLE_PAWN_PUSH));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(E7, E5, BLACK_PAWN, DOUBLE_PAWN_PUSH));
 
     TEST_ASSERT_NOT_NULL(test_game);
     TEST_ASSERT_TRUE(are_games_equal(test_game, expected_game));
@@ -100,8 +100,8 @@ void test_handle_position_startpos_moves_a2a4_e7e5_command_should_initialize_gam
 
     handle_command(&test_game, "position startpos moves a2a4 e7e5\n", response);
 
-    make_move(expected_game, CREATE_MOVE(A2, A4, WHITE_PAWN, DOUBLE_PAWN_PUSH));
-    make_move(expected_game, CREATE_MOVE(E7, E5, BLACK_PAWN, DOUBLE_PAWN_PUSH));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(A2, A4, WHITE_PAWN, DOUBLE_PAWN_PUSH));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(E7, E5, BLACK_PAWN, DOUBLE_PAWN_PUSH));
 
     TEST_ASSERT_NOT_NULL(test_game);
     TEST_ASSERT_TRUE(are_games_equal(test_game, expected_game));
@@ -127,8 +127,8 @@ void test_handle_position_fen_moves_command_should_initialize_game(void)
     char response[256] = {0};
     Game* expected_game = create_game_from_FEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
-    make_move(expected_game, CREATE_MOVE(E2, E4, WHITE_PAWN, DOUBLE_PAWN_PUSH));
-    make_move(expected_game, CREATE_MOVE(E7, E5, BLACK_PAWN, DOUBLE_PAWN_PUSH));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(E2, E4, WHITE_PAWN, DOUBLE_PAWN_PUSH));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(E7, E5, BLACK_PAWN, DOUBLE_PAWN_PUSH));
 
     handle_command(&test_game, "position fen rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 moves e2e4 e7e5\n", response);
 
@@ -143,8 +143,8 @@ void test_handle_position_tricky_fen_moves_command_should_initialize_game(void)
     char response[256] = {0};
     Game* expected_game = create_game_from_FEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -");
 
-    make_move(expected_game, CREATE_MOVE(E2, A6, WHITE_BISHOP, CAPTURE));
-    make_move(expected_game, CREATE_MOVE(C7, C5, BLACK_PAWN, DOUBLE_PAWN_PUSH));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(E2, A6, WHITE_BISHOP, CAPTURE));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(C7, C5, BLACK_PAWN, DOUBLE_PAWN_PUSH));
 
     handle_command(&test_game, "position fen r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - moves e2a6 c7c5\n", response);
 
@@ -195,22 +195,22 @@ void test_handle_position_startpos_moves_roque_capture_should_update_game_state(
     handle_command(&test_game, "position startpos moves e2e4 e7e5 g1f3 b8c6 f1c4 f8c5 e1g1 g8f6 d2d4 e5d4 f3d4\n", response);
 
     // Initialisation manuelle des mouvements attendus
-    make_move(expected_game, CREATE_MOVE(E2, E4, WHITE_PAWN, DOUBLE_PAWN_PUSH));
-    make_move(expected_game, CREATE_MOVE(E7, E5, BLACK_PAWN, DOUBLE_PAWN_PUSH));
-    make_move(expected_game, CREATE_MOVE(G1, F3, WHITE_KNIGHT, QUIET_MOVES));
-    make_move(expected_game, CREATE_MOVE(B8, C6, BLACK_KNIGHT, QUIET_MOVES));
-    make_move(expected_game, CREATE_MOVE(F1, C4, WHITE_BISHOP, QUIET_MOVES));
-    make_move(expected_game, CREATE_MOVE(F8, C5, BLACK_BISHOP, QUIET_MOVES));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(E2, E4, WHITE_PAWN, DOUBLE_PAWN_PUSH));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(E7, E5, BLACK_PAWN, DOUBLE_PAWN_PUSH));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(G1, F3, WHITE_KNIGHT, QUIET_MOVES));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(B8, C6, BLACK_KNIGHT, QUIET_MOVES));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(F1, C4, WHITE_BISHOP, QUIET_MOVES));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(F8, C5, BLACK_BISHOP, QUIET_MOVES));
     
     // Le roque Blanc : E1 -> G1 (flag ROQUE_COURT)
-    make_move(expected_game, CREATE_MOVE(E1, G1, WHITE_KING, KING_CASTLE));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(E1, G1, WHITE_KING, KING_CASTLE));
     
-    make_move(expected_game, CREATE_MOVE(G8, F6, BLACK_KNIGHT, QUIET_MOVES));
-    make_move(expected_game, CREATE_MOVE(D2, D4, WHITE_PAWN, DOUBLE_PAWN_PUSH));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(G8, F6, BLACK_KNIGHT, QUIET_MOVES));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(D2, D4, WHITE_PAWN, DOUBLE_PAWN_PUSH));
     
     // e5d4 (capture du pion)
-    make_move(expected_game, CREATE_MOVE(E5, D4, BLACK_PAWN, CAPTURE)); 
-    make_move(expected_game, CREATE_MOVE(F3, D4, WHITE_KNIGHT, CAPTURE));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(E5, D4, BLACK_PAWN, CAPTURE)); 
+    *expected_game = make_move(*expected_game, CREATE_MOVE(F3, D4, WHITE_KNIGHT, CAPTURE));
 
     TEST_ASSERT_NOT_NULL(test_game);
     TEST_ASSERT_TRUE(are_games_equal(test_game, expected_game));
@@ -229,7 +229,7 @@ void test_handle_position_fen_moves_with_promotion_should_update_game_state(void
     handle_command(&test_game, "position fen 8/P7/8/8/8/8/8/4K3 w - - 0 1 moves a7a8q\n", response);
 
     // Initialisation manuelle du mouvement attendu (flag PROMOTION)
-    make_move(expected_game, CREATE_MOVE(A7, A8, WHITE_PAWN, QUEEN_PROMOTION)); 
+    *expected_game = make_move(*expected_game, CREATE_MOVE(A7, A8, WHITE_PAWN, QUEEN_PROMOTION)); 
 
     TEST_ASSERT_NOT_NULL(test_game);
     TEST_ASSERT_TRUE(are_games_equal(test_game, expected_game));
@@ -250,10 +250,10 @@ void test_handle_position_fen_moves_with_en_passant_should_update_game_state(voi
 
     // Mouvements manuels :
     // d7d5 est un Double Pawn Push
-    make_move(expected_game, CREATE_MOVE(C7, C5, BLACK_PAWN, DOUBLE_PAWN_PUSH));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(C7, C5, BLACK_PAWN, DOUBLE_PAWN_PUSH));
     
     // e5d6 est une capture En Passant (flag EN_PASSANT)
-    make_move(expected_game, CREATE_MOVE(D5, C6, WHITE_PAWN, EN_PASSANT_CAPTURE));
+    *expected_game = make_move(*expected_game, CREATE_MOVE(D5, C6, WHITE_PAWN, EN_PASSANT_CAPTURE));
 
     TEST_ASSERT_NOT_NULL(test_game);
     TEST_ASSERT_TRUE(are_games_equal(test_game, expected_game));

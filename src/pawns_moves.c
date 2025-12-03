@@ -116,11 +116,11 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                if((1ULL << target_square) & all_occupency){
+                if((pre_calculated_bit_shifts[target_square]) & all_occupency){
                     move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                     continue;
                 } else {
-                    if ((1ULL << target_square) & RANK_8)
+                    if ((pre_calculated_bit_shifts[target_square]) & RANK_8)
                     {
                         moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
@@ -149,7 +149,7 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
                     else
                     {
                         diff_source_tag = abs(source_square - target_square);
-                        if (diff_source_tag == 16 && ((1ULL << (target_square + 8)) & all_occupency) == 0 ){
+                        if (diff_source_tag == 16 && ((pre_calculated_bit_shifts[target_square + 8]) & all_occupency) == 0 ){
                             moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                                 source_square,
                                 target_square,
@@ -173,8 +173,8 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
             while(attack){
                 target_square = GET_LSB_INDEX(attack);
 
-                if((1ULL << target_square) & black_occupency){
-                    if ((1ULL << target_square) & RANK_8){
+                if((pre_calculated_bit_shifts[target_square]) & black_occupency){
+                    if ((pre_calculated_bit_shifts[target_square]) & RANK_8){
                         moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
@@ -241,11 +241,11 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                if((1ULL << target_square) & all_occupency){
+                if((pre_calculated_bit_shifts[target_square]) & all_occupency){
                     move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                     continue;
                 } else {
-                    if ((1ULL << target_square) & RANK_1)
+                    if ((pre_calculated_bit_shifts[target_square]) & RANK_1)
                     {
                         moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
@@ -275,7 +275,7 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
                         if (
                             diff_source_tag == 16
                             &&
-                            ((1ULL << (target_square - 8)) & all_occupency) == 0
+                            ((pre_calculated_bit_shifts[target_square - 8]) & all_occupency) == 0
                         )
                         {
                             moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
@@ -303,8 +303,8 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
             while(attack){
                 target_square = GET_LSB_INDEX(attack);
 
-                if((1ULL << target_square) & white_occupency){
-                    if ((1ULL << target_square) & RANK_1){
+                if((pre_calculated_bit_shifts[target_square]) & white_occupency){
+                    if ((pre_calculated_bit_shifts[target_square]) & RANK_1){
                         moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,

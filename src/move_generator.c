@@ -37,20 +37,16 @@ U64 generate_moves_from_position_at_depth(Game* game, int depth)
 
     for (int i = 0; i < move_list->current_index; i++)
     {
-        Game* game_cp = (Game*) malloc(sizeof(Game));
-        *game_cp = *game;
+        Game new_game = make_move(*game, move_list->moves[i]);
 
-        make_move(game_cp, move_list->moves[i]);
-
-        if(!is_king_attacked(game_cp, game_cp->turn == WHITE_TURN ? WHITE : BLACK)){
+        if(!is_king_attacked(&new_game, new_game.turn == WHITE_TURN ? WHITE : BLACK)){
             if(depth > 1){
-                result += generate_moves_from_position_at_depth(game_cp, depth - 1);
+                result += generate_moves_from_position_at_depth(&new_game, depth - 1);
             }else{
                 result++;
             }
         }
 
-        free(game_cp);
     }
 
     free(move_list);
@@ -71,32 +67,28 @@ U64 test_helper_generate_moves_from_position_at_depth(Game* game, int depth, int
 
     for (int i = 0; i < move_list->current_index; i++)
     {
-        Game* game_cp = (Game*) malloc(sizeof(Game));
-        *game_cp = *game;
+        Game new_game = make_move(*game, move_list->moves[i]);
 
-        make_move(game_cp, move_list->moves[i]);
-
-        if(!is_king_attacked(game_cp, game_cp->turn == WHITE_TURN ? WHITE : BLACK)){
+        if(!is_king_attacked(&new_game, new_game.turn == WHITE_TURN ? WHITE : BLACK)){
             if(depth > 1){
-                new_node = generate_moves_from_position_at_depth(game_cp, depth - 1);
+                new_node = generate_moves_from_position_at_depth(&new_game, depth - 1);
                 result += new_node;
-                if(depth == original_depth){
-                    printf("Move ");
-                    print_move_as_uci(move_list->moves[i]);
-                    printf(": %llu\n", new_node);
-                }
+                // if(depth == original_depth){
+                //     printf("Move ");
+                //     print_move_as_uci(move_list->moves[i]);
+                //     printf(": %llu\n", new_node);
+                // }
             }else{
                 result++;
-                if (original_depth == 1)
-                {
-                    printf("Move ");
-                    print_move_as_uci(move_list->moves[i]);
-                    printf(": 1\n");
-                }
+                // if (original_depth == 1)
+                // {
+                //     printf("Move ");
+                //     print_move_as_uci(move_list->moves[i]);
+                //     printf(": 1\n");
+                // }
             }
         }
 
-        free(game_cp);
     }
 
     free(move_list);

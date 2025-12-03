@@ -301,7 +301,7 @@ Bitboard generate_rook_moves_for_giving_blocker_configuration(Square square, Bit
     {
         Square target_square = (Square)(i * 8 + index_of_file);
         moves = SET_BIT_ON_BITBOARD(moves, target_square);
-        if (blocker & (1ULL << target_square))
+        if (blocker & pre_calculated_bit_shifts[target_square])
             break;
     }
 
@@ -310,7 +310,7 @@ Bitboard generate_rook_moves_for_giving_blocker_configuration(Square square, Bit
     {
         Square target_square = (Square)(i * 8 + index_of_file);
         moves = SET_BIT_ON_BITBOARD(moves, target_square);
-        if (blocker & (1ULL << target_square))
+        if (blocker & pre_calculated_bit_shifts[target_square])
             break;
     }
     // Generate moves to the right
@@ -318,7 +318,7 @@ Bitboard generate_rook_moves_for_giving_blocker_configuration(Square square, Bit
     {
         Square target_square = (Square)(index_of_rank * 8 + i);
         moves = SET_BIT_ON_BITBOARD(moves, target_square);
-        if (blocker & (1ULL << target_square))
+        if (blocker & pre_calculated_bit_shifts[target_square])
             break;
     }
     // Generate moves to the left
@@ -326,7 +326,7 @@ Bitboard generate_rook_moves_for_giving_blocker_configuration(Square square, Bit
     {
         Square target_square = (Square)(index_of_rank * 8 + i);
         moves = SET_BIT_ON_BITBOARD(moves, target_square);
-        if (blocker & (1ULL << target_square))
+        if (blocker & pre_calculated_bit_shifts[target_square])
             break;
     }
 
@@ -379,7 +379,7 @@ void generate_all_rooks_moves_from_game_state(Game* board_state, MoveList* moves
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                if((1ULL << target_square) & (WHITE_OCCUPENCY(board_state))){
+                if(pre_calculated_bit_shifts[target_square] & (WHITE_OCCUPENCY(board_state))){
                     move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                     continue;
                 } else {
@@ -387,7 +387,7 @@ void generate_all_rooks_moves_from_game_state(Game* board_state, MoveList* moves
                         source_square,
                         target_square,
                         WHITE_ROOK,
-                        (1ULL << target_square) & (BLACK_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
+                        pre_calculated_bit_shifts[target_square] & (BLACK_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
                     );
                     move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                 }
@@ -407,7 +407,7 @@ void generate_all_rooks_moves_from_game_state(Game* board_state, MoveList* moves
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                if((1ULL << target_square) & (BLACK_OCCUPENCY(board_state))){
+                if(pre_calculated_bit_shifts[target_square] & (BLACK_OCCUPENCY(board_state))){
                     move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                     continue;
                 } else {
@@ -415,7 +415,7 @@ void generate_all_rooks_moves_from_game_state(Game* board_state, MoveList* moves
                         source_square,
                         target_square,
                         BLACK_ROOK,
-                        (1ULL << target_square) & (WHITE_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
+                        pre_calculated_bit_shifts[target_square] & (WHITE_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
                     );
                     move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                 }
