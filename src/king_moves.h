@@ -28,7 +28,7 @@ void generate_all_king_castling_moves_from_game_state(Game* board_state, MoveLis
  * @param side Attack side
  * @return int Returns 1 if the square is attacked, 0 otherwise.
  */
-int is_square_attacked(Game* board_state, Square square, Side side);
+int is_square_attacked_by_side(Game* board_state, Square square, Side side);
 
 /**
  * @brief Checks if the king is attacked by the specified side.
@@ -37,7 +37,7 @@ int is_square_attacked(Game* board_state, Square square, Side side);
 * @param side Attack side
 * @return int Returns 1 if the king is attacked, 0 otherwise.
  */
-int is_king_attacked(Game* board_state, Side side);
+int is_king_attacked_by_side(Game* board_state, Side side);
 
 int is_king_mate(Game* board_state);
 

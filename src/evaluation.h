@@ -11,5 +11,6 @@
 
 int is_king_mate(Game* board_state);
 int material_evaluation(Game* game);
+int material_evaluation_for_side(Game* game);
 
 #endif // EVALUATION_H

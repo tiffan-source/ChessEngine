@@ -272,4 +272,68 @@ void test_handle_go_command_should_return_best_moves(void)
 
     free_game(game);
 }
+
+void test_handle_go_perft_command_should_return_valid_nodes_count_on_start_pos_depth_3(void)
+{
+    char response[256] = {0};
+    Game* game = create_game_from_FEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+
+    handle_command(&game, "go perft 3\n", response);
+
+    TEST_ASSERT_EQUAL_STRING("nodes 8902\n", response);
+
+    free_game(game);
+}
+
+void test_handle_go_perft_command_should_return_valid_nodes_count_on_start_pos_depth_4(void)
+{
+    char response[256] = {0};
+    Game* game = create_game_from_FEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+
+    handle_command(&game, "go perft 4\n", response);
+
+    TEST_ASSERT_EQUAL_STRING("nodes 197281\n", response);
+
+    free_game(game);
+}
+
+void test_handle_go_perft_command_should_return_valid_nodes_count_on_Kiwipete_pos_depth_5(void)
+{
+    char response[256] = {0};
+    Game* game = create_game_from_FEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - ");
+
+    handle_command(&game, "go perft 5\n", response);
+
+    TEST_ASSERT_EQUAL_STRING("nodes 193690690\n", response);
+
+    free_game(game);
+}
+
+void test_handle_go_perft_command_should_return_valid_nodes_count_on_tricky_pos_multi_depth(void)
+{
+    char response[256] = {0};
+    Game* game = create_game_from_FEN("rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8  ");
+
+    handle_command(&game, "go perft 1\n", response);
+
+    TEST_ASSERT_EQUAL_STRING("nodes 44\n", response);
+
+    handle_command(&game, "go perft 2\n", response);
+
+    TEST_ASSERT_EQUAL_STRING("nodes 1486\n", response);
+
+    handle_command(&game, "go perft 3\n", response);
+
+    TEST_ASSERT_EQUAL_STRING("nodes 62379\n", response);
+
+    handle_command(&game, "go perft 4\n", response);
+
+    TEST_ASSERT_EQUAL_STRING("nodes 2103487\n", response);
+
+    handle_command(&game, "go perft 5\n", response);
+
+    TEST_ASSERT_EQUAL_STRING("nodes 89941194\n", response);
+    
+    free_game(game);
+}
 // #endif // TEST

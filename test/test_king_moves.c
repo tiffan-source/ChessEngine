@@ -189,38 +189,38 @@ void test_generate_all_black_pawn_move_from_tricky_position(void)
 }
 
 
-void test_is_square_attacked_by_white(void)
+void test_is_square_attacked_by_side_by_white(void)
 {
     char *position = "r3k2r/Pppp1Npp/1b3nb1/nP6/BBP1P3/q4N2/Pp1P2Pp/R2Q1R1K w kq - 0 1";
     Game *game = create_game_from_FEN(position);
 
-    TEST_ASSERT_EQUAL_INT(0, is_square_attacked(game, E8, WHITE));
-    TEST_ASSERT_EQUAL_INT(0, is_square_attacked(game, F7, WHITE));
-    TEST_ASSERT_EQUAL_INT(0, is_square_attacked(game, C4, WHITE));
-    TEST_ASSERT_EQUAL_INT(0, is_square_attacked(game, G7, WHITE));
-    TEST_ASSERT_EQUAL_INT(0, is_square_attacked(game, D3, WHITE));
-    TEST_ASSERT_EQUAL_INT(1, is_square_attacked(game, D5, WHITE));
-    TEST_ASSERT_EQUAL_INT(1, is_square_attacked(game, H2, WHITE));
-    TEST_ASSERT_EQUAL_INT(1, is_square_attacked(game, E2, WHITE));
-    TEST_ASSERT_EQUAL_INT(1, is_square_attacked(game, F3, WHITE));
+    TEST_ASSERT_EQUAL_INT(0, is_square_attacked_by_side(game, E8, WHITE));
+    TEST_ASSERT_EQUAL_INT(0, is_square_attacked_by_side(game, F7, WHITE));
+    TEST_ASSERT_EQUAL_INT(0, is_square_attacked_by_side(game, C4, WHITE));
+    TEST_ASSERT_EQUAL_INT(0, is_square_attacked_by_side(game, G7, WHITE));
+    TEST_ASSERT_EQUAL_INT(0, is_square_attacked_by_side(game, D3, WHITE));
+    TEST_ASSERT_EQUAL_INT(1, is_square_attacked_by_side(game, D5, WHITE));
+    TEST_ASSERT_EQUAL_INT(1, is_square_attacked_by_side(game, H2, WHITE));
+    TEST_ASSERT_EQUAL_INT(1, is_square_attacked_by_side(game, E2, WHITE));
+    TEST_ASSERT_EQUAL_INT(1, is_square_attacked_by_side(game, F3, WHITE));
 
     free_game(game);
 }
 
-void test_is_square_attacked_by_black(void)
+void test_is_square_attacked_by_side_by_black(void)
 {
     char *position = "r3k2r/Pppp1Npp/1b3nb1/nP6/BBP1P3/q4N2/Pp1P2Pp/R2Q1R1K w kq - 0 1";
     Game *game = create_game_from_FEN(position);
 
-    TEST_ASSERT_EQUAL_INT(1, is_square_attacked(game, E8, BLACK));
-    TEST_ASSERT_EQUAL_INT(1, is_square_attacked(game, F7, BLACK));
-    TEST_ASSERT_EQUAL_INT(1, is_square_attacked(game, C4, BLACK));
-    TEST_ASSERT_EQUAL_INT(0, is_square_attacked(game, G7, BLACK));
-    TEST_ASSERT_EQUAL_INT(1, is_square_attacked(game, D3, BLACK));
-    TEST_ASSERT_EQUAL_INT(1, is_square_attacked(game, D5, BLACK));
-    TEST_ASSERT_EQUAL_INT(0, is_square_attacked(game, H2, BLACK));
-    TEST_ASSERT_EQUAL_INT(0, is_square_attacked(game, E2, BLACK));
-    TEST_ASSERT_EQUAL_INT(1, is_square_attacked(game, F3, BLACK));
+    TEST_ASSERT_EQUAL_INT(1, is_square_attacked_by_side(game, E8, BLACK));
+    TEST_ASSERT_EQUAL_INT(1, is_square_attacked_by_side(game, F7, BLACK));
+    TEST_ASSERT_EQUAL_INT(1, is_square_attacked_by_side(game, C4, BLACK));
+    TEST_ASSERT_EQUAL_INT(0, is_square_attacked_by_side(game, G7, BLACK));
+    TEST_ASSERT_EQUAL_INT(1, is_square_attacked_by_side(game, D3, BLACK));
+    TEST_ASSERT_EQUAL_INT(1, is_square_attacked_by_side(game, D5, BLACK));
+    TEST_ASSERT_EQUAL_INT(0, is_square_attacked_by_side(game, H2, BLACK));
+    TEST_ASSERT_EQUAL_INT(0, is_square_attacked_by_side(game, E2, BLACK));
+    TEST_ASSERT_EQUAL_INT(1, is_square_attacked_by_side(game, F3, BLACK));
 
     free_game(game);
 }

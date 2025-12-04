@@ -39,7 +39,7 @@ U64 generate_moves_from_position_at_depth(Game* game, int depth)
     {
         Game new_game = make_move(*game, move_list->moves[i]);
 
-        if(!is_king_attacked(&new_game, new_game.turn == WHITE_TURN ? WHITE : BLACK)){
+        if(!is_king_attacked_by_side(&new_game, new_game.turn == WHITE_TURN ? WHITE : BLACK)){
             if(depth > 1){
                 result += generate_moves_from_position_at_depth(&new_game, depth - 1);
             }else{
@@ -61,7 +61,6 @@ U64 test_helper_generate_moves_from_position_at_depth(Game* game, int depth, int
     move_list->current_index = 0;
 
     int init_time = get_time_ms();
-    printf("Depth %d:\n", depth);
 
     generate_all_pseudo_legal_moves_from_game_state(game, move_list);
 
@@ -69,23 +68,12 @@ U64 test_helper_generate_moves_from_position_at_depth(Game* game, int depth, int
     {
         Game new_game = make_move(*game, move_list->moves[i]);
 
-        if(!is_king_attacked(&new_game, new_game.turn == WHITE_TURN ? WHITE : BLACK)){
+        if(!is_king_attacked_by_side(&new_game, new_game.turn == WHITE_TURN ? WHITE : BLACK)){
             if(depth > 1){
                 new_node = generate_moves_from_position_at_depth(&new_game, depth - 1);
                 result += new_node;
-                // if(depth == original_depth){
-                //     printf("Move ");
-                //     print_move_as_uci(move_list->moves[i]);
-                //     printf(": %llu\n", new_node);
-                // }
             }else{
                 result++;
-                // if (original_depth == 1)
-                // {
-                //     printf("Move ");
-                //     print_move_as_uci(move_list->moves[i]);
-                //     printf(": 1\n");
-                // }
             }
         }
 
@@ -93,7 +81,6 @@ U64 test_helper_generate_moves_from_position_at_depth(Game* game, int depth, int
 
     free(move_list);
 
-    printf("Total nodes at depth %d: %llu\n", depth, result);
     int end_time = get_time_ms() - init_time;
     printf("End time: %d ms\n", end_time);
 
