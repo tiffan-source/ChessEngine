@@ -1,9 +1,11 @@
 #include "move_generator.h"
 #include "engine_settings.h"
 #include "uci_commands.h"
+#include "config.h"
 
 int main(int argc, char *argv[]) {
     initialize_move_generation_databases();
+    init_config(5);
 
     Game* internal_game = NULL;
     char command[COMMAND_MAX_LENGTH] = {0};

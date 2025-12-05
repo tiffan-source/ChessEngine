@@ -41,7 +41,7 @@ ScoredMove min_max_best_move_min(Game* game, int depth)
         // Check for checkmate or stalemate
         if (is_king_attacked_by_side(game, game->turn == WHITE_TURN ? BLACK : WHITE))
         {
-            scored_move = (ScoredMove){ .score = MAX - 1 };
+            scored_move = (ScoredMove){ .score = MAX - (GET_DEPTH_FROM_CONFIG(get_config()) - depth) };
             return scored_move; // Checkmate
         }
         else
@@ -92,7 +92,7 @@ ScoredMove min_max_best_move_max(Game* game, int depth)
         // Check for checkmate or stalemate
         if (is_king_attacked_by_side(game, game->turn == WHITE_TURN ? BLACK : WHITE))
         {
-            scored_move = (ScoredMove){ .score = MIN + 1 };
+            scored_move = (ScoredMove){ .score = MIN + (GET_DEPTH_FROM_CONFIG(get_config()) - depth) };
             return scored_move; // Checkmate
         }
         else
@@ -145,7 +145,7 @@ ScoredMove negamax_best_move(Game* game, int depth)
         int white_turn = game->turn == WHITE_TURN;
         if (is_king_attacked_by_side(game, white_turn ? BLACK : WHITE))
         {
-            scored_move = (ScoredMove){ .score = MIN + 1 };
+            scored_move = (ScoredMove){ .score = MIN + (GET_DEPTH_FROM_CONFIG(get_config()) - depth) };
             return scored_move;
         }
         else

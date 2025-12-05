@@ -8,6 +8,7 @@
 #include "move_generator.h"
 #include "scored_move.h"
 #include "search_and_find.h"
+#include "config.h"
 
 #define COMMAND_MAX_LENGTH 256 * 4
 #define UCI_RESPONSE_MAX_LENGTH 512

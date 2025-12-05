@@ -4,6 +4,7 @@
 
 #include "scored_move.h"
 #include "evaluation.h"
+#include "config.h"
 
 #define MIN -1000000
 #define MAX 1000000

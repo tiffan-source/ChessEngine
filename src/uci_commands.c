@@ -72,7 +72,7 @@ void handle_go_command(Game* game, const char* input, char* response)
     int input_size = strlen(input);
     char *input_copy = malloc(input_size + 1);
     memcpy(input_copy, input, input_size + 1);
-    int search_depth = 5;
+    Config* config = get_config();
 
     char* perf = strstr(input_copy, "perft ");
     char *depth = strstr(input_copy, "depth ");
@@ -92,11 +92,16 @@ void handle_go_command(Game* game, const char* input, char* response)
     if(depth != NULL)
     {
         int depth_value = atoi(depth + 6);
-        search_depth = depth_value > 0 ? depth_value : 5;
+        SET_DEPTH_IN_CONFIG(config, depth_value > 0 ? depth_value : GET_DEPTH_FROM_CONFIG(config));
     }
 
-    result = negamax_best_move(game, search_depth);
-
+    if (game->turn == WHITE_TURN)
+    {
+        result = min_max_best_move_max(game, GET_DEPTH_FROM_CONFIG(config));
+    }else{
+        result = min_max_best_move_min(game, GET_DEPTH_FROM_CONFIG(config));
+    }
+    
     build_move_as_uci(result.move, move_uci);
 
     snprintf(response, UCI_RESPONSE_MAX_LENGTH, "bestmove %s\n", move_uci);

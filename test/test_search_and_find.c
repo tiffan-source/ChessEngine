@@ -17,14 +17,17 @@
 #include "bishops_moves.h"
 #include "queens_moves.h"
 #include "pieces.h"
+#include "config.h"
 
 void setUp(void)
 {
     initialize_move_generation_databases();
+    init_config(5);
 }
 
 void tearDown(void)
 {
+    free_config();
 }
 
 void test_min_max_sould_return_evaluation_at_depth_0(void)
@@ -44,7 +47,7 @@ void test_min_max_should_identify_checkmate_in_one_move(void)
     ScoredMove evaluation = min_max_best_move_max(game, 2);
 
     // Checkmate should return a very high positive evaluation
-    TEST_ASSERT_EQUAL_INT(MAX - 1, evaluation.score);
+    TEST_ASSERT_EQUAL_INT(MAX - (GET_DEPTH_FROM_CONFIG(get_config()) - 1), evaluation.score);
     TEST_ASSERT_EQUAL_UINT(CREATE_MOVE(D1, H5, WHITE_QUEEN, QUIET_MOVES), evaluation.move);
 }
 
@@ -55,8 +58,7 @@ void test_min_max_should_identify_checkmate_in_two_move(void)
     ScoredMove evaluation = min_max_best_move_min(game, 4);
 
     // Checkmate should return a very high positive evaluation
-    TEST_ASSERT_EQUAL_INT(MIN + 1, evaluation.score);
-    print_move(evaluation.move);
+    TEST_ASSERT_EQUAL_INT(MIN + (GET_DEPTH_FROM_CONFIG(get_config()) - 1), evaluation.score);
     TEST_ASSERT_EQUAL_UINT(CREATE_MOVE(B6, E6, BLACK_QUEEN, QUIET_MOVES), evaluation.move);
 }
 
@@ -91,7 +93,7 @@ void test_negamax_should_identify_checkmate_in_one_move_for_white(void)
     ScoredMove evaluation = negamax_best_move(game, 2);
 
     // Checkmate should return a very high positive evaluation
-    TEST_ASSERT_EQUAL_INT(MAX - 1, evaluation.score);
+    TEST_ASSERT_EQUAL_INT(MAX - (GET_DEPTH_FROM_CONFIG(get_config()) - 1), evaluation.score);
     TEST_ASSERT_EQUAL_UINT(CREATE_MOVE(D1, H5, WHITE_QUEEN, QUIET_MOVES), evaluation.move);
 }
 
@@ -102,7 +104,7 @@ void test_negamax_should_identify_checkmate_in_one_move_for_black(void)
     ScoredMove evaluation = negamax_best_move(game, 2);
 
     // Checkmate should return a very high positive evaluation
-    TEST_ASSERT_EQUAL_INT(MAX - 1, evaluation.score);
+    TEST_ASSERT_EQUAL_INT(MAX - (GET_DEPTH_FROM_CONFIG(get_config()) - 1), evaluation.score);
     TEST_ASSERT_EQUAL_UINT(CREATE_MOVE(D8, H4, BLACK_QUEEN, QUIET_MOVES), evaluation.move);
 }
 
@@ -113,7 +115,7 @@ void test_negamax_should_identify_checkmate_in_two_move_for_white(void)
     ScoredMove evaluation = negamax_best_move(game, 4);
 
     // Checkmate should return a very high positive evaluation
-    TEST_ASSERT_EQUAL_INT(MAX - 1, evaluation.score);
+    TEST_ASSERT_EQUAL_INT(MAX - (GET_DEPTH_FROM_CONFIG(get_config()) - 1), evaluation.score);
     TEST_ASSERT_EQUAL_UINT(CREATE_MOVE(D2, H6, WHITE_QUEEN, QUIET_MOVES), evaluation.move);
 }
 
@@ -124,7 +126,7 @@ void test_negamax_should_identify_checkmate_in_two_move_for_black(void)
     ScoredMove evaluation = negamax_best_move(game, 4);
 
     // Checkmate should return a very high positive evaluation
-    TEST_ASSERT_EQUAL_INT(MAX - 1, evaluation.score);
+    TEST_ASSERT_EQUAL_INT(MAX - (GET_DEPTH_FROM_CONFIG(get_config()) - 1), evaluation.score);
     TEST_ASSERT_EQUAL_UINT(CREATE_MOVE(G2, G1, BLACK_ROOK, QUIET_MOVES), evaluation.move);
 }
 

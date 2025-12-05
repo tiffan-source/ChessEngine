@@ -19,12 +19,14 @@
 #include "knights_moves.h"
 #include "binary_tools.h"
 #include "pieces.h"
+#include "config.h"
 
 Game* test_game = NULL;
 
 void setUp(void)
 {
     initialize_move_generation_databases();
+    init_config(5);
 }
 
 void tearDown(void)
@@ -34,6 +36,8 @@ void tearDown(void)
         free_game(test_game);
         test_game = NULL;
     }
+
+    free_config();
 }
 
 int are_games_equal(Game* game1, Game* game2)
