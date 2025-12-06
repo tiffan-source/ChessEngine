@@ -95,12 +95,7 @@ void handle_go_command(Game* game, const char* input, char* response)
         SET_DEPTH_IN_CONFIG(config, depth_value > 0 ? depth_value : GET_DEPTH_FROM_CONFIG(config));
     }
 
-    if (game->turn == WHITE_TURN)
-    {
-        result = alpha_beta_max(game, GET_DEPTH_FROM_CONFIG(config), MIN, MAX);
-    }else{
-        result = alpha_beta_min(game, GET_DEPTH_FROM_CONFIG(config), MIN, MAX);
-    }
+    result = nega_alpha_beta(game, GET_DEPTH_FROM_CONFIG(config), MIN, MAX);
     
     build_move_as_uci(result.move, move_uci);
 

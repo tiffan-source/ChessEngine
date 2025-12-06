@@ -211,4 +211,32 @@ void test_alpha_beta_should_identify_checkmate_in_two_move_for_white(void)
 
     free_game(game);
 }
+
+void test_nega_alpha_beta_should_identify_checkmate_in_two_move_for_white(void)
+{
+    Game* game = create_game_from_FEN("r1bq2r1/b4pk1/p1pp1p2/1p2pP2/1P2P1PB/3P4/1PPQ2P1/R3K2R w");
+
+    SET_DEPTH_IN_CONFIG(get_config(), 6);
+    ScoredMove evaluation = nega_alpha_beta(game, 6, MIN, MAX);
+
+    TEST_ASSERT_EQUAL_INT(MAX - (GET_DEPTH_FROM_CONFIG(get_config()) - 3), evaluation.score);
+    TEST_ASSERT_EQUAL_UINT(CREATE_MOVE(D2, H6, WHITE_QUEEN, QUIET_MOVES), evaluation.move);
+
+    free_game(game);
+}
+
+
+void test_nega_alpha_beta_should_identify_checkmate_in_two_move_for_black(void)
+{
+    Game* game = create_game_from_FEN("6k1/pp4p1/2p5/2bp4/8/P5Pb/1P3rrP/2BRRN1K b - - 0 1");
+
+    SET_DEPTH_IN_CONFIG(get_config(), 7);
+    ScoredMove evaluation = nega_alpha_beta(game, 7, MIN, MAX);
+
+    TEST_ASSERT_EQUAL_INT(MAX - (GET_DEPTH_FROM_CONFIG(get_config()) - 4), evaluation.score);
+    TEST_ASSERT_EQUAL_UINT(CREATE_MOVE(G2, G1, BLACK_ROOK, QUIET_MOVES), evaluation.move);
+
+    free_game(game);
+}
+
 // #endif // TEST

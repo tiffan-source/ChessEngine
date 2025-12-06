@@ -20,4 +20,6 @@ ScoredMove negamax_best_move(Game* game, int depth);
 ScoredMove alpha_beta_min(Game* game, int depth, int alpha, int beta);
 ScoredMove alpha_beta_max(Game* game, int depth, int alpha, int beta);
 
+// Function to find the best move using NegaAlphaBeta
+ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta);
 #endif // SEARCH_AND_FIND_H
