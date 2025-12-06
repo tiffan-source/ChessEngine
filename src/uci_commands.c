@@ -97,9 +97,9 @@ void handle_go_command(Game* game, const char* input, char* response)
 
     if (game->turn == WHITE_TURN)
     {
-        result = min_max_best_move_max(game, GET_DEPTH_FROM_CONFIG(config));
+        result = alpha_beta_max(game, GET_DEPTH_FROM_CONFIG(config), MIN, MAX);
     }else{
-        result = min_max_best_move_min(game, GET_DEPTH_FROM_CONFIG(config));
+        result = alpha_beta_min(game, GET_DEPTH_FROM_CONFIG(config), MIN, MAX);
     }
     
     build_move_as_uci(result.move, move_uci);
