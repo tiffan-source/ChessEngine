@@ -16,4 +16,6 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
 void initialize_pre_calculated_pawn_moves_database();
 void initialize_pre_calculated_pawn_attacks_database();
 
+void generate_all_pawns_capture_moves_from_game_state(Game* game, MoveList* move_list);
+
 #endif // PAWNS_MOVES_H

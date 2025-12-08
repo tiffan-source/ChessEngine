@@ -150,3 +150,47 @@ void generate_all_knight_moves_from_game_state(Game* board_state, MoveList* move
         knights = CLEAR_BIT_ON_BITBOARD(knights, from_square);
     }
 }
+
+void generate_all_knight_captures_from_game_state(Game* board_state, MoveList* moves_list)
+{
+    Bitboard knights;
+    Side side;
+    Bitboard own_pieces;
+    Bitboard opponent_pieces;
+    Square from_square, to_square;
+    Bitboard possible_moves;
+    Bitboard temp_moves;
+    
+    if (board_state->turn == WHITE)
+    {
+        knights = board_state->white_knights;
+        own_pieces = WHITE_OCCUPENCY(board_state);
+        opponent_pieces = BLACK_OCCUPENCY(board_state);
+        side = WHITE;
+    }
+    else
+    {
+        knights = board_state->black_knights;
+        own_pieces = BLACK_OCCUPENCY(board_state);
+        opponent_pieces = WHITE_OCCUPENCY(board_state);
+        side = BLACK;
+    }
+
+    while (knights)
+    {
+        from_square = (Square)GET_LSB_INDEX(knights);
+        possible_moves = generate_knights_moves_from_square(from_square) & opponent_pieces;
+
+        temp_moves = possible_moves;
+        while (temp_moves)
+        {
+            to_square = (Square)GET_LSB_INDEX(temp_moves);
+            
+            moves_list->moves[moves_list->current_index++] = CREATE_MOVE(from_square, to_square, (side == WHITE) ? WHITE_KNIGHT : BLACK_KNIGHT, CAPTURE);
+
+            temp_moves = CLEAR_BIT_ON_BITBOARD(temp_moves, to_square);
+        }
+
+        knights = CLEAR_BIT_ON_BITBOARD(knights, from_square);
+    }
+}

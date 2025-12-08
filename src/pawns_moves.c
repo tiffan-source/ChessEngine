@@ -365,3 +365,89 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
 
     
 }
+
+void generate_all_pawns_capture_moves_from_game_state(Game* game, MoveList* move_list)
+{
+    if (game->turn ==  WHITE_TURN)
+    {
+        Bitboard white_pawns = game->white_pawns;
+        Square source_square, target_square;
+
+        while(white_pawns){
+            source_square = GET_LSB_INDEX(white_pawns);
+
+            // Pawn attacks
+            Bitboard attack = pre_calculated_pawn_attacks[WHITE][source_square] & BLACK_OCCUPENCY(game);
+            while(attack){
+                target_square = GET_LSB_INDEX(attack);
+
+                move_list->moves[move_list->current_index++] = CREATE_MOVE(
+                    source_square,
+                    target_square,
+                    WHITE_PAWN, CAPTURE);
+                
+
+                attack = CLEAR_BIT_ON_BITBOARD(attack, target_square);
+            }
+
+            white_pawns = CLEAR_BIT_ON_BITBOARD(white_pawns, source_square);
+        }
+
+        Square en_passant_square = (Square)(game->en_passant_target_square);
+        if (en_passant_square != -1)
+        {
+            Bitboard source_attack = pre_calculated_pawn_attacks[BLACK][en_passant_square] & game->white_pawns;
+
+            while (source_attack)
+            {
+                Square pawn_square = GET_LSB_INDEX(source_attack);
+                move_list->moves[move_list->current_index++] = CREATE_MOVE(
+                    pawn_square,
+                    en_passant_square,
+                    WHITE_PAWN,
+                    EN_PASSANT_CAPTURE
+                );
+                source_attack = CLEAR_BIT_ON_BITBOARD(source_attack, pawn_square);
+            }
+        }
+    } else {
+        Bitboard black_pawns = game->black_pawns;
+        Square source_square, target_square;
+
+        while(black_pawns){
+            source_square = GET_LSB_INDEX(black_pawns);
+
+            // Pawn attacks
+            Bitboard attack = pre_calculated_pawn_attacks[BLACK][source_square] & WHITE_OCCUPENCY(game);
+            while(attack){
+                target_square = GET_LSB_INDEX(attack);
+
+                move_list->moves[move_list->current_index++] = CREATE_MOVE(
+                    source_square,
+                    target_square,
+                    BLACK_PAWN, CAPTURE);
+                
+                attack = CLEAR_BIT_ON_BITBOARD(attack, target_square);
+            }
+
+            black_pawns = CLEAR_BIT_ON_BITBOARD(black_pawns, source_square);
+        }
+        // En Passant capture
+        Square en_passant_square = (Square)(game->en_passant_target_square);
+        if (en_passant_square != -1)
+        {
+            Bitboard source_attack = pre_calculated_pawn_attacks[WHITE][en_passant_square] & game->black_pawns;
+            while (source_attack)
+            {
+                Square pawn_square = GET_LSB_INDEX(source_attack);
+                move_list->moves[move_list->current_index++] = CREATE_MOVE(
+                    pawn_square,
+                    en_passant_square,
+                    BLACK_PAWN,
+                    EN_PASSANT_CAPTURE
+                );
+                source_attack = CLEAR_BIT_ON_BITBOARD(source_attack, pawn_square);
+            }
+        }
+    }
+}

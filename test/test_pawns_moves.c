@@ -441,4 +441,56 @@ void test_generate_all_pawns_move_from_position_whith_en_passant_for_black(void)
     free_game(game_black);
     free(result_for_black);
 }
+
+void test_generate_all_white_pawns_capture_moves_from_position(void)
+{
+    char *position = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - ";
+    Game *game = create_game_from_FEN(position);
+
+    MoveList* result = (MoveList*) malloc(sizeof(MoveList));
+    result->current_index = 0;
+
+    Move expected[] = {
+        CREATE_MOVE(D5, E6, WHITE_PAWN, CAPTURE),
+        CREATE_MOVE(G2, H3, WHITE_PAWN, CAPTURE),
+    };
+
+    generate_all_pawns_capture_moves_from_game_state(game, result);
+
+    qsort(result->moves, result->current_index, sizeof(Move), compare_move);
+    qsort(expected, 2, sizeof(Move), compare_move);  
+    
+    TEST_ASSERT_EQUAL_INT(result->current_index, 2);
+    TEST_ASSERT_EQUAL_INT_ARRAY(expected, result->moves, 2);
+
+    free_game(game);
+    free(result);
+}
+
+void test_generate_all_black_pawns_capture_moves_from_position(void)
+{
+    char *position = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/Pp2P3/2N2Q1p/1PPBBPPP/R3K2R b KQkq a3 0 1";
+    Game *game = create_game_from_FEN(position);
+
+    MoveList* result = (MoveList*) malloc(sizeof(MoveList));
+    result->current_index = 0;
+
+    Move expected[] = {
+        CREATE_MOVE(B4, C3, BLACK_PAWN, CAPTURE),
+        CREATE_MOVE(B4, A3, BLACK_PAWN, EN_PASSANT_CAPTURE),
+        CREATE_MOVE(E6, D5, BLACK_PAWN, CAPTURE),
+        CREATE_MOVE(H3, G2, BLACK_PAWN, CAPTURE),
+    };
+
+    generate_all_pawns_capture_moves_from_game_state(game, result);
+
+    qsort(result->moves, result->current_index, sizeof(Move), compare_move);
+    qsort(expected, 4, sizeof(Move), compare_move);  
+    
+    TEST_ASSERT_EQUAL_INT(result->current_index, 4);
+    TEST_ASSERT_EQUAL_INT_ARRAY(expected, result->moves, 4);
+
+    free_game(game);
+    free(result);
+}
 // #endif // TEST

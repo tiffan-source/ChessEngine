@@ -1,6 +1,4 @@
 
-// #ifdef TEST
-
 #include "unity.h"
 
 #include "king_moves.h"
@@ -160,7 +158,7 @@ void test_generate_all_white_king_move_from_tricky_position(void)
 }
 
 
-void test_generate_all_black_pawn_move_from_tricky_position(void)
+void test_generate_all_black_king_move_from_tricky_position(void)
 {
     char *position_black = "r3k2r/Pppp1Npp/1b3nb1/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1R1K b kq - 0 1";
     
@@ -452,4 +450,48 @@ void test_generate_black_castling_when_squares_attacked_pseudo_legal(void)
     free(result);
 }
 
-// #endif // TEST
+void test_generate_all_white_king_capture_from_tricky_position(void)
+{
+    char *position_white = "r3k2r/Pppp1Npp/1b3nb1/nP6/BBP1P3/q4N2/Pp1P2Pp/R2Q1R1K w kq - 0 1";
+    
+    Game *game_white = create_game_from_FEN(position_white);
+
+    MoveList* result_for_white = (MoveList*) malloc(sizeof(MoveList));
+    result_for_white->current_index = 0;
+
+    Move expected_for_white[] = {
+        CREATE_MOVE(H1, H2, WHITE_KING, CAPTURE),
+    };
+    
+    generate_all_king_capture_moves_from_game_state(game_white, result_for_white);
+
+    TEST_ASSERT_EQUAL(1, result_for_white->current_index);
+    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_white, result_for_white->moves, 1);
+
+    free_game(game_white);
+    free(result_for_white);
+}
+
+void test_generate_all_black_king_capture_from_tricky_position(void)
+{
+    char *position_black = "r3k2r/Pppp1Npp/1b3nb1/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1R1K b kq - 0 1";
+    
+    Game *game_black = create_game_from_FEN(position_black);
+
+    MoveList* result_for_black = (MoveList*) malloc(sizeof(MoveList));
+    result_for_black->current_index = 0;
+
+
+    Move expected_for_black[] = {
+        CREATE_MOVE(E8, F7, BLACK_KING, CAPTURE),
+    };
+    
+    generate_all_king_capture_moves_from_game_state(game_black, result_for_black);
+    
+    TEST_ASSERT_EQUAL(1, result_for_black->current_index);
+    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_black, result_for_black->moves, 1);
+    free_game(game_black);
+
+    free(result_for_black);
+}
+

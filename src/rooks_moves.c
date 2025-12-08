@@ -424,3 +424,61 @@ void generate_all_rooks_moves_from_game_state(Game* board_state, MoveList* moves
         }
     }
 }
+
+void generate_all_rooks_captures_from_game_state(Game* game, MoveList* move_list)
+{
+    Square source_square, target_square;
+    Bitboard white_rooks = game->white_rooks;
+    Bitboard black_rooks = game->black_rooks;
+    Bitboard move, attack;
+
+    if (game->turn == WHITE)
+    {
+        while(white_rooks){
+            source_square = GET_LSB_INDEX(white_rooks);
+
+            move = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(
+                source_square,
+                ALL_OCCUPENCY(game)
+            ) & BLACK_OCCUPENCY(game);
+
+
+            while(move){
+                target_square = GET_LSB_INDEX(move);
+
+                move_list->moves[move_list->current_index++] = CREATE_MOVE(
+                    source_square,
+                    target_square,
+                    WHITE_ROOK,
+                    CAPTURE
+                );
+                move = CLEAR_BIT_ON_BITBOARD(move, target_square);
+            }
+
+            white_rooks = CLEAR_BIT_ON_BITBOARD(white_rooks, source_square);
+        }
+    } else {
+        while(black_rooks){
+            source_square = GET_LSB_INDEX(black_rooks);
+
+            move = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(
+                source_square,
+                ALL_OCCUPENCY(game)
+            ) & WHITE_OCCUPENCY(game);
+
+            while(move){
+                target_square = GET_LSB_INDEX(move);
+
+                move_list->moves[move_list->current_index++] = CREATE_MOVE(
+                    source_square,
+                    target_square,
+                    BLACK_ROOK,
+                    CAPTURE
+                );
+                move = CLEAR_BIT_ON_BITBOARD(move, target_square);
+            
+            }
+            black_rooks = CLEAR_BIT_ON_BITBOARD(black_rooks, source_square);
+        }
+    }
+}

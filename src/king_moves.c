@@ -270,3 +270,46 @@ int is_king_attacked_by_side(Game* board_state, Side side)
         return is_square_attacked_by_side(board_state, king_pos, side);
     }
 }
+
+void generate_all_king_capture_moves_from_game_state(Game* board_state, MoveList* moves_list)
+{
+    Square source_square, target_square;
+    Bitboard white_king = board_state->white_king;
+    Bitboard black_king = board_state->black_king;
+    Bitboard move, attack;
+
+    if(board_state->turn == WHITE)
+    {
+        source_square = GET_LSB_INDEX(white_king);
+
+        move = pre_calculated_king_moves[source_square] & BLACK_OCCUPENCY(board_state);
+        while(move){
+            target_square = GET_LSB_INDEX(move);
+           
+            moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                source_square,
+                target_square,
+                WHITE_KING,
+                CAPTURE
+            );
+
+            move = CLEAR_BIT_ON_BITBOARD(move, target_square);
+        }
+    } else {
+        source_square = GET_LSB_INDEX(black_king);
+
+        move = pre_calculated_king_moves[source_square] & WHITE_OCCUPENCY(board_state);
+        while(move){
+            target_square = GET_LSB_INDEX(move);
+
+            moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                source_square,
+                target_square,
+                BLACK_KING,
+                CAPTURE
+            );
+
+            move = CLEAR_BIT_ON_BITBOARD(move, target_square);
+        }
+    }
+}

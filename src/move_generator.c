@@ -27,6 +27,16 @@ void generate_all_pseudo_legal_moves_from_game_state(Game* game, MoveList* move_
     generate_all_king_quiet_and_capture_moves_from_game_state(game, move_list);
 }
 
+void generate_all_capture_moves_from_game_state(Game* game, MoveList* move_list)
+{
+    generate_all_pawns_capture_moves_from_game_state(game, move_list);
+    generate_all_rooks_captures_from_game_state(game, move_list);
+    generate_all_knight_captures_from_game_state(game, move_list);
+    generate_all_bishop_captures_from_game_state(game, move_list);
+    generate_all_queens_captures_from_game_state(game, move_list);
+    generate_all_king_capture_moves_from_game_state(game, move_list);
+}
+
 U64 generate_moves_from_position_at_depth(Game* game, int depth)
 {
     U64 result = 0;

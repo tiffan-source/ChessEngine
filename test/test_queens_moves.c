@@ -88,4 +88,58 @@ void test_generate_all_black_queens_move_from_tricky_position(void)
     free(result_for_black);
 }
 
+void test_generate_all_black_queens_capture_from_tricky_position(void)
+{
+    char *position_black = "r3k2r/Pppp1Npp/1b3nb1/nP6/BBP1P3/q4N2/Pp1P2Pp/R2Q1R1K b kq - 0 1";
+
+    Game *game_black = create_game_from_FEN(position_black);
+
+    MoveList* result_for_black = (MoveList*) malloc(sizeof(MoveList));
+    result_for_black->current_index = 0;
+
+    Move expected_for_black[] = {
+        CREATE_MOVE(A3, A4, BLACK_QUEEN, CAPTURE),
+        CREATE_MOVE(A3, B4, BLACK_QUEEN, CAPTURE),
+        CREATE_MOVE(A3, F3, BLACK_QUEEN, CAPTURE),
+        CREATE_MOVE(A3, A2, BLACK_QUEEN, CAPTURE),
+    };
+    
+    generate_all_queens_captures_from_game_state(game_black, result_for_black);
+    
+    qsort(result_for_black->moves, result_for_black->current_index, sizeof(Move), compare_move);
+    qsort(expected_for_black, 4, sizeof(Move), compare_move);
+
+    TEST_ASSERT_EQUAL(4, result_for_black->current_index);
+    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_black, result_for_black->moves, 4);
+    free_game(game_black);
+
+    free(result_for_black);
+}
+
+void test_generate_all_white_queens_mcapture_from_tricky_position(void)
+{
+    char *position_white = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - ";
+
+    Game *game_white = create_game_from_FEN(position_white);
+
+    MoveList* result_for_white = (MoveList*) malloc(sizeof(MoveList));
+    result_for_white->current_index = 0;
+
+    Move expected_for_black[] = {
+        CREATE_MOVE(F3, H3, WHITE_QUEEN, CAPTURE),
+        CREATE_MOVE(F3, F6, WHITE_QUEEN, CAPTURE)
+    };
+    
+    generate_all_queens_captures_from_game_state(game_white, result_for_white);
+    
+    qsort(result_for_white->moves, result_for_white->current_index, sizeof(Move), compare_move);
+    qsort(expected_for_black, 2, sizeof(Move), compare_move);
+
+    TEST_ASSERT_EQUAL(2, result_for_white->current_index);
+    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_black, result_for_white->moves, 2);
+    free_game(game_white);
+
+    free(result_for_white);
+}
+
 // #endif // TEST

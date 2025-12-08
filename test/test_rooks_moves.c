@@ -465,4 +465,48 @@ void test_generate_all_black_rook_move_from_tricky_position(void)
     free(result_for_black);
 }
 
+void test_generate_all_white_rooks_capture_from_tricky_position(void)
+{
+    char *position_white = "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1";
+    
+    Game *game_white = create_game_from_FEN(position_white);
+
+    MoveList* result_for_white = (MoveList*) malloc(sizeof(MoveList));
+    result_for_white->current_index = 0;
+
+    Move expected_for_white[] = {
+        CREATE_MOVE(B4, F4, WHITE_ROOK, CAPTURE)
+    };
+    
+    generate_all_rooks_captures_from_game_state(game_white, result_for_white);   
+
+    TEST_ASSERT_EQUAL_UINT(1, result_for_white->current_index);
+    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_white, result_for_white->moves, 1);
+
+    free_game(game_white);
+    free(result_for_white);
+
+}
+
+void test_generate_all_black_rooks_capture_from_tricky_position(void)
+{
+    char *position_black = "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 b - - 0 1";
+
+    Game *game_black = create_game_from_FEN(position_black);
+
+    MoveList* result_for_black = (MoveList*) malloc(sizeof(MoveList));
+    result_for_black->current_index = 0;
+
+    Move expected_for_black[] = {
+        CREATE_MOVE(H5, B5, BLACK_ROOK, CAPTURE)
+    };
+    
+    generate_all_rooks_captures_from_game_state(game_black, result_for_black);
+    
+    TEST_ASSERT_EQUAL_UINT(1, result_for_black->current_index);
+    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_black, result_for_black->moves, 1);
+    free_game(game_black);
+
+    free(result_for_black);
+}
 // #endif // TEST
