@@ -108,7 +108,6 @@ void generate_all_knight_moves_from_game_state(Game* board_state, MoveList* move
     Bitboard opponent_pieces;
     Square from_square, to_square;
     Bitboard possible_moves;
-    Bitboard temp_moves;
     
     if (board_state->turn == WHITE)
     {
@@ -128,14 +127,11 @@ void generate_all_knight_moves_from_game_state(Game* board_state, MoveList* move
     while (knights)
     {
         from_square = (Square)GET_LSB_INDEX(knights);
-        possible_moves = generate_knights_moves_from_square(from_square);
-        // Remove moves that land on own pieces
-        possible_moves &= ~own_pieces;
+        possible_moves = generate_knights_moves_from_square(from_square) & ~own_pieces;
 
-        temp_moves = possible_moves;
-        while (temp_moves)
+        while (possible_moves)
         {
-            to_square = (Square)GET_LSB_INDEX(temp_moves);
+            to_square = (Square)GET_LSB_INDEX(possible_moves);
             if (opponent_pieces & pre_calculated_bit_shifts[to_square])
             {
                 moves_list->moves[moves_list->current_index++] = CREATE_MOVE(from_square, to_square, (side == WHITE) ? WHITE_KNIGHT : BLACK_KNIGHT, CAPTURE);
@@ -144,7 +140,7 @@ void generate_all_knight_moves_from_game_state(Game* board_state, MoveList* move
             {
                 moves_list->moves[moves_list->current_index++] = CREATE_MOVE(from_square, to_square, (side == WHITE) ? WHITE_KNIGHT : BLACK_KNIGHT, QUIET_MOVES);
             }
-            temp_moves = CLEAR_BIT_ON_BITBOARD(temp_moves, to_square);
+            possible_moves = CLEAR_BIT_ON_BITBOARD(possible_moves, to_square);
         }
 
         knights = CLEAR_BIT_ON_BITBOARD(knights, from_square);
@@ -181,14 +177,13 @@ void generate_all_knight_captures_from_game_state(Game* board_state, MoveList* m
         from_square = (Square)GET_LSB_INDEX(knights);
         possible_moves = generate_knights_moves_from_square(from_square) & opponent_pieces;
 
-        temp_moves = possible_moves;
-        while (temp_moves)
+        while (possible_moves)
         {
-            to_square = (Square)GET_LSB_INDEX(temp_moves);
+            to_square = (Square)GET_LSB_INDEX(possible_moves);
             
             moves_list->moves[moves_list->current_index++] = CREATE_MOVE(from_square, to_square, (side == WHITE) ? WHITE_KNIGHT : BLACK_KNIGHT, CAPTURE);
 
-            temp_moves = CLEAR_BIT_ON_BITBOARD(temp_moves, to_square);
+            possible_moves = CLEAR_BIT_ON_BITBOARD(possible_moves, to_square);
         }
 
         knights = CLEAR_BIT_ON_BITBOARD(knights, from_square);

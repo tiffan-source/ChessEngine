@@ -113,21 +113,16 @@ void generate_all_king_quiet_and_capture_moves_from_game_state(Game* board_state
         while(white_king){
             source_square = GET_LSB_INDEX(white_king);
 
-            move = pre_calculated_king_moves[source_square];
+            move = pre_calculated_king_moves[source_square] & ~WHITE_OCCUPENCY(board_state);
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                if((pre_calculated_bit_shifts[target_square]) & (WHITE_OCCUPENCY(board_state))){
-                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
-                    continue;
-                } else {
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
-                        source_square,
-                        target_square,
-                        WHITE_KING,
-                        (pre_calculated_bit_shifts[target_square]) & (BLACK_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
-                    );
-                }
+                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    source_square,
+                    target_square,
+                    WHITE_KING,
+                    (pre_calculated_bit_shifts[target_square]) & (BLACK_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
+                );
 
                 move = CLEAR_BIT_ON_BITBOARD(move, target_square);
             }
@@ -138,21 +133,16 @@ void generate_all_king_quiet_and_capture_moves_from_game_state(Game* board_state
         while(black_king){
             source_square = GET_LSB_INDEX(black_king);
 
-            move = pre_calculated_king_moves[source_square];
+            move = pre_calculated_king_moves[source_square] & ~BLACK_OCCUPENCY(board_state);
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                if((pre_calculated_bit_shifts[target_square]) & (BLACK_OCCUPENCY(board_state))){
-                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
-                    continue;
-                } else {
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
-                        source_square,
-                        target_square,
-                        BLACK_KING,
-                        (pre_calculated_bit_shifts[target_square]) & (WHITE_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES    
-                    );
-                }
+                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    source_square,
+                    target_square,
+                    BLACK_KING,
+                    (pre_calculated_bit_shifts[target_square]) & (WHITE_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES    
+                );
 
                 move = CLEAR_BIT_ON_BITBOARD(move, target_square);
             }

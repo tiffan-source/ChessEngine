@@ -15,29 +15,25 @@ void generate_all_queens_moves_from_game_state(Game* board_state, MoveList* move
 
             source_square = GET_LSB_INDEX(white_queens);
 
-            move = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(
-                source_square,
-            all_occupency
-            ) | retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(
-                source_square,
+                move = (retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(
+                    source_square,
                 all_occupency
-            );
+                ) | retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(
+                    source_square,
+                    all_occupency
+                )) & ~WHITE_OCCUPENCY(board_state);
 
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                if((pre_calculated_bit_shifts[target_square]) & (WHITE_OCCUPENCY(board_state))){
-                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
-                    continue;
-                } else {
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
-                        source_square,
-                        target_square,
-                        WHITE_QUEEN,
-                        (pre_calculated_bit_shifts[target_square]) & (BLACK_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
-                    );
-                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
-                }
+                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    source_square,
+                    target_square,
+                    WHITE_QUEEN,
+                    (pre_calculated_bit_shifts[target_square]) & (BLACK_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
+                );
+                move = CLEAR_BIT_ON_BITBOARD(move, target_square);
+                
             }
 
             white_queens = CLEAR_BIT_ON_BITBOARD(white_queens, source_square);
@@ -46,29 +42,25 @@ void generate_all_queens_moves_from_game_state(Game* board_state, MoveList* move
         while(black_queens){
             source_square = GET_LSB_INDEX(black_queens);
 
-            move = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(
+            move = (retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(
                 source_square,
                 all_occupency
             ) | retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(
                 source_square,
                 ALL_OCCUPENCY(board_state)
-            );
+            )) & ~BLACK_OCCUPENCY(board_state);
 
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                if((pre_calculated_bit_shifts[target_square]) & (BLACK_OCCUPENCY(board_state))){
-                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
-                    continue;
-                } else {
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
-                        source_square,
-                        target_square,
-                        BLACK_QUEEN,
-                        (pre_calculated_bit_shifts[target_square]) & (WHITE_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
-                    );
-                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
-                }
+                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    source_square,
+                    target_square,
+                    BLACK_QUEEN,
+                    (pre_calculated_bit_shifts[target_square]) & (WHITE_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
+                );
+                move = CLEAR_BIT_ON_BITBOARD(move, target_square);
+                
             }
             black_queens = CLEAR_BIT_ON_BITBOARD(black_queens, source_square);
         }

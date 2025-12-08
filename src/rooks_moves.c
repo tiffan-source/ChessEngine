@@ -373,24 +373,19 @@ void generate_all_rooks_moves_from_game_state(Game* board_state, MoveList* moves
             move = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(
                 source_square,
                 ALL_OCCUPENCY(board_state)
-            );
+            ) & ~WHITE_OCCUPENCY(board_state);
 
 
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                if(pre_calculated_bit_shifts[target_square] & (WHITE_OCCUPENCY(board_state))){
-                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
-                    continue;
-                } else {
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
-                        source_square,
-                        target_square,
-                        WHITE_ROOK,
-                        pre_calculated_bit_shifts[target_square] & (BLACK_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
-                    );
-                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
-                }
+                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    source_square,
+                    target_square,
+                    WHITE_ROOK,
+                    pre_calculated_bit_shifts[target_square] & (BLACK_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
+                );
+                move = CLEAR_BIT_ON_BITBOARD(move, target_square);
             }
 
             white_rooks = CLEAR_BIT_ON_BITBOARD(white_rooks, source_square);
@@ -402,23 +397,19 @@ void generate_all_rooks_moves_from_game_state(Game* board_state, MoveList* moves
             move = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(
                 source_square,
                 ALL_OCCUPENCY(board_state)
-            );
+            ) & ~BLACK_OCCUPENCY(board_state);
 
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                if(pre_calculated_bit_shifts[target_square] & (BLACK_OCCUPENCY(board_state))){
-                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
-                    continue;
-                } else {
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
-                        source_square,
-                        target_square,
-                        BLACK_ROOK,
-                        pre_calculated_bit_shifts[target_square] & (WHITE_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
-                    );
-                    move = CLEAR_BIT_ON_BITBOARD(move, target_square);
-                }
+                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    source_square,
+                    target_square,
+                    BLACK_ROOK,
+                    pre_calculated_bit_shifts[target_square] & (WHITE_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
+                );
+                move = CLEAR_BIT_ON_BITBOARD(move, target_square);
+                
             }
             black_rooks = CLEAR_BIT_ON_BITBOARD(black_rooks, source_square);
         }
