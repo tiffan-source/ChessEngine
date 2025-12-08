@@ -116,54 +116,49 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                // if((pre_calculated_bit_shifts[target_square]) & all_occupency){
-                //     move = CLEAR_BIT_ON_BITBOARD(move, target_square);
-                //     continue;
-                // } else {
-                    if ((pre_calculated_bit_shifts[target_square]) & RANK_8)
-                    {
-                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
-                            source_square,
-                            target_square,
-                            WHITE_PAWN, QUEEN_PROMOTION
-                        );
+                if ((pre_calculated_bit_shifts[target_square]) & RANK_8)
+                {
+                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                        source_square,
+                        target_square,
+                        WHITE_PAWN, QUEEN_PROMOTION
+                    );
 
-                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
-                            source_square,
-                            target_square,
-                            WHITE_PAWN, ROOK_PROMOTION
-                        );
+                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                        source_square,
+                        target_square,
+                        WHITE_PAWN, ROOK_PROMOTION
+                    );
 
-                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
-                            source_square,
-                            target_square,
-                            WHITE_PAWN, BISHOP_PROMOTION
-                        );
+                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                        source_square,
+                        target_square,
+                        WHITE_PAWN, BISHOP_PROMOTION
+                    );
 
+                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                        source_square,
+                        target_square,
+                        WHITE_PAWN, KNIGHT_PROMOTION
+                    );
+                }
+                else
+                {
+                    diff_source_tag = abs(source_square - target_square);
+                    if (diff_source_tag == 16 && ((pre_calculated_bit_shifts[target_square + 8]) & all_occupency) == 0 ){
                         moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
                             source_square,
                             target_square,
-                            WHITE_PAWN, KNIGHT_PROMOTION
+                            WHITE_PAWN, DOUBLE_PAWN_PUSH
+                        );
+                    }else if (diff_source_tag != 16){
+                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                            source_square,
+                            target_square,
+                            WHITE_PAWN, QUIET_MOVES
                         );
                     }
-                    else
-                    {
-                        diff_source_tag = abs(source_square - target_square);
-                        if (diff_source_tag == 16 && ((pre_calculated_bit_shifts[target_square + 8]) & all_occupency) == 0 ){
-                            moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
-                                source_square,
-                                target_square,
-                                WHITE_PAWN, DOUBLE_PAWN_PUSH
-                            );
-                        }else if (diff_source_tag != 16){
-                            moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
-                                source_square,
-                                target_square,
-                                WHITE_PAWN, QUIET_MOVES
-                            );
-                        }
-                    }
-                // }
+                }
 
                 move = CLEAR_BIT_ON_BITBOARD(move, target_square);
             }

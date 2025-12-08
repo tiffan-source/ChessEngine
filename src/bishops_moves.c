@@ -322,18 +322,21 @@ void generate_all_bishop_moves_from_game_state(Game* board_state, MoveList* move
     Square source_square, target_square;
     Bitboard white_bishops = board_state->white_bishops;
     Bitboard black_bishops = board_state->black_bishops;
-    Bitboard move, attack;
+    Bitboard move, attack, pre_calculated_bishop_moves;
+    Bitboard all_occupency = ALL_OCCUPENCY(board_state), white_occupency = WHITE_OCCUPENCY(board_state), black_occupency = BLACK_OCCUPENCY(board_state);
 
     if (board_state->turn == WHITE)
     {
         while(white_bishops){
             source_square = GET_LSB_INDEX(white_bishops);
 
-            move = retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(
+            pre_calculated_bishop_moves = retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(
                 source_square,
-                ALL_OCCUPENCY(board_state)
-            ) & ~WHITE_OCCUPENCY(board_state);
+                all_occupency
+            );
 
+            move = pre_calculated_bishop_moves & ~all_occupency;
+            attack = pre_calculated_bishop_moves & black_occupency;
 
             while(move){
                 target_square = GET_LSB_INDEX(move);
@@ -342,10 +345,23 @@ void generate_all_bishop_moves_from_game_state(Game* board_state, MoveList* move
                     source_square,
                     target_square,
                     WHITE_BISHOP,
-                    (pre_calculated_bit_shifts[target_square]) & (BLACK_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
+                    QUIET_MOVES
                 );
                 move = CLEAR_BIT_ON_BITBOARD(move, target_square);
                 
+            }
+
+            while (attack)
+            {
+                target_square = GET_LSB_INDEX(attack);
+
+                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    source_square,
+                    target_square,
+                    WHITE_BISHOP,
+                    CAPTURE
+                );
+                attack = CLEAR_BIT_ON_BITBOARD(attack, target_square);
             }
 
             white_bishops = CLEAR_BIT_ON_BITBOARD(white_bishops, source_square);
@@ -354,10 +370,13 @@ void generate_all_bishop_moves_from_game_state(Game* board_state, MoveList* move
         while(black_bishops){
             source_square = GET_LSB_INDEX(black_bishops);
 
-            move = retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(
+            pre_calculated_bishop_moves = retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(
                 source_square,
-                ALL_OCCUPENCY(board_state)
-            ) & ~BLACK_OCCUPENCY(board_state);
+                all_occupency
+            );
+
+            move = pre_calculated_bishop_moves & ~all_occupency;
+            attack = pre_calculated_bishop_moves & white_occupency;
 
             while(move){
                 target_square = GET_LSB_INDEX(move);
@@ -366,9 +385,22 @@ void generate_all_bishop_moves_from_game_state(Game* board_state, MoveList* move
                     source_square,
                     target_square,
                     BLACK_BISHOP,
-                    (pre_calculated_bit_shifts[target_square]) & (WHITE_OCCUPENCY(board_state)) ? CAPTURE : QUIET_MOVES
+                    QUIET_MOVES
                 );
                 move = CLEAR_BIT_ON_BITBOARD(move, target_square);
+            }
+
+            while (attack)
+            {
+                target_square = GET_LSB_INDEX(attack);
+
+                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    source_square,
+                    target_square,
+                    BLACK_BISHOP,
+                    CAPTURE
+                );
+                attack = CLEAR_BIT_ON_BITBOARD(attack, target_square);
             }
 
             black_bishops = CLEAR_BIT_ON_BITBOARD(black_bishops, source_square);

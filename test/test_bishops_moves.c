@@ -274,7 +274,8 @@ void test_generate_all_white_bishop_move_from_tricky_position(void)
     qsort(result_for_white->moves, result_for_white->current_index, sizeof(Move), compare_move);
     qsort(expected_for_white, 9, sizeof(Move), compare_move);    
 
-    TEST_ASSERT_EQUAL_INT_ARRAY(expected_for_white, result_for_white->moves, 9);
+    TEST_ASSERT_EQUAL_INT(9, result_for_white->current_index);
+    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_white, result_for_white->moves, 9);
 
     free_game(game_white);
     free(result_for_white);
@@ -308,9 +309,10 @@ void test_generate_all_black_bishop_move_from_tricky_position(void)
     qsort(result_for_black->moves, result_for_black->current_index, sizeof(Move), compare_move);
     qsort(expected_for_black, 10, sizeof(Move), compare_move);
 
-    TEST_ASSERT_EQUAL_INT_ARRAY(expected_for_black, result_for_black->moves, 10);
-    free_game(game_black);
+    TEST_ASSERT_EQUAL_INT(10, result_for_black->current_index);
+    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_black, result_for_black->moves, 10);
 
+    free_game(game_black);
     free(result_for_black);
 }
 
@@ -335,7 +337,7 @@ void test_generate_all_white_bishop_capture_from_tricky_position(void)
     qsort(expected_for_white, 2, sizeof(Move), compare_move);    
 
     TEST_ASSERT_EQUAL(2, result_for_white->current_index);
-    TEST_ASSERT_EQUAL_INT_ARRAY(expected_for_white, result_for_white->moves, 2);
+    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_white, result_for_white->moves, 2);
 
     free_game(game_white);
     free(result_for_white);
@@ -361,8 +363,8 @@ void test_generate_all_black_bishop_capture_from_tricky_position(void)
     qsort(result_for_black->moves, result_for_black->current_index, sizeof(Move), compare_move);
     qsort(expected_for_black, 3, sizeof(Move), compare_move);
 
-    TEST_ASSERT_EQUAL(3, result_for_black->current_index);
-    TEST_ASSERT_EQUAL_INT_ARRAY(expected_for_black, result_for_black->moves, 3);
+    TEST_ASSERT_EQUAL_INT(3, result_for_black->current_index);
+    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_black, result_for_black->moves, 3);
     free_game(game_black);
 
     free(result_for_black);

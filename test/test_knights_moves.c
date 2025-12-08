@@ -184,7 +184,8 @@ void test_generate_all_white_knight_move_from_tricky_position(void)
     qsort(result_for_white->moves, result_for_white->current_index, sizeof(Move), compare_move);
     qsort(expected_for_white, 13, sizeof(Move), compare_move);
     
-    TEST_ASSERT_EQUAL_INT_ARRAY(expected_for_white, result_for_white->moves, 13);
+    TEST_ASSERT_EQUAL_INT(13, result_for_white->current_index);
+    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_white, result_for_white->moves, 13);
 
     free_game(game_white);
     free(result_for_white);
@@ -218,7 +219,8 @@ void test_generate_all_black_knight_move_from_tricky_position(void)
     qsort(result_for_black->moves, result_for_black->current_index, sizeof(Move), compare_move);
     qsort(expected_for_black, 8, sizeof(Move), compare_move);    
     
-    TEST_ASSERT_EQUAL_INT_ARRAY(expected_for_black, result_for_black->moves, 8);
+    TEST_ASSERT_EQUAL_INT(8, result_for_black->current_index);
+    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_black, result_for_black->moves, 8);
 
     free_game(game_black);
     free(result_for_black);
@@ -249,7 +251,7 @@ void test_generate_all_knight_moves_whith_capture(void)
     qsort(expected, 7, sizeof(Move), compare_move);
 
     TEST_ASSERT_EQUAL_INT(result->current_index, 7);
-    TEST_ASSERT_EQUAL_INT_ARRAY(expected, result->moves, 7);
+    TEST_ASSERT_EQUAL_UINT_ARRAY(expected, result->moves, 7);
 
     free_game(game);
     free(result);
@@ -276,7 +278,7 @@ void test_generate_all_white_knight_capture_from_tricky_position(void)
     qsort(result_for_white->moves, result_for_white->current_index, sizeof(Move), compare_move);
     qsort(expected_for_white, 2, sizeof(Move), compare_move);
     
-    TEST_ASSERT_EQUAL_INT_ARRAY(expected_for_white, result_for_white->moves, 2);
+    TEST_ASSERT_EQUAL_INT(2, result_for_white->current_index);
     TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_white, result_for_white->moves, 2);
 
     free_game(game_white);

@@ -430,7 +430,8 @@ void test_generate_all_white_rook_move_from_tricky_position(void)
     qsort(result_for_white->moves, result_for_white->current_index, sizeof(Move), compare_move);
     qsort(expected_for_white, 5, sizeof(Move), compare_move);    
 
-    TEST_ASSERT_EQUAL_INT_ARRAY(expected_for_white, result_for_white->moves, 5);
+    TEST_ASSERT_EQUAL_INT(5, result_for_white->current_index);
+    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_white, result_for_white->moves, 5);
 
     free_game(game_white);
     free(result_for_white);
@@ -459,9 +460,10 @@ void test_generate_all_black_rook_move_from_tricky_position(void)
     qsort(result_for_black->moves, result_for_black->current_index, sizeof(Move), compare_move);
     qsort(expected_for_black, 6, sizeof(Move), compare_move);
 
-    TEST_ASSERT_EQUAL_INT_ARRAY(expected_for_black, result_for_black->moves, 6);
-    free_game(game_black);
+    TEST_ASSERT_EQUAL_INT(6, result_for_black->current_index);
+    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_black, result_for_black->moves, 6);
 
+    free_game(game_black);
     free(result_for_black);
 }
 

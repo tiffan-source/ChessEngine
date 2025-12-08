@@ -85,6 +85,11 @@ U64 test_helper_generate_moves_from_position_at_depth(Game* game, int depth, int
             }else{
                 result++;
             }
+
+            // if(depth == original_depth){
+            //     print_move_as_uci(move_list->moves[i]);
+            //     printf("\n");
+            // }
         }
 
     }

@@ -107,7 +107,8 @@ void generate_all_knight_moves_from_game_state(Game* board_state, MoveList* move
     Bitboard own_pieces;
     Bitboard opponent_pieces;
     Square from_square, to_square;
-    Bitboard possible_moves;
+    Bitboard possible_moves, attacks_moves, pre_calculated_knight_moves;
+    Bitboard all_occupency = ALL_OCCUPENCY(board_state);
     
     if (board_state->turn == WHITE)
     {
@@ -127,21 +128,24 @@ void generate_all_knight_moves_from_game_state(Game* board_state, MoveList* move
     while (knights)
     {
         from_square = (Square)GET_LSB_INDEX(knights);
-        possible_moves = generate_knights_moves_from_square(from_square) & ~own_pieces;
+        pre_calculated_knight_moves = generate_knights_moves_from_square(from_square);
+        possible_moves = pre_calculated_knight_moves & ~all_occupency;
+        attacks_moves = pre_calculated_knight_moves & opponent_pieces;
 
         while (possible_moves)
         {
             to_square = (Square)GET_LSB_INDEX(possible_moves);
-            if (opponent_pieces & pre_calculated_bit_shifts[to_square])
-            {
-                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(from_square, to_square, (side == WHITE) ? WHITE_KNIGHT : BLACK_KNIGHT, CAPTURE);
-            }
-            else
-            {
-                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(from_square, to_square, (side == WHITE) ? WHITE_KNIGHT : BLACK_KNIGHT, QUIET_MOVES);
-            }
+            moves_list->moves[moves_list->current_index++] = CREATE_MOVE(from_square, to_square, (side == WHITE) ? WHITE_KNIGHT : BLACK_KNIGHT, QUIET_MOVES);
             possible_moves = CLEAR_BIT_ON_BITBOARD(possible_moves, to_square);
         }
+
+        while (attacks_moves)
+        {
+            to_square = (Square)GET_LSB_INDEX(attacks_moves);
+            moves_list->moves[moves_list->current_index++] = CREATE_MOVE(from_square, to_square, (side == WHITE) ? WHITE_KNIGHT : BLACK_KNIGHT, CAPTURE);
+            attacks_moves = CLEAR_BIT_ON_BITBOARD(attacks_moves, to_square);
+        }
+        
 
         knights = CLEAR_BIT_ON_BITBOARD(knights, from_square);
     }
