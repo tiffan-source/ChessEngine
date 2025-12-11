@@ -9,6 +9,7 @@
 #include "game.h"
 #include "moves.h"
 #include "pieces.h"
+#include "test_helpers.h"
 
 void setUp(void)
 {
@@ -17,12 +18,6 @@ void setUp(void)
 
 void tearDown(void)
 {
-}
-
-static int compare_move(const void *a, const void *b) {
-    int ia = *(const Move*)a;
-    int ib = *(const Move*)b;
-    return ia - ib;
 }
 
 void test_generate_rooks_move_from_a1_without_blocking_piece_should_return_valid_bitboard(void)
@@ -417,21 +412,21 @@ void test_generate_all_white_rook_move_from_tricky_position(void)
     MoveList* result_for_white = (MoveList*) malloc(sizeof(MoveList));
     result_for_white->current_index = 0;
 
-    Move expected_for_white[] = {
-        CREATE_MOVE(A1, B1, WHITE_ROOK, QUIET_MOVES),
-        CREATE_MOVE(A1, C1, WHITE_ROOK, QUIET_MOVES),
-        CREATE_MOVE(F1, E1, WHITE_ROOK, QUIET_MOVES),
-        CREATE_MOVE(F1, G1, WHITE_ROOK, QUIET_MOVES),
-        CREATE_MOVE(F1, F2, WHITE_ROOK, QUIET_MOVES),
+    ScoredMove expected_for_white[] = {
+        CREATE_SCORED_MOVE(A1, B1, WHITE_ROOK, QUIET_MOVES),
+        CREATE_SCORED_MOVE(A1, C1, WHITE_ROOK, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F1, E1, WHITE_ROOK, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F1, G1, WHITE_ROOK, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F1, F2, WHITE_ROOK, QUIET_MOVES),
     };
     
     generate_all_rooks_moves_from_game_state(game_white, result_for_white);
 
-    qsort(result_for_white->moves, result_for_white->current_index, sizeof(Move), compare_move);
-    qsort(expected_for_white, 5, sizeof(Move), compare_move);    
+    qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected_for_white, 5, sizeof(ScoredMove), compare_scored_move);    
 
     TEST_ASSERT_EQUAL_INT(5, result_for_white->current_index);
-    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_white, result_for_white->moves, 5);
+    assert_move_lists_equal(expected_for_white, result_for_white->moves, 5);
 
     free_game(game_white);
     free(result_for_white);
@@ -446,22 +441,22 @@ void test_generate_all_black_rook_move_from_tricky_position(void)
     MoveList* result_for_black = (MoveList*) malloc(sizeof(MoveList));
     result_for_black->current_index = 0;
 
-    Move expected_for_black[] = {
-        CREATE_MOVE(A8, B8, BLACK_ROOK, QUIET_MOVES),
-        CREATE_MOVE(A8, C8, BLACK_ROOK, QUIET_MOVES),
-        CREATE_MOVE(A8, D8, BLACK_ROOK, QUIET_MOVES),
-        CREATE_MOVE(A8, A7, BLACK_ROOK, CAPTURE),
-        CREATE_MOVE(H8, G8, BLACK_ROOK, QUIET_MOVES),
-        CREATE_MOVE(H8, F8, BLACK_ROOK, QUIET_MOVES),
+    ScoredMove expected_for_black[] = {
+        CREATE_SCORED_MOVE(A8, B8, BLACK_ROOK, QUIET_MOVES),
+        CREATE_SCORED_MOVE(A8, C8, BLACK_ROOK, QUIET_MOVES),
+        CREATE_SCORED_MOVE(A8, D8, BLACK_ROOK, QUIET_MOVES),
+        CREATE_SCORED_MOVE(A8, A7, BLACK_ROOK, CAPTURE),
+        CREATE_SCORED_MOVE(H8, G8, BLACK_ROOK, QUIET_MOVES),
+        CREATE_SCORED_MOVE(H8, F8, BLACK_ROOK, QUIET_MOVES),
     };
     
     generate_all_rooks_moves_from_game_state(game_black, result_for_black);
     
-    qsort(result_for_black->moves, result_for_black->current_index, sizeof(Move), compare_move);
-    qsort(expected_for_black, 6, sizeof(Move), compare_move);
+    qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected_for_black, 6, sizeof(ScoredMove), compare_scored_move);
 
     TEST_ASSERT_EQUAL_INT(6, result_for_black->current_index);
-    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_black, result_for_black->moves, 6);
+    assert_move_lists_equal(expected_for_black, result_for_black->moves, 6);
 
     free_game(game_black);
     free(result_for_black);
@@ -476,14 +471,14 @@ void test_generate_all_white_rooks_capture_from_tricky_position(void)
     MoveList* result_for_white = (MoveList*) malloc(sizeof(MoveList));
     result_for_white->current_index = 0;
 
-    Move expected_for_white[] = {
-        CREATE_MOVE(B4, F4, WHITE_ROOK, CAPTURE)
+    ScoredMove expected_for_white[] = {
+        CREATE_SCORED_MOVE(B4, F4, WHITE_ROOK, CAPTURE)
     };
     
     generate_all_rooks_captures_from_game_state(game_white, result_for_white);   
 
     TEST_ASSERT_EQUAL_UINT(1, result_for_white->current_index);
-    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_white, result_for_white->moves, 1);
+    assert_move_lists_equal(expected_for_white, result_for_white->moves, 1);
 
     free_game(game_white);
     free(result_for_white);
@@ -499,14 +494,14 @@ void test_generate_all_black_rooks_capture_from_tricky_position(void)
     MoveList* result_for_black = (MoveList*) malloc(sizeof(MoveList));
     result_for_black->current_index = 0;
 
-    Move expected_for_black[] = {
-        CREATE_MOVE(H5, B5, BLACK_ROOK, CAPTURE)
+    ScoredMove expected_for_black[] = {
+        CREATE_SCORED_MOVE(H5, B5, BLACK_ROOK, CAPTURE)
     };
     
     generate_all_rooks_captures_from_game_state(game_black, result_for_black);
     
     TEST_ASSERT_EQUAL_UINT(1, result_for_black->current_index);
-    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_black, result_for_black->moves, 1);
+    assert_move_lists_equal(expected_for_black, result_for_black->moves, 1);
     free_game(game_black);
 
     free(result_for_black);

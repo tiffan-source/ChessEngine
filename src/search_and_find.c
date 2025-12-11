@@ -23,7 +23,7 @@ ScoredMove min_max_best_move_min(Game* game, int depth)
     for (int i = 0; i < moves_list.current_index; i++)
     {
 
-        Game new_game_state = make_move(*game, moves_list.moves[i]);
+        Game new_game_state = make_move(*game, moves_list.moves[i].move);
 
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn == WHITE_TURN ? WHITE : BLACK)){
             move_found = 1;
@@ -31,7 +31,7 @@ ScoredMove min_max_best_move_min(Game* game, int depth)
             if (scored_move.score < min)
             {
                 min = scored_move.score;
-                min_move = moves_list.moves[i];
+                min_move = moves_list.moves[i].move;
             }
         }
     }
@@ -74,7 +74,7 @@ ScoredMove min_max_best_move_max(Game* game, int depth)
 
     for (int i = 0; i < moves_list.current_index; i++)
     {
-        Game new_game_state = make_move(*game, moves_list.moves[i]);
+        Game new_game_state = make_move(*game, moves_list.moves[i].move);
 
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn == WHITE_TURN ? WHITE : BLACK)){
             move_found = 1;
@@ -82,7 +82,7 @@ ScoredMove min_max_best_move_max(Game* game, int depth)
             if (scored_move.score > max)
             {
                 max = scored_move.score;
-                max_move= moves_list.moves[i];
+                max_move= moves_list.moves[i].move;
             }
         }
     }
@@ -126,7 +126,7 @@ ScoredMove negamax_best_move(Game* game, int depth)
 
     for (int i = 0; i < moves_list.current_index; i++)
     {
-        Game new_game_state = make_move(*game, moves_list.moves[i]);
+        Game new_game_state = make_move(*game, moves_list.moves[i].move);
 
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn == WHITE_TURN ? WHITE : BLACK)){
             move_found = 1;
@@ -134,7 +134,7 @@ ScoredMove negamax_best_move(Game* game, int depth)
             if (scored_move.score * -1 > max)
             {
                 max = scored_move.score * -1;
-                max_move= moves_list.moves[i];
+                max_move = moves_list.moves[i].move;
             }
         }
     }
@@ -181,7 +181,7 @@ ScoredMove alpha_beta_min(Game* game, int depth, int alpha, int beta)
     for (int i = 0; i < moves_list.current_index; i++)
     {
 
-        Game new_game_state = make_move(*game, moves_list.moves[i]);
+        Game new_game_state = make_move(*game, moves_list.moves[i].move);
 
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn == WHITE_TURN ? WHITE : BLACK)){
             move_found = 1;
@@ -189,7 +189,7 @@ ScoredMove alpha_beta_min(Game* game, int depth, int alpha, int beta)
             if (scored_move.score < min)
             {
                 min = scored_move.score;
-                min_move = moves_list.moves[i];
+                min_move = moves_list.moves[i].move;
                 if (min < beta)
                 {
                     beta = min;
@@ -240,7 +240,7 @@ ScoredMove alpha_beta_max(Game* game, int depth, int alpha, int beta)
 
     for (int i = 0; i < moves_list.current_index; i++)
     {
-        Game new_game_state = make_move(*game, moves_list.moves[i]);
+        Game new_game_state = make_move(*game, moves_list.moves[i].move);
 
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn == WHITE_TURN ? WHITE : BLACK)){
             move_found = 1;
@@ -248,7 +248,7 @@ ScoredMove alpha_beta_max(Game* game, int depth, int alpha, int beta)
             if (scored_move.score > max)
             {
                 max = scored_move.score;
-                max_move= moves_list.moves[i];
+                max_move = moves_list.moves[i].move;
                 if (max > alpha)
                 {
                     alpha = max;
@@ -299,7 +299,7 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta)
 
     for (int i = 0; i < moves_list.current_index; i++)
     {
-        Game new_game_state = make_move(*game, moves_list.moves[i]);
+        Game new_game_state = make_move(*game, moves_list.moves[i].move);
 
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn == WHITE_TURN ? WHITE : BLACK)){
             move_found = 1;
@@ -307,14 +307,14 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta)
             if (scored_move.score * -1 > max)
             {
                 max = scored_move.score * -1;
-                max_move= moves_list.moves[i];
+                max_move = moves_list.moves[i].move;
                 if (max > alpha)
                 {
                     alpha = max;
                 }
                 if (beta <= alpha)
                 {
-                    break; // Alpha-beta pruning
+                    break;
                 }
             }
         }

@@ -135,14 +135,14 @@ void generate_all_knight_moves_from_game_state(Game* board_state, MoveList* move
         while (possible_moves)
         {
             to_square = (Square)GET_LSB_INDEX(possible_moves);
-            moves_list->moves[moves_list->current_index++] = CREATE_MOVE(from_square, to_square, (side == WHITE) ? WHITE_KNIGHT : BLACK_KNIGHT, QUIET_MOVES);
+            moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(from_square, to_square, (side == WHITE) ? WHITE_KNIGHT : BLACK_KNIGHT, QUIET_MOVES);
             possible_moves = CLEAR_BIT_ON_BITBOARD(possible_moves, to_square);
         }
 
         while (attacks_moves)
         {
             to_square = (Square)GET_LSB_INDEX(attacks_moves);
-            moves_list->moves[moves_list->current_index++] = CREATE_MOVE(from_square, to_square, (side == WHITE) ? WHITE_KNIGHT : BLACK_KNIGHT, CAPTURE);
+            moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(from_square, to_square, (side == WHITE) ? WHITE_KNIGHT : BLACK_KNIGHT, CAPTURE);
             attacks_moves = CLEAR_BIT_ON_BITBOARD(attacks_moves, to_square);
         }
         
@@ -185,7 +185,7 @@ void generate_all_knight_captures_from_game_state(Game* board_state, MoveList* m
         {
             to_square = (Square)GET_LSB_INDEX(possible_moves);
             
-            moves_list->moves[moves_list->current_index++] = CREATE_MOVE(from_square, to_square, (side == WHITE) ? WHITE_KNIGHT : BLACK_KNIGHT, CAPTURE);
+            moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(from_square, to_square, (side == WHITE) ? WHITE_KNIGHT : BLACK_KNIGHT, CAPTURE);
 
             possible_moves = CLEAR_BIT_ON_BITBOARD(possible_moves, to_square);
         }

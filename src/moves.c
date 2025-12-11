@@ -98,11 +98,11 @@ void capture_piece_on_square(Game* game, Square square)
 
 void move_piece(Game* game, Move move)
 {
-    Square source_square = GET_SOURCE_SQUARE(move);
+    Square source_square = GET_SOURCE_SQUARE_FROM_MOVE(move);
     Bitboard from_bitboard = pre_calculated_bit_shifts[source_square];
-    Bitboard to_bitboard = pre_calculated_bit_shifts[GET_DESTINATION_SQUARE(move)];
+    Bitboard to_bitboard = pre_calculated_bit_shifts[GET_DESTINATION_SQUARE_FROM_MOVE(move)];
 
-    switch (GET_PIECE_TYPE(move)) {
+    switch (GET_PIECE_TYPE_FROM_MOVE(move)) {
         case WHITE_PAWN:
             game->white_pawns &= ~from_bitboard;
             game->white_pawns |= to_bitboard;
@@ -169,10 +169,10 @@ void move_piece(Game* game, Move move)
 
 void print_move(Move move)
 {
-    Square from_square = GET_SOURCE_SQUARE(move);
-    Square to_square = GET_DESTINATION_SQUARE(move);
-    PieceType piece_type = GET_PIECE_TYPE(move);
-    MoveType move_type = GET_MOVE_TYPE(move);
+    Square from_square = GET_SOURCE_SQUARE_FROM_MOVE(move);
+    Square to_square = GET_DESTINATION_SQUARE_FROM_MOVE(move);
+    PieceType piece_type = GET_PIECE_TYPE_FROM_MOVE(move);
+    MoveType move_type = GET_MOVE_TYPE_FROM_MOVE(move);
 
     printf("Details of move %d:\n", move);
     printf("From Square: %s\n", square_to_string[from_square]);
@@ -184,13 +184,13 @@ void print_move(Move move)
 
 void print_move_as_uci(Move move)
 {
-    Square from_square = GET_SOURCE_SQUARE(move);
-    Square to_square = GET_DESTINATION_SQUARE(move);
+    Square from_square = GET_SOURCE_SQUARE_FROM_MOVE(move);
+    Square to_square = GET_DESTINATION_SQUARE_FROM_MOVE(move);
     char promotion_char = '\0';
 
     printf("%s%s", square_to_string[from_square], square_to_string[to_square]);
 
-    switch (GET_MOVE_TYPE(move))
+    switch (GET_MOVE_TYPE_FROM_MOVE(move))
     {
         case KNIGHT_PROMOTION:
         case KNIGHT_PROMOTION_CAPTURE:
@@ -220,13 +220,13 @@ void print_move_as_uci(Move move)
 
 void build_move_as_uci(Move move,char* result)
 {
-    Square from_square = GET_SOURCE_SQUARE(move);
-    Square to_square = GET_DESTINATION_SQUARE(move);
+    Square from_square = GET_SOURCE_SQUARE_FROM_MOVE(move);
+    Square to_square = GET_DESTINATION_SQUARE_FROM_MOVE(move);
     char promotion_char = '\0';
 
     // printf("%s%s", square_to_string[from_square], square_to_string[to_square]);
 
-    switch (GET_MOVE_TYPE(move))
+    switch (GET_MOVE_TYPE_FROM_MOVE(move))
     {
         case KNIGHT_PROMOTION:
         case KNIGHT_PROMOTION_CAPTURE:
@@ -258,13 +258,13 @@ void build_move_as_uci(Move move,char* result)
 
 void promote_to_piece(Game* game, Move move, PieceType new_piece_type)
 {
-    Bitboard to_bitboard = pre_calculated_bit_shifts[GET_DESTINATION_SQUARE(move)];
-    Bitboard from_bitboard = pre_calculated_bit_shifts[GET_SOURCE_SQUARE(move)];
+    Bitboard to_bitboard = pre_calculated_bit_shifts[GET_DESTINATION_SQUARE_FROM_MOVE(move)];
+    Bitboard from_bitboard = pre_calculated_bit_shifts[GET_SOURCE_SQUARE_FROM_MOVE(move)];
 
     // First, remove the pawn from the source square
-    if (GET_PIECE_TYPE(move) == WHITE_PAWN) {
+    if (GET_PIECE_TYPE_FROM_MOVE(move) == WHITE_PAWN) {
         game->white_pawns &= ~from_bitboard;
-    } else if (GET_PIECE_TYPE(move) == BLACK_PAWN) {
+    } else if (GET_PIECE_TYPE_FROM_MOVE(move) == BLACK_PAWN) {
         game->black_pawns &= ~from_bitboard;
     }
 
@@ -301,16 +301,16 @@ void promote_to_piece(Game* game, Move move, PieceType new_piece_type)
 
 Game make_move(Game game, Move move)
 {
-    switch (GET_MOVE_TYPE(move)) {
+    switch (GET_MOVE_TYPE_FROM_MOVE(move)) {
         case CAPTURE:
             move_piece(&game, move);
-            capture_piece_on_square(&game, GET_DESTINATION_SQUARE(move));
+            capture_piece_on_square(&game, GET_DESTINATION_SQUARE_FROM_MOVE(move));
             break;
 
         case EN_PASSANT_CAPTURE:
             move_piece(&game, move);
             {
-                int ep_square = (game.turn == WHITE_TURN) ? GET_DESTINATION_SQUARE(move) + 8 : GET_DESTINATION_SQUARE(move) - 8;
+                int ep_square = (game.turn == WHITE_TURN) ? GET_DESTINATION_SQUARE_FROM_MOVE(move) + 8 : GET_DESTINATION_SQUARE_FROM_MOVE(move) - 8;
                 capture_piece_on_square(&game, ep_square);
             }
             break;
@@ -338,22 +338,22 @@ Game make_move(Game game, Move move)
 
 
         case QUEEN_PROMOTION_CAPTURE:
-            capture_piece_on_square(&game, GET_DESTINATION_SQUARE(move));
+            capture_piece_on_square(&game, GET_DESTINATION_SQUARE_FROM_MOVE(move));
             promote_to_piece(&game, move, (game.turn == WHITE_TURN) ? WHITE_QUEEN : BLACK_QUEEN);
             break;
 
         case KNIGHT_PROMOTION_CAPTURE:
-            capture_piece_on_square(&game, GET_DESTINATION_SQUARE(move));
+            capture_piece_on_square(&game, GET_DESTINATION_SQUARE_FROM_MOVE(move));
             promote_to_piece(&game, move, (game.turn == WHITE_TURN) ? WHITE_KNIGHT : BLACK_KNIGHT);
             break;
 
         case BISHOP_PROMOTION_CAPTURE:
-            capture_piece_on_square(&game, GET_DESTINATION_SQUARE(move));
+            capture_piece_on_square(&game, GET_DESTINATION_SQUARE_FROM_MOVE(move));
             promote_to_piece(&game, move, (game.turn == WHITE_TURN) ? WHITE_BISHOP: BLACK_BISHOP);
             break;
 
         case ROOK_PROMOTION_CAPTURE:
-            capture_piece_on_square(&game, GET_DESTINATION_SQUARE(move));
+            capture_piece_on_square(&game, GET_DESTINATION_SQUARE_FROM_MOVE(move));
             promote_to_piece(&game, move, (game.turn == WHITE_TURN) ? WHITE_ROOK : BLACK_ROOK);
             break;
 
@@ -382,9 +382,9 @@ Game make_move(Game game, Move move)
             break;
     }
 
-    if (GET_MOVE_TYPE(move) == DOUBLE_PAWN_PUSH)
+    if (GET_MOVE_TYPE_FROM_MOVE(move) == DOUBLE_PAWN_PUSH)
     {
-        game.en_passant_target_square = GET_DESTINATION_SQUARE(move) + ((GET_PIECE_TYPE(move) == WHITE_PAWN) ? 8 : -8);
+        game.en_passant_target_square = GET_DESTINATION_SQUARE_FROM_MOVE(move) + ((GET_PIECE_TYPE_FROM_MOVE(move) == WHITE_PAWN) ? 8 : -8);
     }
     else
     {

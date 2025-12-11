@@ -120,7 +120,7 @@ void generate_all_king_quiet_and_capture_moves_from_game_state(Game* board_state
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                     source_square,
                     target_square,
                     WHITE_KING,
@@ -133,7 +133,7 @@ void generate_all_king_quiet_and_capture_moves_from_game_state(Game* board_state
             while(attack){
                 target_square = GET_LSB_INDEX(attack);
 
-                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                     source_square,
                     target_square,
                     WHITE_KING,
@@ -155,7 +155,7 @@ void generate_all_king_quiet_and_capture_moves_from_game_state(Game* board_state
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                     source_square,
                     target_square,
                     BLACK_KING,
@@ -168,7 +168,7 @@ void generate_all_king_quiet_and_capture_moves_from_game_state(Game* board_state
             while(attack){
                 target_square = GET_LSB_INDEX(attack);
 
-                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                     source_square,
                     target_square,
                     BLACK_KING,
@@ -246,7 +246,7 @@ void generate_all_king_castling_moves_from_game_state(Game* board_state, MoveLis
                !is_square_attacked_by_side(board_state, F1, BLACK) )
             {
                 if(!(occupency & square_between_white_king_and_white_rook))
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(E1, G1, WHITE_KING, KING_CASTLE);
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(E1, G1, WHITE_KING, KING_CASTLE);
             }
         }
         if (board_state->castling_rights & WHITE_QUEEN_SIDE_CASTLING)
@@ -255,7 +255,7 @@ void generate_all_king_castling_moves_from_game_state(Game* board_state, MoveLis
                 !is_square_attacked_by_side(board_state, D1, BLACK) )
             {
                 if(!(occupency & square_between_white_king_and_white_queen_rook))
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(E1, C1, WHITE_KING, QUEEN_CASTLE);
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(E1, C1, WHITE_KING, QUEEN_CASTLE);
             }
         }
     } else{
@@ -265,7 +265,7 @@ void generate_all_king_castling_moves_from_game_state(Game* board_state, MoveLis
                !is_square_attacked_by_side(board_state, F8, WHITE) )
             {
                 if(!(occupency & square_between_black_king_and_black_rook))
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(E8, G8, BLACK_KING, KING_CASTLE);
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(E8, G8, BLACK_KING, KING_CASTLE);
             }
         }
         if (board_state->castling_rights & BLACK_QUEEN_SIDE_CASTLING)
@@ -274,7 +274,7 @@ void generate_all_king_castling_moves_from_game_state(Game* board_state, MoveLis
                 !is_square_attacked_by_side(board_state, D8, WHITE) )
             {
                 if(!(occupency & square_between_black_king_and_black_queen_rook))
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE);
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE);
             }
         }
     }
@@ -307,7 +307,7 @@ void generate_all_king_capture_moves_from_game_state(Game* board_state, MoveList
         while(move){
             target_square = GET_LSB_INDEX(move);
            
-            moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+            moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                 source_square,
                 target_square,
                 WHITE_KING,
@@ -323,7 +323,7 @@ void generate_all_king_capture_moves_from_game_state(Game* board_state, MoveList
         while(move){
             target_square = GET_LSB_INDEX(move);
 
-            moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+            moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                 source_square,
                 target_square,
                 BLACK_KING,

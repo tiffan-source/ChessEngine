@@ -118,25 +118,25 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
 
                 if ((pre_calculated_bit_shifts[target_square]) & RANK_8)
                 {
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                         source_square,
                         target_square,
                         WHITE_PAWN, QUEEN_PROMOTION
                     );
 
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                         source_square,
                         target_square,
                         WHITE_PAWN, ROOK_PROMOTION
                     );
 
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                         source_square,
                         target_square,
                         WHITE_PAWN, BISHOP_PROMOTION
                     );
 
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                         source_square,
                         target_square,
                         WHITE_PAWN, KNIGHT_PROMOTION
@@ -146,13 +146,13 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
                 {
                     diff_source_tag = abs(source_square - target_square);
                     if (diff_source_tag == 16 && ((pre_calculated_bit_shifts[target_square + 8]) & all_occupency) == 0 ){
-                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                        moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                             source_square,
                             target_square,
                             WHITE_PAWN, DOUBLE_PAWN_PUSH
                         );
                     }else if (diff_source_tag != 16){
-                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                        moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                             source_square,
                             target_square,
                             WHITE_PAWN, QUIET_MOVES
@@ -169,31 +169,31 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
                 target_square = GET_LSB_INDEX(attack);
 
                 if ((pre_calculated_bit_shifts[target_square]) & RANK_8){
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                         source_square,
                         target_square,
                         WHITE_PAWN, QUEEN_PROMOTION_CAPTURE
                     );
 
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                         source_square,
                         target_square,
                         WHITE_PAWN, ROOK_PROMOTION_CAPTURE
                     );
 
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                         source_square,
                         target_square,
                         WHITE_PAWN, BISHOP_PROMOTION_CAPTURE
                     );
 
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                         source_square,
                         target_square,
                         WHITE_PAWN, KNIGHT_PROMOTION_CAPTURE
                     );
                 }else{
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                         source_square,
                         target_square,
                         WHITE_PAWN, CAPTURE);
@@ -214,7 +214,7 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
             while (source_attack)
             {
                 Square pawn_square = GET_LSB_INDEX(source_attack);
-                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                     pawn_square,
                     en_passant_square,
                     WHITE_PAWN,
@@ -236,25 +236,25 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
 
                 if ((pre_calculated_bit_shifts[target_square]) & RANK_1)
                 {
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                         source_square,
                         target_square,
                         BLACK_PAWN, QUEEN_PROMOTION
                     );
 
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                         source_square,
                         target_square,
                         BLACK_PAWN, ROOK_PROMOTION
                     );
 
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                         source_square,
                         target_square,
                         BLACK_PAWN, BISHOP_PROMOTION
                     );
 
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                         source_square,
                         target_square,
                         BLACK_PAWN, KNIGHT_PROMOTION
@@ -267,13 +267,13 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
                         ((pre_calculated_bit_shifts[target_square - 8]) & all_occupency) == 0
                     )
                     {
-                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                        moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                             source_square,
                             target_square,
                             BLACK_PAWN, DOUBLE_PAWN_PUSH
                         );
                     }else if (diff_source_tag != 16){
-                        moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                        moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                             source_square,
                             target_square,
                             BLACK_PAWN, QUIET_MOVES
@@ -291,31 +291,31 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
                 target_square = GET_LSB_INDEX(attack);
 
                 if ((pre_calculated_bit_shifts[target_square]) & RANK_1){
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                         source_square,
                         target_square,
                         BLACK_PAWN, QUEEN_PROMOTION_CAPTURE
                     );
 
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                         source_square,
                         target_square,
                         BLACK_PAWN, ROOK_PROMOTION_CAPTURE
                     );
 
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                         source_square,
                         target_square,
                         BLACK_PAWN, BISHOP_PROMOTION_CAPTURE
                     );
 
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                         source_square,
                         target_square,
                         BLACK_PAWN, KNIGHT_PROMOTION_CAPTURE
                     );
                 }else{
-                    moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                         source_square,
                         target_square,
                         BLACK_PAWN, CAPTURE);
@@ -337,7 +337,7 @@ void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves
             while (source_attack)
             {
                 Square pawn_square = GET_LSB_INDEX(source_attack);
-                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                     pawn_square,
                     en_passant_square,
                     BLACK_PAWN,
@@ -366,7 +366,7 @@ void generate_all_pawns_capture_moves_from_game_state(Game* game, MoveList* move
             while(attack){
                 target_square = GET_LSB_INDEX(attack);
 
-                move_list->moves[move_list->current_index++] = CREATE_MOVE(
+                move_list->moves[move_list->current_index++] = CREATE_SCORED_MOVE(
                     source_square,
                     target_square,
                     WHITE_PAWN, CAPTURE);
@@ -386,7 +386,7 @@ void generate_all_pawns_capture_moves_from_game_state(Game* game, MoveList* move
             while (source_attack)
             {
                 Square pawn_square = GET_LSB_INDEX(source_attack);
-                move_list->moves[move_list->current_index++] = CREATE_MOVE(
+                move_list->moves[move_list->current_index++] = CREATE_SCORED_MOVE(
                     pawn_square,
                     en_passant_square,
                     WHITE_PAWN,
@@ -407,7 +407,7 @@ void generate_all_pawns_capture_moves_from_game_state(Game* game, MoveList* move
             while(attack){
                 target_square = GET_LSB_INDEX(attack);
 
-                move_list->moves[move_list->current_index++] = CREATE_MOVE(
+                move_list->moves[move_list->current_index++] = CREATE_SCORED_MOVE(
                     source_square,
                     target_square,
                     BLACK_PAWN, CAPTURE);
@@ -425,7 +425,7 @@ void generate_all_pawns_capture_moves_from_game_state(Game* game, MoveList* move
             while (source_attack)
             {
                 Square pawn_square = GET_LSB_INDEX(source_attack);
-                move_list->moves[move_list->current_index++] = CREATE_MOVE(
+                move_list->moves[move_list->current_index++] = CREATE_SCORED_MOVE(
                     pawn_square,
                     en_passant_square,
                     BLACK_PAWN,

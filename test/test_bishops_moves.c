@@ -9,6 +9,7 @@
 #include "game.h"
 #include "moves.h"
 #include "pieces.h"
+#include "test_helpers.h"
 
 void setUp(void)
 {
@@ -17,12 +18,6 @@ void setUp(void)
 
 void tearDown(void)
 {
-}
-
-static int compare_move(const void *a, const void *b) {
-    int ia = *(const Move*)a;
-    int ib = *(const Move*)b;
-    return ia - ib;
 }
 
 void test_generate_bishop_move_from_a1_without_blocking_piece_should_return_valid_bitboard(void)
@@ -256,26 +251,26 @@ void test_generate_all_white_bishop_move_from_tricky_position(void)
     MoveList* result_for_white = (MoveList*) malloc(sizeof(MoveList));
     result_for_white->current_index = 0;
 
-    Move expected_for_white[] = {
-        CREATE_MOVE(A4, B3, WHITE_BISHOP, QUIET_MOVES),
-        CREATE_MOVE(A4, C2, WHITE_BISHOP, QUIET_MOVES),
+    ScoredMove expected_for_white[] = {
+        CREATE_SCORED_MOVE(A4, B3, WHITE_BISHOP, QUIET_MOVES),
+        CREATE_SCORED_MOVE(A4, C2, WHITE_BISHOP, QUIET_MOVES),
 
-        CREATE_MOVE(B4, A3, WHITE_BISHOP, CAPTURE),
-        CREATE_MOVE(B4, A5, WHITE_BISHOP, CAPTURE),
-        CREATE_MOVE(B4, C3, WHITE_BISHOP, QUIET_MOVES),
-        CREATE_MOVE(B4, C5, WHITE_BISHOP, QUIET_MOVES),
-        CREATE_MOVE(B4, D6, WHITE_BISHOP, QUIET_MOVES),
-        CREATE_MOVE(B4, E7, WHITE_BISHOP, QUIET_MOVES),
-        CREATE_MOVE(B4, F8, WHITE_BISHOP, QUIET_MOVES),
+        CREATE_SCORED_MOVE(B4, A3, WHITE_BISHOP, CAPTURE),
+        CREATE_SCORED_MOVE(B4, A5, WHITE_BISHOP, CAPTURE),
+        CREATE_SCORED_MOVE(B4, C3, WHITE_BISHOP, QUIET_MOVES),
+        CREATE_SCORED_MOVE(B4, C5, WHITE_BISHOP, QUIET_MOVES),
+        CREATE_SCORED_MOVE(B4, D6, WHITE_BISHOP, QUIET_MOVES),
+        CREATE_SCORED_MOVE(B4, E7, WHITE_BISHOP, QUIET_MOVES),
+        CREATE_SCORED_MOVE(B4, F8, WHITE_BISHOP, QUIET_MOVES),
     };
     
     generate_all_bishop_moves_from_game_state(game_white, result_for_white);
 
-    qsort(result_for_white->moves, result_for_white->current_index, sizeof(Move), compare_move);
-    qsort(expected_for_white, 9, sizeof(Move), compare_move);    
+    qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected_for_white, 9, sizeof(ScoredMove), compare_scored_move);    
 
     TEST_ASSERT_EQUAL_INT(9, result_for_white->current_index);
-    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_white, result_for_white->moves, 9);
+    assert_move_lists_equal(expected_for_white, result_for_white->moves, 9);
 
     free_game(game_white);
     free(result_for_white);
@@ -290,27 +285,27 @@ void test_generate_all_black_bishop_move_from_tricky_position(void)
     MoveList* result_for_black = (MoveList*) malloc(sizeof(MoveList));
     result_for_black->current_index = 0;
 
-    Move expected_for_black[] = {
-        CREATE_MOVE(B6, C5, BLACK_BISHOP, QUIET_MOVES),
-        CREATE_MOVE(B6, D4, BLACK_BISHOP, QUIET_MOVES),
-        CREATE_MOVE(B6, E3, BLACK_BISHOP, QUIET_MOVES),
-        CREATE_MOVE(B6, F2, BLACK_BISHOP, QUIET_MOVES),
-        CREATE_MOVE(B6, G1, BLACK_BISHOP, QUIET_MOVES),
-        CREATE_MOVE(B6, A7, BLACK_BISHOP, CAPTURE),
+    ScoredMove expected_for_black[] = {
+        CREATE_SCORED_MOVE(B6, C5, BLACK_BISHOP, QUIET_MOVES),
+        CREATE_SCORED_MOVE(B6, D4, BLACK_BISHOP, QUIET_MOVES),
+        CREATE_SCORED_MOVE(B6, E3, BLACK_BISHOP, QUIET_MOVES),
+        CREATE_SCORED_MOVE(B6, F2, BLACK_BISHOP, QUIET_MOVES),
+        CREATE_SCORED_MOVE(B6, G1, BLACK_BISHOP, QUIET_MOVES),
+        CREATE_SCORED_MOVE(B6, A7, BLACK_BISHOP, CAPTURE),
 
-        CREATE_MOVE(G6, F7, BLACK_BISHOP, CAPTURE),
-        CREATE_MOVE(G6, F5, BLACK_BISHOP, QUIET_MOVES),
-        CREATE_MOVE(G6, E4, BLACK_BISHOP, CAPTURE),
-        CREATE_MOVE(G6, H5, BLACK_BISHOP, QUIET_MOVES),
+        CREATE_SCORED_MOVE(G6, F7, BLACK_BISHOP, CAPTURE),
+        CREATE_SCORED_MOVE(G6, F5, BLACK_BISHOP, QUIET_MOVES),
+        CREATE_SCORED_MOVE(G6, E4, BLACK_BISHOP, CAPTURE),
+        CREATE_SCORED_MOVE(G6, H5, BLACK_BISHOP, QUIET_MOVES),
     };
     
     generate_all_bishop_moves_from_game_state(game_black, result_for_black);
     
-    qsort(result_for_black->moves, result_for_black->current_index, sizeof(Move), compare_move);
-    qsort(expected_for_black, 10, sizeof(Move), compare_move);
+    qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected_for_black, 10, sizeof(ScoredMove), compare_scored_move);
 
     TEST_ASSERT_EQUAL_INT(10, result_for_black->current_index);
-    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_black, result_for_black->moves, 10);
+    assert_move_lists_equal(expected_for_black, result_for_black->moves, 10);
 
     free_game(game_black);
     free(result_for_black);
@@ -326,18 +321,18 @@ void test_generate_all_white_bishop_capture_from_tricky_position(void)
     MoveList* result_for_white = (MoveList*) malloc(sizeof(MoveList));
     result_for_white->current_index = 0;
 
-    Move expected_for_white[] = {
-        CREATE_MOVE(B4, A3, WHITE_BISHOP, CAPTURE),
-        CREATE_MOVE(B4, A5, WHITE_BISHOP, CAPTURE),
+    ScoredMove expected_for_white[] = {
+        CREATE_SCORED_MOVE(B4, A3, WHITE_BISHOP, CAPTURE),
+        CREATE_SCORED_MOVE(B4, A5, WHITE_BISHOP, CAPTURE),
     };
     
     generate_all_bishop_captures_from_game_state(game_white, result_for_white);
 
-    qsort(result_for_white->moves, result_for_white->current_index, sizeof(Move), compare_move);
-    qsort(expected_for_white, 2, sizeof(Move), compare_move);    
+    qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected_for_white, 2, sizeof(ScoredMove), compare_scored_move);    
 
     TEST_ASSERT_EQUAL(2, result_for_white->current_index);
-    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_white, result_for_white->moves, 2);
+    assert_move_lists_equal(expected_for_white, result_for_white->moves, 2);
 
     free_game(game_white);
     free(result_for_white);
@@ -352,19 +347,19 @@ void test_generate_all_black_bishop_capture_from_tricky_position(void)
     MoveList* result_for_black = (MoveList*) malloc(sizeof(MoveList));
     result_for_black->current_index = 0;
 
-    Move expected_for_black[] = {
-        CREATE_MOVE(B6, A7, BLACK_BISHOP, CAPTURE),
-        CREATE_MOVE(G6, F7, BLACK_BISHOP, CAPTURE),
-        CREATE_MOVE(G6, E4, BLACK_BISHOP, CAPTURE),
+    ScoredMove expected_for_black[] = {
+        CREATE_SCORED_MOVE(B6, A7, BLACK_BISHOP, CAPTURE),
+        CREATE_SCORED_MOVE(G6, F7, BLACK_BISHOP, CAPTURE),
+        CREATE_SCORED_MOVE(G6, E4, BLACK_BISHOP, CAPTURE),
     };
     
     generate_all_bishop_captures_from_game_state(game_black, result_for_black);
     
-    qsort(result_for_black->moves, result_for_black->current_index, sizeof(Move), compare_move);
-    qsort(expected_for_black, 3, sizeof(Move), compare_move);
+    qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected_for_black, 3, sizeof(ScoredMove), compare_scored_move);
 
     TEST_ASSERT_EQUAL_INT(3, result_for_black->current_index);
-    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_black, result_for_black->moves, 3);
+    assert_move_lists_equal(expected_for_black, result_for_black->moves, 3);
     free_game(game_black);
 
     free(result_for_black);

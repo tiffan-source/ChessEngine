@@ -9,6 +9,7 @@
 #include "game.h"
 #include "binary_tools.h"
 #include "pieces.h"
+#include "test_helpers.h"
 
 void setUp(void)
 {
@@ -18,11 +19,6 @@ void tearDown(void)
 {
 }
 
-static int compare_move(const void *a, const void *b) {
-    int ia = *(const Move*)a;
-    int ib = *(const Move*)b;
-    return ia - ib;
-}
 
 void test_generate_knights_moves_from_c6_should_return_valid_bitboard(void)
 {
@@ -161,31 +157,31 @@ void test_generate_all_white_knight_move_from_tricky_position(void)
     MoveList* result_for_white = (MoveList*) malloc(sizeof(MoveList));
     result_for_white->current_index = 0;
 
-    Move expected_for_white[] = {
-        CREATE_MOVE(F7, D8, WHITE_KNIGHT, QUIET_MOVES),
-        CREATE_MOVE(F7, D6, WHITE_KNIGHT, QUIET_MOVES),
-        CREATE_MOVE(F7, E5, WHITE_KNIGHT, QUIET_MOVES),
-        CREATE_MOVE(F7, G5, WHITE_KNIGHT, QUIET_MOVES),
-        CREATE_MOVE(F7, H6, WHITE_KNIGHT, QUIET_MOVES),
-        CREATE_MOVE(F7, H8, WHITE_KNIGHT, CAPTURE),
+    ScoredMove expected_for_white[] = {
+        CREATE_SCORED_MOVE(F7, D8, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F7, D6, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F7, E5, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F7, G5, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F7, H6, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F7, H8, WHITE_KNIGHT, CAPTURE),
 
-        CREATE_MOVE(F3, D4, WHITE_KNIGHT, QUIET_MOVES),
-        CREATE_MOVE(F3, E5, WHITE_KNIGHT, QUIET_MOVES),
-        CREATE_MOVE(F3, G5, WHITE_KNIGHT, QUIET_MOVES),
-        CREATE_MOVE(F3, H4, WHITE_KNIGHT, QUIET_MOVES),
-        CREATE_MOVE(F3, H2, WHITE_KNIGHT, CAPTURE),
-        CREATE_MOVE(F3, G1, WHITE_KNIGHT, QUIET_MOVES),
-        CREATE_MOVE(F3, E1, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F3, D4, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F3, E5, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F3, G5, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F3, H4, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F3, H2, WHITE_KNIGHT, CAPTURE),
+        CREATE_SCORED_MOVE(F3, G1, WHITE_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F3, E1, WHITE_KNIGHT, QUIET_MOVES),
     };
 
     generate_all_knight_moves_from_game_state(game_white, result_for_white);
 
 
-    qsort(result_for_white->moves, result_for_white->current_index, sizeof(Move), compare_move);
-    qsort(expected_for_white, 13, sizeof(Move), compare_move);
+    qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected_for_white, 13, sizeof(ScoredMove), compare_scored_move);
     
     TEST_ASSERT_EQUAL_INT(13, result_for_white->current_index);
-    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_white, result_for_white->moves, 13);
+    assert_move_lists_equal(expected_for_white, result_for_white->moves, 13);
 
     free_game(game_white);
     free(result_for_white);
@@ -201,26 +197,26 @@ void test_generate_all_black_knight_move_from_tricky_position(void)
     MoveList* result_for_black = (MoveList*) malloc(sizeof(MoveList));
     result_for_black->current_index = 0;
 
-    Move expected_for_black[] = {
-        CREATE_MOVE(F6, D5, BLACK_KNIGHT, QUIET_MOVES),
-        CREATE_MOVE(F6, E4, BLACK_KNIGHT, CAPTURE),
-        CREATE_MOVE(F6, G4, BLACK_KNIGHT, QUIET_MOVES),
-        CREATE_MOVE(F6, H5, BLACK_KNIGHT, QUIET_MOVES),
-        CREATE_MOVE(F6, G8, BLACK_KNIGHT, QUIET_MOVES),
+    ScoredMove expected_for_black[] = {
+        CREATE_SCORED_MOVE(F6, D5, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F6, E4, BLACK_KNIGHT, CAPTURE),
+        CREATE_SCORED_MOVE(F6, G4, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F6, H5, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F6, G8, BLACK_KNIGHT, QUIET_MOVES),
 
-        CREATE_MOVE(A5, B3, BLACK_KNIGHT, QUIET_MOVES),
-        CREATE_MOVE(A5, C4, BLACK_KNIGHT, CAPTURE),
-        CREATE_MOVE(A5, C6, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(A5, B3, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(A5, C4, BLACK_KNIGHT, CAPTURE),
+        CREATE_SCORED_MOVE(A5, C6, BLACK_KNIGHT, QUIET_MOVES),
     };
 
     generate_all_knight_moves_from_game_state(game_black, result_for_black);
 
 
-    qsort(result_for_black->moves, result_for_black->current_index, sizeof(Move), compare_move);
-    qsort(expected_for_black, 8, sizeof(Move), compare_move);    
+    qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected_for_black, 8, sizeof(ScoredMove), compare_scored_move);    
     
     TEST_ASSERT_EQUAL_INT(8, result_for_black->current_index);
-    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_black, result_for_black->moves, 8);
+    assert_move_lists_equal(expected_for_black, result_for_black->moves, 8);
 
     free_game(game_black);
     free(result_for_black);
@@ -235,23 +231,23 @@ void test_generate_all_knight_moves_whith_capture(void)
     MoveList* result = (MoveList*) malloc(sizeof(MoveList));
     result->current_index = 0;
 
-    Move expected[] = {
-        CREATE_MOVE(F6, G8, BLACK_KNIGHT, QUIET_MOVES),
-        CREATE_MOVE(F6, H5, BLACK_KNIGHT, QUIET_MOVES),
-        CREATE_MOVE(F6, G4, BLACK_KNIGHT, QUIET_MOVES),
-        CREATE_MOVE(F6, E4, BLACK_KNIGHT, QUIET_MOVES),
-        CREATE_MOVE(F6, D5, BLACK_KNIGHT, CAPTURE),
-        CREATE_MOVE(B8, C6, BLACK_KNIGHT, QUIET_MOVES),
-        CREATE_MOVE(B8, A6, BLACK_KNIGHT, QUIET_MOVES),
+    ScoredMove expected[] = {
+        CREATE_SCORED_MOVE(F6, G8, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F6, H5, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F6, G4, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F6, E4, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F6, D5, BLACK_KNIGHT, CAPTURE),
+        CREATE_SCORED_MOVE(B8, C6, BLACK_KNIGHT, QUIET_MOVES),
+        CREATE_SCORED_MOVE(B8, A6, BLACK_KNIGHT, QUIET_MOVES),
     };
 
     generate_all_knight_moves_from_game_state(game, result);
 
-    qsort(result->moves, result->current_index, sizeof(Move), compare_move);
-    qsort(expected, 7, sizeof(Move), compare_move);
+    qsort(result->moves, result->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected, 7, sizeof(ScoredMove), compare_scored_move);
 
-    TEST_ASSERT_EQUAL_INT(result->current_index, 7);
-    TEST_ASSERT_EQUAL_UINT_ARRAY(expected, result->moves, 7);
+    TEST_ASSERT_EQUAL_INT(7, result->current_index);
+    assert_move_lists_equal(expected, result->moves, 7);
 
     free_game(game);
     free(result);
@@ -267,19 +263,19 @@ void test_generate_all_white_knight_capture_from_tricky_position(void)
     MoveList* result_for_white = (MoveList*) malloc(sizeof(MoveList));
     result_for_white->current_index = 0;
 
-    Move expected_for_white[] = {
-        CREATE_MOVE(F7, H8, WHITE_KNIGHT, CAPTURE),
-        CREATE_MOVE(F3, H2, WHITE_KNIGHT, CAPTURE),
+    ScoredMove expected_for_white[] = {
+        CREATE_SCORED_MOVE(F7, H8, WHITE_KNIGHT, CAPTURE),
+        CREATE_SCORED_MOVE(F3, H2, WHITE_KNIGHT, CAPTURE),
     };
 
     generate_all_knight_captures_from_game_state(game_white, result_for_white);
 
 
-    qsort(result_for_white->moves, result_for_white->current_index, sizeof(Move), compare_move);
-    qsort(expected_for_white, 2, sizeof(Move), compare_move);
+    qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected_for_white, 2, sizeof(ScoredMove), compare_scored_move);
     
     TEST_ASSERT_EQUAL_INT(2, result_for_white->current_index);
-    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_white, result_for_white->moves, 2);
+    assert_move_lists_equal(expected_for_white, result_for_white->moves, 2);
 
     free_game(game_white);
     free(result_for_white);
@@ -295,19 +291,19 @@ void test_generate_all_black_knight_capture_from_tricky_position(void)
     MoveList* result_for_black = (MoveList*) malloc(sizeof(MoveList));
     result_for_black->current_index = 0;
 
-    Move expected_for_black[] = {
-        CREATE_MOVE(F6, E4, BLACK_KNIGHT, CAPTURE),
-        CREATE_MOVE(A5, C4, BLACK_KNIGHT, CAPTURE),
+    ScoredMove expected_for_black[] = {
+        CREATE_SCORED_MOVE(F6, E4, BLACK_KNIGHT, CAPTURE),
+        CREATE_SCORED_MOVE(A5, C4, BLACK_KNIGHT, CAPTURE),
     };
 
     generate_all_knight_captures_from_game_state(game_black, result_for_black);
 
 
-    qsort(result_for_black->moves, result_for_black->current_index, sizeof(Move), compare_move);
-    qsort(expected_for_black, 2, sizeof(Move), compare_move);    
+    qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected_for_black, 2, sizeof(ScoredMove), compare_scored_move);    
     
-    TEST_ASSERT_EQUAL(2, result_for_black->current_index);
-    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_black, result_for_black->moves, 2);
+    TEST_ASSERT_EQUAL_INT(2, result_for_black->current_index);
+    assert_move_lists_equal(expected_for_black, result_for_black->moves, 2);
 
     free_game(game_black);
     free(result_for_black);

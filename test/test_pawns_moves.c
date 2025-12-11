@@ -9,6 +9,7 @@
 #include "game.h"
 #include "binary_tools.h"
 #include "pieces.h"
+#include "test_helpers.h"
 
 void setUp(void)
 {
@@ -20,11 +21,6 @@ void tearDown(void)
 {
 }
 
-static int compare_move(const void *a, const void *b) {
-    int ia = *(const Move*)a;
-    int ib = *(const Move*)b;
-    return ia - ib;
-}
 
 void test_generate_pawns_quiet_moves_from_square_a2_for_white(void)
 {
@@ -285,24 +281,24 @@ void test_generate_all_type_white_pawn_move_from_tricky_position(void)
     MoveList* result_for_white = (MoveList*) malloc(sizeof(MoveList));
     result_for_white->current_index = 0;
 
-    Move expected_for_white[] = {
-        CREATE_MOVE(C4, C5, WHITE_PAWN, QUIET_MOVES),
-        CREATE_MOVE(D2, D3, WHITE_PAWN, QUIET_MOVES),
-        CREATE_MOVE(D2, D4, WHITE_PAWN, DOUBLE_PAWN_PUSH),
-        CREATE_MOVE(E4, E5, WHITE_PAWN, QUIET_MOVES),
-        CREATE_MOVE(G2, G3, WHITE_PAWN, QUIET_MOVES),
-        CREATE_MOVE(G2, G4, WHITE_PAWN, DOUBLE_PAWN_PUSH),
-        CREATE_MOVE(H2, H3, WHITE_PAWN, QUIET_MOVES),
-        CREATE_MOVE(H2, H4, WHITE_PAWN, DOUBLE_PAWN_PUSH),
+    ScoredMove expected_for_white[] = {
+        CREATE_SCORED_MOVE(C4, C5, WHITE_PAWN, QUIET_MOVES),
+        CREATE_SCORED_MOVE(D2, D3, WHITE_PAWN, QUIET_MOVES),
+        CREATE_SCORED_MOVE(D2, D4, WHITE_PAWN, DOUBLE_PAWN_PUSH),
+        CREATE_SCORED_MOVE(E4, E5, WHITE_PAWN, QUIET_MOVES),
+        CREATE_SCORED_MOVE(G2, G3, WHITE_PAWN, QUIET_MOVES),
+        CREATE_SCORED_MOVE(G2, G4, WHITE_PAWN, DOUBLE_PAWN_PUSH),
+        CREATE_SCORED_MOVE(H2, H3, WHITE_PAWN, QUIET_MOVES),
+        CREATE_SCORED_MOVE(H2, H4, WHITE_PAWN, DOUBLE_PAWN_PUSH),
     };
     
     generate_all_pawns_moves_from_game_state(game_white, result_for_white);
 
-    qsort(result_for_white->moves, result_for_white->current_index, sizeof(Move), compare_move);
-    qsort(expected_for_white, 8, sizeof(Move), compare_move);    
+    qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected_for_white, 8, sizeof(ScoredMove), compare_scored_move);    
 
-    TEST_ASSERT_EQUAL_INT(result_for_white->current_index, 8);
-    TEST_ASSERT_EQUAL_INT_ARRAY(expected_for_white, result_for_white, 8);
+    TEST_ASSERT_EQUAL_INT(8, result_for_white->current_index);
+    assert_move_lists_equal(expected_for_white, result_for_white->moves, 8);
 
     free_game(game_white);
     free(result_for_white);
@@ -319,32 +315,32 @@ void test_generate_all_type_black_pawn_move_from_tricky_position(void)
     result_for_black->current_index = 0;
 
 
-    Move expected_for_black[] = {
-        CREATE_MOVE(B2, B1, BLACK_PAWN, QUEEN_PROMOTION),
-        CREATE_MOVE(B2, B1, BLACK_PAWN, ROOK_PROMOTION),
-        CREATE_MOVE(B2, B1, BLACK_PAWN, BISHOP_PROMOTION),
-        CREATE_MOVE(B2, B1, BLACK_PAWN, KNIGHT_PROMOTION),
-        CREATE_MOVE(B2, A1, BLACK_PAWN, QUEEN_PROMOTION_CAPTURE),
-        CREATE_MOVE(B2, A1, BLACK_PAWN, ROOK_PROMOTION_CAPTURE),
-        CREATE_MOVE(B2, A1, BLACK_PAWN, BISHOP_PROMOTION_CAPTURE),
-        CREATE_MOVE(B2, A1, BLACK_PAWN, KNIGHT_PROMOTION_CAPTURE),
+    ScoredMove expected_for_black[] = {
+        CREATE_SCORED_MOVE(B2, B1, BLACK_PAWN, QUEEN_PROMOTION),
+        CREATE_SCORED_MOVE(B2, B1, BLACK_PAWN, ROOK_PROMOTION),
+        CREATE_SCORED_MOVE(B2, B1, BLACK_PAWN, BISHOP_PROMOTION),
+        CREATE_SCORED_MOVE(B2, B1, BLACK_PAWN, KNIGHT_PROMOTION),
+        CREATE_SCORED_MOVE(B2, A1, BLACK_PAWN, QUEEN_PROMOTION_CAPTURE),
+        CREATE_SCORED_MOVE(B2, A1, BLACK_PAWN, ROOK_PROMOTION_CAPTURE),
+        CREATE_SCORED_MOVE(B2, A1, BLACK_PAWN, BISHOP_PROMOTION_CAPTURE),
+        CREATE_SCORED_MOVE(B2, A1, BLACK_PAWN, KNIGHT_PROMOTION_CAPTURE),
 
-        CREATE_MOVE(C7, C6, BLACK_PAWN, QUIET_MOVES),
-        CREATE_MOVE(C7, C5, BLACK_PAWN, DOUBLE_PAWN_PUSH),
+        CREATE_SCORED_MOVE(C7, C6, BLACK_PAWN, QUIET_MOVES),
+        CREATE_SCORED_MOVE(C7, C5, BLACK_PAWN, DOUBLE_PAWN_PUSH),
 
-        CREATE_MOVE(D7, D6, BLACK_PAWN, QUIET_MOVES),
-        CREATE_MOVE(D7, D5, BLACK_PAWN, DOUBLE_PAWN_PUSH),
+        CREATE_SCORED_MOVE(D7, D6, BLACK_PAWN, QUIET_MOVES),
+        CREATE_SCORED_MOVE(D7, D5, BLACK_PAWN, DOUBLE_PAWN_PUSH),
 
-        CREATE_MOVE(G7, H6, BLACK_PAWN, CAPTURE),
+        CREATE_SCORED_MOVE(G7, H6, BLACK_PAWN, CAPTURE),
     };
     
     generate_all_pawns_moves_from_game_state(game_black, result_for_black);
     
-    qsort(result_for_black->moves, result_for_black->current_index, sizeof(Move), compare_move);
-    qsort(expected_for_black, 13, sizeof(Move), compare_move);
+    qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected_for_black, 13, sizeof(ScoredMove), compare_scored_move);
 
-    TEST_ASSERT_EQUAL_INT(result_for_black->current_index, 13);
-    TEST_ASSERT_EQUAL_INT_ARRAY(expected_for_black, result_for_black->moves, 13);
+    TEST_ASSERT_EQUAL_INT(13, result_for_black->current_index);
+    assert_move_lists_equal(expected_for_black, result_for_black->moves, 13);
 
     free_game(game_black);
 
@@ -361,18 +357,18 @@ void test_generate_all_pawns_move_from_position_whith_en_passant_for_white(void)
     MoveList* result_for_white = (MoveList*) malloc(sizeof(MoveList));
     result_for_white->current_index = 0;
 
-    Move expected_for_white[] = {
-        CREATE_MOVE(D5, E6, WHITE_PAWN, EN_PASSANT_CAPTURE),
-        CREATE_MOVE(D5, D6, WHITE_PAWN, QUIET_MOVES),
+    ScoredMove expected_for_white[] = {
+        CREATE_SCORED_MOVE(D5, E6, WHITE_PAWN, EN_PASSANT_CAPTURE),
+        CREATE_SCORED_MOVE(D5, D6, WHITE_PAWN, QUIET_MOVES),
     };
     
     generate_all_pawns_moves_from_game_state(game_white, result_for_white);
 
-    qsort(result_for_white->moves, result_for_white->current_index, sizeof(Move), compare_move);
-    qsort(expected_for_white, 2, sizeof(Move), compare_move);    
+    qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected_for_white, 2, sizeof(ScoredMove), compare_scored_move);    
 
-    TEST_ASSERT_EQUAL_INT(result_for_white->current_index, 2);
-    TEST_ASSERT_EQUAL_INT_ARRAY(expected_for_white, result_for_white->moves, 2);
+    TEST_ASSERT_EQUAL_INT(2, result_for_white->current_index);
+    assert_move_lists_equal(expected_for_white, result_for_white->moves, 2);
 
     free_game(game_white);
     free(result_for_white);
@@ -386,31 +382,31 @@ void test_generate_all_pawns_move_from_position_without_en_passant(void)
     MoveList* result = (MoveList*) malloc(sizeof(MoveList));
     result->current_index = 0;
 
-    Move expected[] = {
-        CREATE_MOVE(A7, A6, BLACK_PAWN, QUIET_MOVES),
-        CREATE_MOVE(A7, A5, BLACK_PAWN, DOUBLE_PAWN_PUSH),
-        CREATE_MOVE(B7, B6, BLACK_PAWN, QUIET_MOVES),
-        CREATE_MOVE(B7, B5, BLACK_PAWN, DOUBLE_PAWN_PUSH),
-        CREATE_MOVE(C7, C6, BLACK_PAWN, QUIET_MOVES),
-        CREATE_MOVE(C7, C5, BLACK_PAWN, DOUBLE_PAWN_PUSH),
-        CREATE_MOVE(D7, D6, BLACK_PAWN, QUIET_MOVES),
-        CREATE_MOVE(D7, D5, BLACK_PAWN, DOUBLE_PAWN_PUSH),
-        CREATE_MOVE(E7, E6, BLACK_PAWN, QUIET_MOVES),
-        CREATE_MOVE(E7, E5, BLACK_PAWN, DOUBLE_PAWN_PUSH),
-        CREATE_MOVE(F7, F6, BLACK_PAWN, QUIET_MOVES),
-        CREATE_MOVE(F7, F5, BLACK_PAWN, DOUBLE_PAWN_PUSH),
-        CREATE_MOVE(G7, G6, BLACK_PAWN, QUIET_MOVES),
-        CREATE_MOVE(G7, G5, BLACK_PAWN, DOUBLE_PAWN_PUSH),
-        CREATE_MOVE(H5, H4, BLACK_PAWN, QUIET_MOVES),
+    ScoredMove expected[] = {
+        CREATE_SCORED_MOVE(A7, A6, BLACK_PAWN, QUIET_MOVES),
+        CREATE_SCORED_MOVE(A7, A5, BLACK_PAWN, DOUBLE_PAWN_PUSH),
+        CREATE_SCORED_MOVE(B7, B6, BLACK_PAWN, QUIET_MOVES),
+        CREATE_SCORED_MOVE(B7, B5, BLACK_PAWN, DOUBLE_PAWN_PUSH),
+        CREATE_SCORED_MOVE(C7, C6, BLACK_PAWN, QUIET_MOVES),
+        CREATE_SCORED_MOVE(C7, C5, BLACK_PAWN, DOUBLE_PAWN_PUSH),
+        CREATE_SCORED_MOVE(D7, D6, BLACK_PAWN, QUIET_MOVES),
+        CREATE_SCORED_MOVE(D7, D5, BLACK_PAWN, DOUBLE_PAWN_PUSH),
+        CREATE_SCORED_MOVE(E7, E6, BLACK_PAWN, QUIET_MOVES),
+        CREATE_SCORED_MOVE(E7, E5, BLACK_PAWN, DOUBLE_PAWN_PUSH),
+        CREATE_SCORED_MOVE(F7, F6, BLACK_PAWN, QUIET_MOVES),
+        CREATE_SCORED_MOVE(F7, F5, BLACK_PAWN, DOUBLE_PAWN_PUSH),
+        CREATE_SCORED_MOVE(G7, G6, BLACK_PAWN, QUIET_MOVES),
+        CREATE_SCORED_MOVE(G7, G5, BLACK_PAWN, DOUBLE_PAWN_PUSH),
+        CREATE_SCORED_MOVE(H5, H4, BLACK_PAWN, QUIET_MOVES),
     };
 
     generate_all_pawns_moves_from_game_state(game, result);
 
-    qsort(result->moves, result->current_index, sizeof(Move), compare_move);
-    qsort(expected, 15, sizeof(Move), compare_move);
+    qsort(result->moves, result->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected, 15, sizeof(ScoredMove), compare_scored_move);
 
-    TEST_ASSERT_EQUAL_INT(result->current_index, 15);
-    TEST_ASSERT_EQUAL_INT_ARRAY(expected, result->moves, 15);
+    TEST_ASSERT_EQUAL_INT(15, result->current_index);
+    assert_move_lists_equal(expected, result->moves, 15);
 
     free_game(game);
     free(result);
@@ -425,18 +421,18 @@ void test_generate_all_pawns_move_from_position_whith_en_passant_for_black(void)
     MoveList* result_for_black = (MoveList*) malloc(sizeof(MoveList));
     result_for_black->current_index = 0;
 
-    Move expected_for_black[] = {
-        CREATE_MOVE(D4, E3, BLACK_PAWN, EN_PASSANT_CAPTURE),
-        CREATE_MOVE(D4, D3, BLACK_PAWN, QUIET_MOVES),
+    ScoredMove expected_for_black[] = {
+        CREATE_SCORED_MOVE(D4, E3, BLACK_PAWN, EN_PASSANT_CAPTURE),
+        CREATE_SCORED_MOVE(D4, D3, BLACK_PAWN, QUIET_MOVES),
     };
     
     generate_all_pawns_moves_from_game_state(game_black, result_for_black);
 
-    qsort(result_for_black->moves, result_for_black->current_index, sizeof(Move), compare_move);
-    qsort(expected_for_black, 2, sizeof(Move), compare_move);    
+    qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected_for_black, 2, sizeof(ScoredMove), compare_scored_move);    
 
-    TEST_ASSERT_EQUAL_INT(result_for_black->current_index, 2);
-    TEST_ASSERT_EQUAL_INT_ARRAY(expected_for_black, result_for_black->moves, 2);
+    TEST_ASSERT_EQUAL_INT(2, result_for_black->current_index);
+    assert_move_lists_equal(expected_for_black, result_for_black->moves, 2);
 
     free_game(game_black);
     free(result_for_black);
@@ -450,18 +446,18 @@ void test_generate_all_white_pawns_capture_moves_from_position(void)
     MoveList* result = (MoveList*) malloc(sizeof(MoveList));
     result->current_index = 0;
 
-    Move expected[] = {
-        CREATE_MOVE(D5, E6, WHITE_PAWN, CAPTURE),
-        CREATE_MOVE(G2, H3, WHITE_PAWN, CAPTURE),
+    ScoredMove expected[] = {
+        CREATE_SCORED_MOVE(D5, E6, WHITE_PAWN, CAPTURE),
+        CREATE_SCORED_MOVE(G2, H3, WHITE_PAWN, CAPTURE),
     };
 
     generate_all_pawns_capture_moves_from_game_state(game, result);
 
-    qsort(result->moves, result->current_index, sizeof(Move), compare_move);
-    qsort(expected, 2, sizeof(Move), compare_move);  
+    qsort(result->moves, result->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected, 2, sizeof(ScoredMove), compare_scored_move);  
     
-    TEST_ASSERT_EQUAL_INT(result->current_index, 2);
-    TEST_ASSERT_EQUAL_INT_ARRAY(expected, result->moves, 2);
+    TEST_ASSERT_EQUAL_INT(2, result->current_index);
+    assert_move_lists_equal(expected, result->moves, 2);
 
     free_game(game);
     free(result);
@@ -475,20 +471,20 @@ void test_generate_all_black_pawns_capture_moves_from_position(void)
     MoveList* result = (MoveList*) malloc(sizeof(MoveList));
     result->current_index = 0;
 
-    Move expected[] = {
-        CREATE_MOVE(B4, C3, BLACK_PAWN, CAPTURE),
-        CREATE_MOVE(B4, A3, BLACK_PAWN, EN_PASSANT_CAPTURE),
-        CREATE_MOVE(E6, D5, BLACK_PAWN, CAPTURE),
-        CREATE_MOVE(H3, G2, BLACK_PAWN, CAPTURE),
+    ScoredMove expected[] = {
+        CREATE_SCORED_MOVE(B4, C3, BLACK_PAWN, CAPTURE),
+        CREATE_SCORED_MOVE(B4, A3, BLACK_PAWN, EN_PASSANT_CAPTURE),
+        CREATE_SCORED_MOVE(E6, D5, BLACK_PAWN, CAPTURE),
+        CREATE_SCORED_MOVE(H3, G2, BLACK_PAWN, CAPTURE),
     };
 
     generate_all_pawns_capture_moves_from_game_state(game, result);
 
-    qsort(result->moves, result->current_index, sizeof(Move), compare_move);
-    qsort(expected, 4, sizeof(Move), compare_move);  
+    qsort(result->moves, result->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected, 4, sizeof(ScoredMove), compare_scored_move);  
     
-    TEST_ASSERT_EQUAL_INT(result->current_index, 4);
-    TEST_ASSERT_EQUAL_INT_ARRAY(expected, result->moves, 4);
+    TEST_ASSERT_EQUAL_INT(4, result->current_index);
+    assert_move_lists_equal(expected, result->moves, 4);
 
     free_game(game);
     free(result);

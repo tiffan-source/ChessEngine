@@ -47,7 +47,7 @@ U64 generate_moves_from_position_at_depth(Game* game, int depth)
 
     for (int i = 0; i < move_list->current_index; i++)
     {
-        Game new_game = make_move(*game, move_list->moves[i]);
+        Game new_game = make_move(*game, move_list->moves[i].move);
 
         if(!is_king_attacked_by_side(&new_game, new_game.turn == WHITE_TURN ? WHITE : BLACK)){
             if(depth > 1){
@@ -76,7 +76,7 @@ U64 test_helper_generate_moves_from_position_at_depth(Game* game, int depth, int
 
     for (int i = 0; i < move_list->current_index; i++)
     {
-        Game new_game = make_move(*game, move_list->moves[i]);
+        Game new_game = make_move(*game, move_list->moves[i].move);
 
         if(!is_king_attacked_by_side(&new_game, new_game.turn == WHITE_TURN ? WHITE : BLACK)){
             if(depth > 1){
@@ -144,7 +144,7 @@ Move retrieve_uci_move_from_move_list(const char* uci_move_str, MoveList* move_l
 
         if (strcmp(uci_move_str, generated_uci_str) == 0)
         {
-            return move_list->moves[i];
+            return move_list->moves[i].move;
         }
     }
 

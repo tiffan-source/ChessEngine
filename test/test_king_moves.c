@@ -12,6 +12,7 @@
 #include "queens_moves.h"
 #include "pieces.h"
 #include "pawns_moves.h"
+#include "test_helpers.h"
 
 
 void setUp(void)
@@ -23,12 +24,6 @@ void setUp(void)
 
 void tearDown(void)
 {
-}
-
-static int compare_move(const void *a, const void *b) {
-    int ia = *(const Move*)a;
-    int ib = *(const Move*)b;
-    return ia - ib;
 }
 
 void test_generate_king_moves_from_a8_should_return_valid_bitboard(void)
@@ -141,15 +136,15 @@ void test_generate_all_white_king_move_from_tricky_position(void)
     MoveList* result_for_white = (MoveList*) malloc(sizeof(MoveList));
     result_for_white->current_index = 0;
 
-    Move expected_for_white[] = {
-        CREATE_MOVE(H1, G1, WHITE_KING, QUIET_MOVES),
-        CREATE_MOVE(H1, H2, WHITE_KING, CAPTURE),
+    ScoredMove expected_for_white[] = {
+        CREATE_SCORED_MOVE(H1, G1, WHITE_KING, QUIET_MOVES),
+        CREATE_SCORED_MOVE(H1, H2, WHITE_KING, CAPTURE),
     };
     
     generate_all_king_quiet_and_capture_moves_from_game_state(game_white, result_for_white);
 
     TEST_ASSERT_EQUAL_INT(2, result_for_white->current_index);
-    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_white, result_for_white->moves, 2);
+    assert_move_lists_equal(expected_for_white, result_for_white->moves, 2);
 
     free_game(game_white);
     free(result_for_white);
@@ -166,20 +161,20 @@ void test_generate_all_black_king_move_from_tricky_position(void)
     result_for_black->current_index = 0;
 
 
-    Move expected_for_black[] = {
-        CREATE_MOVE(E8, D8, BLACK_KING, QUIET_MOVES),
-        CREATE_MOVE(E8, F8, BLACK_KING, QUIET_MOVES),
-        CREATE_MOVE(E8, E7, BLACK_KING, QUIET_MOVES),
-        CREATE_MOVE(E8, F7, BLACK_KING, CAPTURE),
+    ScoredMove expected_for_black[] = {
+        CREATE_SCORED_MOVE(E8, D8, BLACK_KING, QUIET_MOVES),
+        CREATE_SCORED_MOVE(E8, F8, BLACK_KING, QUIET_MOVES),
+        CREATE_SCORED_MOVE(E8, E7, BLACK_KING, QUIET_MOVES),
+        CREATE_SCORED_MOVE(E8, F7, BLACK_KING, CAPTURE),
     };
     
     generate_all_king_quiet_and_capture_moves_from_game_state(game_black, result_for_black);
     
-    qsort(result_for_black->moves, result_for_black->current_index, sizeof(Move), compare_move);
-    qsort(expected_for_black, 4, sizeof(Move), compare_move);
+    qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected_for_black, 4, sizeof(ScoredMove), compare_scored_move);
 
     TEST_ASSERT_EQUAL_INT(4, result_for_black->current_index);  
-    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_black, result_for_black->moves, 4);
+    assert_move_lists_equal(expected_for_black, result_for_black->moves, 4);
     free_game(game_black);
 
     free(result_for_black);
@@ -236,15 +231,15 @@ void test_generate_all_white_king_castling_moves_initial(void)
 
     generate_all_king_castling_moves_from_game_state(game, result);
 
-    Move expected[] = {
-        CREATE_MOVE(E1, G1, WHITE_KING, KING_CASTLE),
-        CREATE_MOVE(E1, C1, WHITE_KING, QUEEN_CASTLE),
+    ScoredMove expected[] = {
+        CREATE_SCORED_MOVE(E1, G1, WHITE_KING, KING_CASTLE),
+        CREATE_SCORED_MOVE(E1, C1, WHITE_KING, QUEEN_CASTLE),
     };
 
-    qsort(result->moves, result->current_index, sizeof(Move), compare_move);
-    qsort(expected, 2, sizeof(Move), compare_move);
+    qsort(result->moves, result->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected, 2, sizeof(ScoredMove), compare_scored_move);
 
-    TEST_ASSERT_EQUAL_UINT_ARRAY(expected, result->moves, 2);
+    assert_move_lists_equal(expected, result->moves, 2);
     TEST_ASSERT_EQUAL_INT(2, result->current_index);
 
     free_game(game);
@@ -262,16 +257,16 @@ void test_generate_all_black_king_castling_moves_initial(void)
 
     generate_all_king_castling_moves_from_game_state(game, result);
 
-    Move expected[] = {
-        CREATE_MOVE(E8, G8, BLACK_KING, KING_CASTLE),
-        CREATE_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE),
+    ScoredMove expected[] = {
+        CREATE_SCORED_MOVE(E8, G8, BLACK_KING, KING_CASTLE),
+        CREATE_SCORED_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE),
     };
 
-    qsort(result->moves, result->current_index, sizeof(Move), compare_move);
-    qsort(expected, 2, sizeof(Move), compare_move);
+    qsort(result->moves, result->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected, 2, sizeof(ScoredMove), compare_scored_move);
 
     TEST_ASSERT_EQUAL_INT(2, result->current_index);
-    TEST_ASSERT_EQUAL_UINT_ARRAY(expected, result->moves, 2);
+    assert_move_lists_equal(expected, result->moves, 2);
 
     free_game(game);
     free(result);
@@ -307,8 +302,8 @@ void test_only_black_queen_side_castling_due_to_fen_rights(void)
 
     generate_all_king_castling_moves_from_game_state(game, result);
 
-    Move expected[] = {
-        CREATE_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE),
+    ScoredMove expected[] = {
+        CREATE_SCORED_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE),
     };
 
     TEST_ASSERT_EQUAL_INT(1, result->current_index);
@@ -331,12 +326,12 @@ void test_no_white_king_side_castling_blocked_by_piece(void)
 
     generate_all_king_castling_moves_from_game_state(game, result);
 
-    Move expected[] = {
-        CREATE_MOVE(E1, C1, WHITE_KING, QUEEN_CASTLE),
+    ScoredMove expected[] = {
+        CREATE_SCORED_MOVE(E1, C1, WHITE_KING, QUEEN_CASTLE),
     };
 
-    qsort(result->moves, result->current_index, sizeof(Move), compare_move);
-    qsort(expected, 1, sizeof(Move), compare_move);
+    qsort(result->moves, result->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected, 1, sizeof(ScoredMove), compare_scored_move);
 
     TEST_ASSERT_EQUAL_INT(1, result->current_index);
     TEST_ASSERT_EQUAL_UINT_ARRAY(expected, result->moves, 1);
@@ -356,12 +351,12 @@ void test_no_white_queen_side_castling_blocked_by_piece(void)
 
     generate_all_king_castling_moves_from_game_state(game, result);
 
-    Move expected[] = {
-        CREATE_MOVE(E1, G1, WHITE_KING, KING_CASTLE),
+    ScoredMove expected[] = {
+        CREATE_SCORED_MOVE(E1, G1, WHITE_KING, KING_CASTLE),
     };
 
-    qsort(result->moves, result->current_index, sizeof(Move), compare_move);
-    qsort(expected, 1, sizeof(Move), compare_move);
+    qsort(result->moves, result->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected, 1, sizeof(ScoredMove), compare_scored_move);
 
     TEST_ASSERT_EQUAL_INT(1, result->current_index);
     TEST_ASSERT_EQUAL_UINT_ARRAY(expected, result->moves, 1);
@@ -381,12 +376,12 @@ void test_no_black_king_side_castling_blocked_by_piece(void)
 
     generate_all_king_castling_moves_from_game_state(game, result);
 
-    Move expected[] = {
-        CREATE_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE),
+    ScoredMove expected[] = {
+        CREATE_SCORED_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE),
     };
 
-    qsort(result->moves, result->current_index, sizeof(Move), compare_move);
-    qsort(expected, 1, sizeof(Move), compare_move);
+    qsort(result->moves, result->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected, 1, sizeof(ScoredMove), compare_scored_move);
 
     TEST_ASSERT_EQUAL_INT(1, result->current_index);
     TEST_ASSERT_EQUAL_UINT_ARRAY(expected, result->moves, 1);
@@ -445,12 +440,12 @@ void test_generate_black_castling_when_squares_attacked_pseudo_legal(void)
 
     generate_all_king_castling_moves_from_game_state(game, result);
 
-    Move expected[] = {
-        CREATE_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE),
+    ScoredMove expected[] = {
+        CREATE_SCORED_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE),
     };
 
-    qsort(result->moves, result->current_index, sizeof(Move), compare_move);
-    qsort(expected, 1, sizeof(Move), compare_move);
+    qsort(result->moves, result->current_index, sizeof(ScoredMove), compare_scored_move);
+    qsort(expected, 1, sizeof(ScoredMove), compare_scored_move);
 
     TEST_ASSERT_EQUAL_INT(1, result->current_index);
     TEST_ASSERT_EQUAL_UINT_ARRAY(expected, result->moves, 1);
@@ -468,14 +463,14 @@ void test_generate_all_white_king_capture_from_tricky_position(void)
     MoveList* result_for_white = (MoveList*) malloc(sizeof(MoveList));
     result_for_white->current_index = 0;
 
-    Move expected_for_white[] = {
-        CREATE_MOVE(H1, H2, WHITE_KING, CAPTURE),
+    ScoredMove expected_for_white[] = {
+        CREATE_SCORED_MOVE(H1, H2, WHITE_KING, CAPTURE),
     };
     
     generate_all_king_capture_moves_from_game_state(game_white, result_for_white);
 
     TEST_ASSERT_EQUAL(1, result_for_white->current_index);
-    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_white, result_for_white->moves, 1);
+    assert_move_lists_equal(expected_for_white, result_for_white->moves, 1);
 
     free_game(game_white);
     free(result_for_white);
@@ -491,14 +486,14 @@ void test_generate_all_black_king_capture_from_tricky_position(void)
     result_for_black->current_index = 0;
 
 
-    Move expected_for_black[] = {
-        CREATE_MOVE(E8, F7, BLACK_KING, CAPTURE),
+    ScoredMove expected_for_black[] = {
+        CREATE_SCORED_MOVE(E8, F7, BLACK_KING, CAPTURE),
     };
     
     generate_all_king_capture_moves_from_game_state(game_black, result_for_black);
     
     TEST_ASSERT_EQUAL(1, result_for_black->current_index);
-    TEST_ASSERT_EQUAL_UINT_ARRAY(expected_for_black, result_for_black->moves, 1);
+    assert_move_lists_equal(expected_for_black, result_for_black->moves, 1);
     free_game(game_black);
 
     free(result_for_black);

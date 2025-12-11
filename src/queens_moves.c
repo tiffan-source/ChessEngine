@@ -30,7 +30,7 @@ void generate_all_queens_moves_from_game_state(Game* board_state, MoveList* move
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                     source_square,
                     target_square,
                     WHITE_QUEEN,
@@ -43,7 +43,7 @@ void generate_all_queens_moves_from_game_state(Game* board_state, MoveList* move
             {
                 target_square = GET_LSB_INDEX(attack);
 
-                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                     source_square,
                     target_square,
                     WHITE_QUEEN,
@@ -73,7 +73,7 @@ void generate_all_queens_moves_from_game_state(Game* board_state, MoveList* move
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                     source_square,
                     target_square,
                     BLACK_QUEEN,
@@ -86,7 +86,7 @@ void generate_all_queens_moves_from_game_state(Game* board_state, MoveList* move
             while(attack){
                 target_square = GET_LSB_INDEX(attack);
 
-                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                     source_square,
                     target_square,
                     BLACK_QUEEN,
@@ -124,7 +124,7 @@ void generate_all_queens_captures_from_game_state(Game* board_state, MoveList* m
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                     source_square,
                     target_square,
                     WHITE_QUEEN,
@@ -150,7 +150,7 @@ void generate_all_queens_captures_from_game_state(Game* board_state, MoveList* m
             while(move){
                 target_square = GET_LSB_INDEX(move);
 
-                moves_list->moves[moves_list->current_index++] = CREATE_MOVE(
+                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
                     source_square,
                     target_square,
                     BLACK_QUEEN,

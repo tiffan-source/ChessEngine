@@ -22,10 +22,15 @@
 #define MOVE_TYPE_MASK          0xF0000       // 4 bits for move type
 
 // Macros to extract components from a move
-#define GET_SOURCE_SQUARE(move)      ((move) & SOURCE_SQUARE_MASK)
-#define GET_DESTINATION_SQUARE(move) (((move) & DESTINATION_SQUARE_MASK) >> 6)
-#define GET_PIECE_TYPE(move)         (((move) & PIECE_TYPE_MASK) >> 12)
-#define GET_MOVE_TYPE(move)          (((move) & MOVE_TYPE_MASK) >> 16)
+#define GET_SOURCE_SQUARE(scored_move)      ((scored_move.move) & SOURCE_SQUARE_MASK)
+#define GET_DESTINATION_SQUARE(scored_move) (((scored_move.move) & DESTINATION_SQUARE_MASK) >> 6)
+#define GET_PIECE_TYPE(scored_move)         (((scored_move.move) & PIECE_TYPE_MASK) >> 12)
+#define GET_MOVE_TYPE(scored_move)          (((scored_move.move) & MOVE_TYPE_MASK) >> 16)
+
+#define GET_SOURCE_SQUARE_FROM_MOVE(move)      ((move) & SOURCE_SQUARE_MASK)
+#define GET_DESTINATION_SQUARE_FROM_MOVE(move) (((move) & DESTINATION_SQUARE_MASK) >> 6)
+#define GET_PIECE_TYPE_FROM_MOVE(move)         (((move) & PIECE_TYPE_MASK) >> 12)
+#define GET_MOVE_TYPE_FROM_MOVE(move)          (((move) & MOVE_TYPE_MASK) >> 16)
 
 #define CREATE_MOVE(from_square, to_square, piece_type, move_type) \
     ( (Move)( (((from_square) & 0x3FULL)                         ) \
@@ -33,11 +38,19 @@
            | ((((piece_type)  & 0xFULL)  << 12)                   ) \
            | ((((move_type)   & 0xFULL)  << 16)                   ) ) )
 
+      
+#define CREATE_SCORED_MOVE(from_square, to_square, piece_type, move_type) \
+        ( (ScoredMove){ .score = (0), .move = CREATE_MOVE(from_square, to_square, piece_type, move_type) } )
 
 typedef unsigned int Move;
 
+typedef struct ScoredMove {
+    long int score;
+    Move move;
+} ScoredMove;
+
 typedef struct MoveList {
-    Move moves[256];
+    ScoredMove moves[256];
     int current_index;
 } MoveList;
 

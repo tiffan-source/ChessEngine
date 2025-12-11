@@ -2,7 +2,6 @@
 #ifndef SEARCH_AND_FIND_H
 #define SEARCH_AND_FIND_H
 
-#include "scored_move.h"
 #include "evaluation.h"
 #include "config.h"
 

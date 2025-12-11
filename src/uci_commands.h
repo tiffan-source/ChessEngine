@@ -6,7 +6,6 @@
 #include "game.h"
 #include "moves.h"
 #include "move_generator.h"
-#include "scored_move.h"
 #include "search_and_find.h"
 #include "config.h"
 
