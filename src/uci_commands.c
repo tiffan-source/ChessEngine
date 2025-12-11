@@ -95,8 +95,12 @@ void handle_go_command(Game* game, const char* input, char* response)
         SET_DEPTH_IN_CONFIG(config, depth_value > 0 ? depth_value : GET_DEPTH_FROM_CONFIG(config));
     }
 
-    result = nega_alpha_beta(game, GET_DEPTH_FROM_CONFIG(config), MIN, MAX);
-    
+    int init_time = get_time_ms();
+    result = call_search_algorithm(game, GET_DEPTH_FROM_CONFIG(config));
+    int end_time = get_time_ms() - init_time;
+    printf("End time: %d ms\n", end_time);
+    printf("Nodes searched: %llu\n", get_nodes_searched());
+
     build_move_as_uci(result.move, move_uci);
 
     snprintf(response, UCI_RESPONSE_MAX_LENGTH, "bestmove %s\n", move_uci);

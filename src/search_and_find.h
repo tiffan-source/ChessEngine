@@ -4,9 +4,14 @@
 
 #include "evaluation.h"
 #include "config.h"
+#include "move_ordering.h"
 
 #define MIN -1000000
 #define MAX 1000000
+
+U64 get_nodes_searched();
+
+ScoredMove call_search_algorithm(Game* game, int depth);
 
 // Function to find the best move using Min-Max algorithm with alpha-beta pruning
 ScoredMove min_max_best_move_min(Game* game, int depth);
@@ -21,4 +26,6 @@ ScoredMove alpha_beta_max(Game* game, int depth, int alpha, int beta);
 
 // Function to find the best move using NegaAlphaBeta
 ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta);
+ScoredMove nega_alpha_beta_with_move_ordering(Game *game, int depth, int alpha, int beta);
+
 #endif // SEARCH_AND_FIND_H
