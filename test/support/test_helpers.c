@@ -1,7 +1,7 @@
 #include "test_helpers.h"
 #include "unity.h"
 
-int compare_scored_move(const void *a, const void *b) {
+int test_helper_compare_scored_move(const void *a, const void *b) {
     unsigned int ia = (*(const ScoredMove*)a).move;
     unsigned int ib = (*(const ScoredMove*)b).move;
     return (ia > ib) - (ia < ib);

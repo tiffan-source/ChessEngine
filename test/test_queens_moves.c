@@ -43,8 +43,8 @@ void test_generate_all_white_queens_move_from_tricky_position(void)
     
     generate_all_queens_moves_from_game_state(game_white, result_for_white);
 
-    qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), compare_scored_move);
-    qsort(expected_for_white, 6, sizeof(ScoredMove), compare_scored_move);    
+    qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
+    qsort(expected_for_white, 6, sizeof(ScoredMove), test_helper_compare_scored_move);    
 
     TEST_ASSERT_EQUAL_INT(6, result_for_white->current_index);
     assert_move_lists_equal(expected_for_white, result_for_white->moves, 6);
@@ -79,8 +79,8 @@ void test_generate_all_white_queens_move_from_Kiwipete_position(void)
     
     generate_all_queens_moves_from_game_state(game_white, result_for_white);
 
-    qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), compare_scored_move);
-    qsort(expected_for_white, 9, sizeof(ScoredMove), compare_scored_move);    
+    qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
+    qsort(expected_for_white, 9, sizeof(ScoredMove), test_helper_compare_scored_move);    
 
     TEST_ASSERT_EQUAL_INT(9, result_for_white->current_index);
     assert_move_lists_equal(expected_for_white, result_for_white->moves, 9);

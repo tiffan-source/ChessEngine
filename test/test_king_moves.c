@@ -170,8 +170,8 @@ void test_generate_all_black_king_move_from_tricky_position(void)
     
     generate_all_king_quiet_and_capture_moves_from_game_state(game_black, result_for_black);
     
-    qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), compare_scored_move);
-    qsort(expected_for_black, 4, sizeof(ScoredMove), compare_scored_move);
+    qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
+    qsort(expected_for_black, 4, sizeof(ScoredMove), test_helper_compare_scored_move);
 
     TEST_ASSERT_EQUAL_INT(4, result_for_black->current_index);  
     assert_move_lists_equal(expected_for_black, result_for_black->moves, 4);
@@ -236,8 +236,8 @@ void test_generate_all_white_king_castling_moves_initial(void)
         CREATE_SCORED_MOVE(E1, C1, WHITE_KING, QUEEN_CASTLE),
     };
 
-    qsort(result->moves, result->current_index, sizeof(ScoredMove), compare_scored_move);
-    qsort(expected, 2, sizeof(ScoredMove), compare_scored_move);
+    qsort(result->moves, result->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
+    qsort(expected, 2, sizeof(ScoredMove), test_helper_compare_scored_move);
 
     assert_move_lists_equal(expected, result->moves, 2);
     TEST_ASSERT_EQUAL_INT(2, result->current_index);
@@ -262,8 +262,8 @@ void test_generate_all_black_king_castling_moves_initial(void)
         CREATE_SCORED_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE),
     };
 
-    qsort(result->moves, result->current_index, sizeof(ScoredMove), compare_scored_move);
-    qsort(expected, 2, sizeof(ScoredMove), compare_scored_move);
+    qsort(result->moves, result->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
+    qsort(expected, 2, sizeof(ScoredMove), test_helper_compare_scored_move);
 
     TEST_ASSERT_EQUAL_INT(2, result->current_index);
     assert_move_lists_equal(expected, result->moves, 2);
@@ -330,8 +330,8 @@ void test_no_white_king_side_castling_blocked_by_piece(void)
         CREATE_SCORED_MOVE(E1, C1, WHITE_KING, QUEEN_CASTLE),
     };
 
-    qsort(result->moves, result->current_index, sizeof(ScoredMove), compare_scored_move);
-    qsort(expected, 1, sizeof(ScoredMove), compare_scored_move);
+    qsort(result->moves, result->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
+    qsort(expected, 1, sizeof(ScoredMove), test_helper_compare_scored_move);
 
     TEST_ASSERT_EQUAL_INT(1, result->current_index);
     TEST_ASSERT_EQUAL_UINT_ARRAY(expected, result->moves, 1);
@@ -355,8 +355,8 @@ void test_no_white_queen_side_castling_blocked_by_piece(void)
         CREATE_SCORED_MOVE(E1, G1, WHITE_KING, KING_CASTLE),
     };
 
-    qsort(result->moves, result->current_index, sizeof(ScoredMove), compare_scored_move);
-    qsort(expected, 1, sizeof(ScoredMove), compare_scored_move);
+    qsort(result->moves, result->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
+    qsort(expected, 1, sizeof(ScoredMove), test_helper_compare_scored_move);
 
     TEST_ASSERT_EQUAL_INT(1, result->current_index);
     TEST_ASSERT_EQUAL_UINT_ARRAY(expected, result->moves, 1);
@@ -380,8 +380,8 @@ void test_no_black_king_side_castling_blocked_by_piece(void)
         CREATE_SCORED_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE),
     };
 
-    qsort(result->moves, result->current_index, sizeof(ScoredMove), compare_scored_move);
-    qsort(expected, 1, sizeof(ScoredMove), compare_scored_move);
+    qsort(result->moves, result->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
+    qsort(expected, 1, sizeof(ScoredMove), test_helper_compare_scored_move);
 
     TEST_ASSERT_EQUAL_INT(1, result->current_index);
     TEST_ASSERT_EQUAL_UINT_ARRAY(expected, result->moves, 1);
@@ -444,8 +444,8 @@ void test_generate_black_castling_when_squares_attacked_pseudo_legal(void)
         CREATE_SCORED_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE),
     };
 
-    qsort(result->moves, result->current_index, sizeof(ScoredMove), compare_scored_move);
-    qsort(expected, 1, sizeof(ScoredMove), compare_scored_move);
+    qsort(result->moves, result->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
+    qsort(expected, 1, sizeof(ScoredMove), test_helper_compare_scored_move);
 
     TEST_ASSERT_EQUAL_INT(1, result->current_index);
     TEST_ASSERT_EQUAL_UINT_ARRAY(expected, result->moves, 1);

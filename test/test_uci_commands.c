@@ -19,6 +19,7 @@
 #include "knights_moves.h"
 #include "binary_tools.h"
 #include "pieces.h"
+#include "move_ordering.h"
 #include "config.h"
 
 Game* test_game = NULL;

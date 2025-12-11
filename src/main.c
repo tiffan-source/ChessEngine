@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[]) {
     initialize_move_generation_databases();
-    init_config(7);
+    init_config(9);
 
     Game* internal_game = NULL;
     char command[COMMAND_MAX_LENGTH] = {0};

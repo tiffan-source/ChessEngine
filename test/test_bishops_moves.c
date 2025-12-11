@@ -266,8 +266,8 @@ void test_generate_all_white_bishop_move_from_tricky_position(void)
     
     generate_all_bishop_moves_from_game_state(game_white, result_for_white);
 
-    qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), compare_scored_move);
-    qsort(expected_for_white, 9, sizeof(ScoredMove), compare_scored_move);    
+    qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
+    qsort(expected_for_white, 9, sizeof(ScoredMove), test_helper_compare_scored_move);    
 
     TEST_ASSERT_EQUAL_INT(9, result_for_white->current_index);
     assert_move_lists_equal(expected_for_white, result_for_white->moves, 9);
@@ -301,8 +301,8 @@ void test_generate_all_black_bishop_move_from_tricky_position(void)
     
     generate_all_bishop_moves_from_game_state(game_black, result_for_black);
     
-    qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), compare_scored_move);
-    qsort(expected_for_black, 10, sizeof(ScoredMove), compare_scored_move);
+    qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
+    qsort(expected_for_black, 10, sizeof(ScoredMove), test_helper_compare_scored_move);
 
     TEST_ASSERT_EQUAL_INT(10, result_for_black->current_index);
     assert_move_lists_equal(expected_for_black, result_for_black->moves, 10);
@@ -328,8 +328,8 @@ void test_generate_all_white_bishop_capture_from_tricky_position(void)
     
     generate_all_bishop_captures_from_game_state(game_white, result_for_white);
 
-    qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), compare_scored_move);
-    qsort(expected_for_white, 2, sizeof(ScoredMove), compare_scored_move);    
+    qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
+    qsort(expected_for_white, 2, sizeof(ScoredMove), test_helper_compare_scored_move);    
 
     TEST_ASSERT_EQUAL(2, result_for_white->current_index);
     assert_move_lists_equal(expected_for_white, result_for_white->moves, 2);
@@ -355,8 +355,8 @@ void test_generate_all_black_bishop_capture_from_tricky_position(void)
     
     generate_all_bishop_captures_from_game_state(game_black, result_for_black);
     
-    qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), compare_scored_move);
-    qsort(expected_for_black, 3, sizeof(ScoredMove), compare_scored_move);
+    qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
+    qsort(expected_for_black, 3, sizeof(ScoredMove), test_helper_compare_scored_move);
 
     TEST_ASSERT_EQUAL_INT(3, result_for_black->current_index);
     assert_move_lists_equal(expected_for_black, result_for_black->moves, 3);

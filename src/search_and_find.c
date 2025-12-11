@@ -6,7 +6,7 @@ U64 nodes_searched = 0;
 ScoredMove call_search_algorithm(Game* game, int depth)
 {
     nodes_searched = 0;
-    return nega_alpha_beta(game, depth, MIN, MAX);
+    return nega_alpha_beta_with_move_ordering(game, depth, MIN, MAX);
 }
 
 U64 get_nodes_searched()
@@ -300,7 +300,7 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta)
     Move max_move = 0;
     ScoredMove scored_move;
 
-    nodes_searched++;
+    // nodes_searched++;
 
     if(depth == 0)
     {

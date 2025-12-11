@@ -18,6 +18,7 @@
 #include "queens_moves.h"
 #include "pieces.h"
 #include "config.h"
+#include "move_ordering.h"
 
 void setUp(void)
 {

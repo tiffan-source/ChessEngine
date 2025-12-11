@@ -422,8 +422,8 @@ void test_generate_all_white_rook_move_from_tricky_position(void)
     
     generate_all_rooks_moves_from_game_state(game_white, result_for_white);
 
-    qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), compare_scored_move);
-    qsort(expected_for_white, 5, sizeof(ScoredMove), compare_scored_move);    
+    qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
+    qsort(expected_for_white, 5, sizeof(ScoredMove), test_helper_compare_scored_move);    
 
     TEST_ASSERT_EQUAL_INT(5, result_for_white->current_index);
     assert_move_lists_equal(expected_for_white, result_for_white->moves, 5);
@@ -452,8 +452,8 @@ void test_generate_all_black_rook_move_from_tricky_position(void)
     
     generate_all_rooks_moves_from_game_state(game_black, result_for_black);
     
-    qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), compare_scored_move);
-    qsort(expected_for_black, 6, sizeof(ScoredMove), compare_scored_move);
+    qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
+    qsort(expected_for_black, 6, sizeof(ScoredMove), test_helper_compare_scored_move);
 
     TEST_ASSERT_EQUAL_INT(6, result_for_black->current_index);
     assert_move_lists_equal(expected_for_black, result_for_black->moves, 6);

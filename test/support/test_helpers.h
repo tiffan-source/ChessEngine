@@ -7,7 +7,7 @@
  * @brief Compare deux ScoredMove pour le tri (qsort).
  * Compare uniquement le champ 'move', ignore le score.
  */
-int compare_scored_move(const void *a, const void *b);
+int test_helper_compare_scored_move(const void *a, const void *b);
 
 /**
  * @brief Compare deux listes de ScoredMove en vérifiant uniquement le champ 'move'.
