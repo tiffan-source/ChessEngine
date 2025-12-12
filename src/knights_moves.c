@@ -100,21 +100,17 @@ Bitboard generate_knights_moves_from_square(Square square)
     return moves;
 }
 
-void generate_all_white_knight_moves_from_game_state(Game* board_state, MoveList* moves_list)
+void generate_all_white_knight_moves(Bitboard white_knights, Bitboard black_occupency, Bitboard all_occupency, MoveList* moves_list)
 {
-    Bitboard knights = board_state->white_knights;
-    Bitboard own_pieces = WHITE_OCCUPENCY(board_state);
-    Bitboard opponent_pieces = BLACK_OCCUPENCY(board_state);
     Square from_square, to_square;
     Bitboard possible_moves, attacks_moves, pre_calculated_knight_moves;
-    Bitboard all_occupency = ALL_OCCUPENCY(board_state);
     
-    while (knights)
+    while (white_knights)
     {
-        from_square = (Square)GET_LSB_INDEX(knights);
+        from_square = (Square)GET_LSB_INDEX(white_knights);
         pre_calculated_knight_moves = generate_knights_moves_from_square(from_square);
         possible_moves = pre_calculated_knight_moves & ~all_occupency;
-        attacks_moves = pre_calculated_knight_moves & opponent_pieces;
+        attacks_moves = pre_calculated_knight_moves & black_occupency;
 
         while (possible_moves)
         {
@@ -131,25 +127,21 @@ void generate_all_white_knight_moves_from_game_state(Game* board_state, MoveList
         }
         
 
-        knights = CLEAR_BIT_ON_BITBOARD(knights, from_square);
+        white_knights = CLEAR_BIT_ON_BITBOARD(white_knights, from_square);
     }
 }
 
-void generate_all_black_knight_moves_from_game_state(Game* board_state, MoveList* moves_list)
+void generate_all_black_knight_moves(Bitboard black_knights, Bitboard white_occupency, Bitboard all_occupency, MoveList* moves_list)
 {
-    Bitboard knights = board_state->black_knights;
-    Bitboard own_pieces = BLACK_OCCUPENCY(board_state);
-    Bitboard opponent_pieces = WHITE_OCCUPENCY(board_state);
     Square from_square, to_square;
     Bitboard possible_moves, attacks_moves, pre_calculated_knight_moves;
-    Bitboard all_occupency = ALL_OCCUPENCY(board_state);
     
-    while (knights)
+    while (black_knights)
     {
-        from_square = (Square)GET_LSB_INDEX(knights);
+        from_square = (Square)GET_LSB_INDEX(black_knights);
         pre_calculated_knight_moves = generate_knights_moves_from_square(from_square);
         possible_moves = pre_calculated_knight_moves & ~all_occupency;
-        attacks_moves = pre_calculated_knight_moves & opponent_pieces;
+        attacks_moves = pre_calculated_knight_moves & white_occupency;
 
         while (possible_moves)
         {
@@ -166,24 +158,21 @@ void generate_all_black_knight_moves_from_game_state(Game* board_state, MoveList
         }
         
 
-        knights = CLEAR_BIT_ON_BITBOARD(knights, from_square);
+        black_knights = CLEAR_BIT_ON_BITBOARD(black_knights, from_square);
     }
 }
 
 
-void generate_all_white_knight_captures_from_game_state(Game* board_state, MoveList* moves_list)
+void generate_all_white_knight_captures(Bitboard white_knights, Bitboard black_occupency, MoveList* moves_list)
 {
-    Bitboard knights = board_state->white_knights;
-    Bitboard own_pieces = WHITE_OCCUPENCY(board_state);
-    Bitboard opponent_pieces = BLACK_OCCUPENCY(board_state);
     Square from_square, to_square;
     Bitboard possible_moves;
     Bitboard temp_moves;
 
-    while (knights)
+    while (white_knights)
     {
-        from_square = (Square)GET_LSB_INDEX(knights);
-        possible_moves = generate_knights_moves_from_square(from_square) & opponent_pieces;
+        from_square = (Square)GET_LSB_INDEX(white_knights);
+        possible_moves = generate_knights_moves_from_square(from_square) & black_occupency;
 
         while (possible_moves)
         {
@@ -194,24 +183,20 @@ void generate_all_white_knight_captures_from_game_state(Game* board_state, MoveL
             possible_moves = CLEAR_BIT_ON_BITBOARD(possible_moves, to_square);
         }
 
-        knights = CLEAR_BIT_ON_BITBOARD(knights, from_square);
+        white_knights = CLEAR_BIT_ON_BITBOARD(white_knights, from_square);
     }
 }
 
-
-void generate_all_black_knight_captures_from_game_state(Game* board_state, MoveList* moves_list)
+void generate_all_black_knight_captures(Bitboard black_knights, Bitboard white_occupency, MoveList* moves_list)
 {
-    Bitboard knights = board_state->black_knights;
-    Bitboard own_pieces = BLACK_OCCUPENCY(board_state);
-    Bitboard opponent_pieces = WHITE_OCCUPENCY(board_state);
     Square from_square, to_square;
     Bitboard possible_moves;
     Bitboard temp_moves;
 
-    while (knights)
+    while (black_knights)
     {
-        from_square = (Square)GET_LSB_INDEX(knights);
-        possible_moves = generate_knights_moves_from_square(from_square) & opponent_pieces;
+        from_square = (Square)GET_LSB_INDEX(black_knights);
+        possible_moves = generate_knights_moves_from_square(from_square) & white_occupency;
 
         while (possible_moves)
         {
@@ -222,6 +207,6 @@ void generate_all_black_knight_captures_from_game_state(Game* board_state, MoveL
             possible_moves = CLEAR_BIT_ON_BITBOARD(possible_moves, to_square);
         }
 
-        knights = CLEAR_BIT_ON_BITBOARD(knights, from_square);
+        black_knights = CLEAR_BIT_ON_BITBOARD(black_knights, from_square);
     }
 }

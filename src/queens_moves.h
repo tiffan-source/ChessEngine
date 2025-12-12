@@ -7,12 +7,9 @@
 #include "rooks_moves.h"
 #include "bishops_moves.h"
 
-// void generate_all_queens_moves_from_game_state(Game* board_state, MoveList* moves_list);
-void generate_all_white_queens_moves_from_game_state(Game* board_state, MoveList* moves_list);
-void generate_all_black_queens_moves_from_game_state(Game* board_state, MoveList* moves_list);
+void generate_all_white_queens_moves(Bitboard white_queens, Bitboard black_occupency, Bitboard all_occupency, MoveList* moves_list);
+void generate_all_black_queens_moves(Bitboard black_queens, Bitboard white_occupency, Bitboard all_occupency, MoveList* moves_list);
 
-// void generate_all_queens_captures_from_game_state(Game* board_state, MoveList* moves_list);
-void generate_all_white_queens_captures_from_game_state(Game* board_state, MoveList* moves_list);
-void generate_all_black_queens_captures_from_game_state(Game* board_state, MoveList* moves_list);
-
+void generate_all_white_queens_captures(Bitboard white_queens, Bitboard black_occupency, Bitboard all_occupency, MoveList* moves_list);
+void generate_all_black_queens_captures(Bitboard black_queens, Bitboard white_occupency, Bitboard all_occupency, MoveList* moves_list);
 #endif // QUEENS_MOVES_H

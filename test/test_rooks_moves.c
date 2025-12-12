@@ -420,7 +420,7 @@ void test_generate_all_white_rook_move_from_tricky_position(void)
         CREATE_SCORED_MOVE(F1, F2, WHITE_ROOK, QUIET_MOVES),
     };
     
-    generate_all_white_rooks_moves_from_game_state(game_white, result_for_white);
+    generate_all_white_rooks_moves(game_white->white_rooks, BLACK_OCCUPENCY(game_white), ALL_OCCUPENCY(game_white), result_for_white);
 
     qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected_for_white, 5, sizeof(ScoredMove), test_helper_compare_scored_move);    
@@ -450,7 +450,7 @@ void test_generate_all_black_rook_move_from_tricky_position(void)
         CREATE_SCORED_MOVE(H8, F8, BLACK_ROOK, QUIET_MOVES),
     };
     
-    generate_all_black_rooks_moves_from_game_state(game_black, result_for_black);
+    generate_all_black_rooks_moves(game_black->black_rooks, WHITE_OCCUPENCY(game_black), ALL_OCCUPENCY(game_black), result_for_black);
     
     qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected_for_black, 6, sizeof(ScoredMove), test_helper_compare_scored_move);
@@ -475,7 +475,7 @@ void test_generate_all_white_rooks_capture_from_tricky_position(void)
         CREATE_SCORED_MOVE(B4, F4, WHITE_ROOK, CAPTURE)
     };
     
-    generate_all_white_rooks_captures_from_game_state(game_white, result_for_white);   
+    generate_all_white_rooks_captures(game_white->white_rooks, BLACK_OCCUPENCY(game_white), ALL_OCCUPENCY(game_white), result_for_white);   
 
     TEST_ASSERT_EQUAL_UINT(1, result_for_white->current_index);
     assert_move_lists_equal(expected_for_white, result_for_white->moves, 1);
@@ -498,7 +498,7 @@ void test_generate_all_black_rooks_capture_from_tricky_position(void)
         CREATE_SCORED_MOVE(H5, B5, BLACK_ROOK, CAPTURE)
     };
     
-    generate_all_black_rooks_captures_from_game_state(game_black, result_for_black);
+    generate_all_black_rooks_captures(game_black->black_rooks, WHITE_OCCUPENCY(game_black), ALL_OCCUPENCY(game_black), result_for_black);
     
     TEST_ASSERT_EQUAL_UINT(1, result_for_black->current_index);
     assert_move_lists_equal(expected_for_black, result_for_black->moves, 1);

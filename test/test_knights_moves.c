@@ -174,8 +174,7 @@ void test_generate_all_white_knight_move_from_tricky_position(void)
         CREATE_SCORED_MOVE(F3, E1, WHITE_KNIGHT, QUIET_MOVES),
     };
 
-    generate_all_white_knight_moves_from_game_state(game_white, result_for_white);
-
+    generate_all_white_knight_moves(game_white->white_knights, BLACK_OCCUPENCY(game_white), ALL_OCCUPENCY(game_white), result_for_white);
 
     qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected_for_white, 13, sizeof(ScoredMove), test_helper_compare_scored_move);
@@ -209,8 +208,7 @@ void test_generate_all_black_knight_move_from_tricky_position(void)
         CREATE_SCORED_MOVE(A5, C6, BLACK_KNIGHT, QUIET_MOVES),
     };
 
-    generate_all_black_knight_moves_from_game_state(game_black, result_for_black);
-
+    generate_all_black_knight_moves(game_black->black_knights, WHITE_OCCUPENCY(game_black), ALL_OCCUPENCY(game_black), result_for_black);
 
     qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected_for_black, 8, sizeof(ScoredMove), test_helper_compare_scored_move);    
@@ -241,7 +239,7 @@ void test_generate_all_knight_moves_whith_capture(void)
         CREATE_SCORED_MOVE(B8, A6, BLACK_KNIGHT, QUIET_MOVES),
     };
 
-    generate_all_black_knight_moves_from_game_state(game, result);
+    generate_all_black_knight_moves(game->black_knights, WHITE_OCCUPENCY(game), ALL_OCCUPENCY(game), result);
 
     qsort(result->moves, result->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected, 7, sizeof(ScoredMove), test_helper_compare_scored_move);
@@ -268,8 +266,7 @@ void test_generate_all_white_knight_capture_from_tricky_position(void)
         CREATE_SCORED_MOVE(F3, H2, WHITE_KNIGHT, CAPTURE),
     };
 
-    generate_all_white_knight_captures_from_game_state(game_white, result_for_white);
-
+    generate_all_white_knight_captures(game_white->white_knights, BLACK_OCCUPENCY(game_white), result_for_white);
 
     qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected_for_white, 2, sizeof(ScoredMove), test_helper_compare_scored_move);
@@ -296,8 +293,7 @@ void test_generate_all_black_knight_capture_from_tricky_position(void)
         CREATE_SCORED_MOVE(A5, C4, BLACK_KNIGHT, CAPTURE),
     };
 
-    generate_all_black_knight_captures_from_game_state(game_black, result_for_black);
-
+    generate_all_black_knight_captures(game_black->black_knights, WHITE_OCCUPENCY(game_black), result_for_black);
 
     qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected_for_black, 2, sizeof(ScoredMove), test_helper_compare_scored_move);    

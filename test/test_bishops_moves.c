@@ -264,7 +264,7 @@ void test_generate_all_white_bishop_move_from_tricky_position(void)
         CREATE_SCORED_MOVE(B4, F8, WHITE_BISHOP, QUIET_MOVES),
     };
     
-    generate_all_white_bishop_moves_from_game_state(game_white, result_for_white);
+    generate_all_white_bishop_moves(game_white->white_bishops, BLACK_OCCUPENCY(game_white), ALL_OCCUPENCY(game_white), result_for_white);
 
     qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected_for_white, 9, sizeof(ScoredMove), test_helper_compare_scored_move);    
@@ -299,7 +299,7 @@ void test_generate_all_black_bishop_move_from_tricky_position(void)
         CREATE_SCORED_MOVE(G6, H5, BLACK_BISHOP, QUIET_MOVES),
     };
     
-    generate_all_black_bishop_moves_from_game_state(game_black, result_for_black);
+    generate_all_black_bishop_moves(game_black->black_bishops, WHITE_OCCUPENCY(game_black), ALL_OCCUPENCY(game_black), result_for_black);
     
     qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected_for_black, 10, sizeof(ScoredMove), test_helper_compare_scored_move);
@@ -326,7 +326,7 @@ void test_generate_all_white_bishop_capture_from_tricky_position(void)
         CREATE_SCORED_MOVE(B4, A5, WHITE_BISHOP, CAPTURE),
     };
     
-    generate_all_white_bishop_captures_from_game_state(game_white, result_for_white);
+    generate_all_white_bishop_captures(game_white->white_bishops, BLACK_OCCUPENCY(game_white), ALL_OCCUPENCY(game_white), result_for_white);
 
     qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected_for_white, 2, sizeof(ScoredMove), test_helper_compare_scored_move);    
@@ -353,7 +353,7 @@ void test_generate_all_black_bishop_capture_from_tricky_position(void)
         CREATE_SCORED_MOVE(G6, E4, BLACK_BISHOP, CAPTURE),
     };
     
-    generate_all_black_bishop_captures_from_game_state(game_black, result_for_black);
+    generate_all_black_bishop_captures(game_black->black_bishops, WHITE_OCCUPENCY(game_black), ALL_OCCUPENCY(game_black), result_for_black);
     
     qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected_for_black, 3, sizeof(ScoredMove), test_helper_compare_scored_move);

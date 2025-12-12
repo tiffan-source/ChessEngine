@@ -13,15 +13,20 @@
 #include "pieces.h"
 #include "pawns_moves.h"
 
+#define F8_G8_BITBOARD 0x0000000000000060ULL
+#define D8_C8_B8_BITBOARD 0x000000000000000EULL
+#define F1_G1_BITBOARD 0x6000000000000000ULL
+#define D1_C1_B1_BITBOARD 0x0E00000000000000ULL
+
 extern const Bitboard pre_calculated_king_moves[64];
 
 Bitboard generate_king_moves_from_square(Square square);
 
-void generate_all_white_king_quiet_and_capture_moves_from_game_state(Game* board_state, MoveList* moves_list);
-void generate_all_black_king_quiet_and_capture_moves_from_game_state(Game* board_state, MoveList* moves_list);
+void generate_all_white_king_quiet_and_capture_moves(Bitboard white_king, Bitboard black_occupency, Bitboard all_occupency, MoveList* moves_list);
+void generate_all_black_king_quiet_and_capture_moves(Bitboard black_king, Bitboard white_occupency, Bitboard all_occupency, MoveList* moves_list);
 
-void generate_all_white_king_capture_moves_from_game_state(Game* board_state, MoveList* moves_list);
-void generate_all_black_king_capture_moves_from_game_state(Game* board_state, MoveList* moves_list);
+void generate_all_white_king_capture_moves(Bitboard white_king, Bitboard black_occupency, MoveList* moves_list);
+void generate_all_black_king_capture_moves(Bitboard black_king, Bitboard white_occupency, MoveList* moves_list);
 
 void generate_all_white_king_castling_moves_from_game_state(Game* board_state, MoveList* moves_list);
 void generate_all_black_king_castling_moves_from_game_state(Game* board_state, MoveList* moves_list);

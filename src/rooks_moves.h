@@ -24,12 +24,9 @@ void initialize_pre_calculated_rook_moves_database();
 
 Bitboard retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(Square square, Bitboard blocker);
 
-// void generate_all_rooks_moves_from_game_state(Game* board_state, MoveList* moves_list);
-void generate_all_white_rooks_moves_from_game_state(Game* board_state, MoveList* moves_list);
-void generate_all_black_rooks_moves_from_game_state(Game* board_state, MoveList* moves_list);
+void generate_all_white_rooks_moves(Bitboard white_rooks, Bitboard black_occupency, Bitboard all_occupency, MoveList* move_list);
+void generate_all_black_rooks_moves(Bitboard black_rooks, Bitboard white_occupency, Bitboard all_occupency, MoveList* move_list);
 
-// void generate_all_rooks_captures_from_game_state(Game* game, MoveList* move_list);
-void generate_all_white_rooks_captures_from_game_state(Game* game, MoveList* move_list);
-void generate_all_black_rooks_captures_from_game_state(Game* game, MoveList* move_list);
-
+void generate_all_white_rooks_captures(Bitboard white_rooks, Bitboard black_occupency, Bitboard all_occupency, MoveList* move_list);
+void generate_all_black_rooks_captures(Bitboard black_rooks, Bitboard white_occupency, Bitboard all_occupency, MoveList* move_list);
 #endif // ROOKS_MOVES_H

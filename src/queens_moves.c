@@ -1,12 +1,10 @@
 
 #include "queens_moves.h"
 
-void generate_all_white_queens_moves_from_game_state(Game* board_state, MoveList* moves_list)
+void generate_all_white_queens_moves(Bitboard white_queens, Bitboard black_occupency, Bitboard all_occupency, MoveList* moves_list)
 {
     Square source_square, target_square;
-    Bitboard white_queens = board_state->white_queens;
     Bitboard move, attack;
-    Bitboard all_occupency = ALL_OCCUPENCY(board_state), black_occupency = BLACK_OCCUPENCY(board_state);
     Bitboard pre_calculated_queen_moves;
 
     while(white_queens){
@@ -53,12 +51,10 @@ void generate_all_white_queens_moves_from_game_state(Game* board_state, MoveList
     }
 }
 
-void generate_all_black_queens_moves_from_game_state(Game* board_state, MoveList* moves_list)
+void generate_all_black_queens_moves(Bitboard black_queens, Bitboard white_occupency, Bitboard all_occupency, MoveList* moves_list)
 {
     Square source_square, target_square;
-    Bitboard black_queens = board_state->black_queens;
     Bitboard move, attack;
-    Bitboard all_occupency = ALL_OCCUPENCY(board_state), white_occupency = WHITE_OCCUPENCY(board_state);
     Bitboard pre_calculated_queen_moves;
 
     while(black_queens){
@@ -102,12 +98,10 @@ void generate_all_black_queens_moves_from_game_state(Game* board_state, MoveList
     }
 }
 
-void generate_all_white_queens_captures_from_game_state(Game* board_state, MoveList* moves_list)
+void generate_all_white_queens_captures(Bitboard white_queens, Bitboard black_occupency, Bitboard all_occupency, MoveList* moves_list)
 {
     Square source_square, target_square;
-    Bitboard white_queens = board_state->white_queens;
     Bitboard move;
-    Bitboard all_occupency = ALL_OCCUPENCY(board_state);
 
     while(white_queens){
         source_square = GET_LSB_INDEX(white_queens);
@@ -118,7 +112,7 @@ void generate_all_white_queens_captures_from_game_state(Game* board_state, MoveL
         ) | retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(
             source_square,
             all_occupency
-        )) & BLACK_OCCUPENCY(board_state);
+        )) & black_occupency;
 
         while(move){
             target_square = GET_LSB_INDEX(move);
@@ -136,12 +130,10 @@ void generate_all_white_queens_captures_from_game_state(Game* board_state, MoveL
     }
 }
 
-void generate_all_black_queens_captures_from_game_state(Game* board_state, MoveList* moves_list)
+void generate_all_black_queens_captures(Bitboard black_queens, Bitboard white_occupency, Bitboard all_occupency, MoveList* moves_list)
 {
     Square source_square, target_square;
-    Bitboard black_queens = board_state->black_queens;
     Bitboard move;
-    Bitboard all_occupency = ALL_OCCUPENCY(board_state);
 
     while(black_queens){
         source_square = GET_LSB_INDEX(black_queens);
@@ -152,7 +144,7 @@ void generate_all_black_queens_captures_from_game_state(Game* board_state, MoveL
         ) | retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(
             source_square,
             all_occupency
-        )) & WHITE_OCCUPENCY(board_state);
+        )) & white_occupency;
 
         while(move){
             target_square = GET_LSB_INDEX(move);

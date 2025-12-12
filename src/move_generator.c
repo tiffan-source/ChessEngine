@@ -18,43 +18,53 @@ void initialize_move_generation_databases()
 
 void generate_all_pseudo_legal_moves_from_game_state(Game* game, MoveList* move_list)
 {
+    Bitboard all_occupency = ALL_OCCUPENCY(game);
+    Bitboard white_occupency = WHITE_OCCUPENCY(game);
+    Bitboard black_occupency = BLACK_OCCUPENCY(game);
+    Square en_passant_square = game->en_passant_target_square;
+
     if (game->turn ==  WHITE_TURN)
     {
-        generate_all_white_pawns_moves_from_game_state(game, move_list);
-        generate_all_white_rooks_moves_from_game_state(game, move_list);
-        generate_all_white_knight_moves_from_game_state(game, move_list);
-        generate_all_white_bishop_moves_from_game_state(game, move_list);
-        generate_all_white_queens_moves_from_game_state(game, move_list);
+        generate_all_white_pawns_moves(game->white_pawns, black_occupency, all_occupency, en_passant_square, move_list);
+        generate_all_white_rooks_moves(game->white_rooks, black_occupency, all_occupency, move_list);
+        generate_all_white_knight_moves(game->white_knights, black_occupency, all_occupency, move_list);
+        generate_all_white_bishop_moves(game->white_bishops, black_occupency, all_occupency, move_list);
+        generate_all_white_queens_moves(game->white_queens, black_occupency, all_occupency, move_list);
         generate_all_white_king_castling_moves_from_game_state(game, move_list);
-        generate_all_white_king_quiet_and_capture_moves_from_game_state(game, move_list);
+        generate_all_white_king_quiet_and_capture_moves(game->white_king, black_occupency, all_occupency, move_list);
     }else {
-        generate_all_black_pawns_moves_from_game_state(game, move_list);
-        generate_all_black_rooks_moves_from_game_state(game, move_list);
-        generate_all_black_knight_moves_from_game_state(game, move_list);
-        generate_all_black_bishop_moves_from_game_state(game, move_list);
-        generate_all_black_queens_moves_from_game_state(game, move_list);
+        generate_all_black_pawns_moves(game->black_pawns, white_occupency, all_occupency, en_passant_square, move_list);
+        generate_all_black_rooks_moves(game->black_rooks, white_occupency, all_occupency, move_list);
+        generate_all_black_knight_moves(game->black_knights, white_occupency, all_occupency, move_list);
+        generate_all_black_bishop_moves(game->black_bishops, white_occupency, all_occupency, move_list);
+        generate_all_black_queens_moves(game->black_queens, white_occupency, all_occupency, move_list);
         generate_all_black_king_castling_moves_from_game_state(game, move_list);
-        generate_all_black_king_quiet_and_capture_moves_from_game_state(game, move_list);
+        generate_all_black_king_quiet_and_capture_moves(game->black_king, white_occupency, all_occupency, move_list);
     }
 }
 
 void generate_all_capture_moves_from_game_state(Game* game, MoveList* move_list)
 {
+    Bitboard all_occupency = ALL_OCCUPENCY(game);
+    Bitboard white_occupency = WHITE_OCCUPENCY(game);
+    Bitboard black_occupency = BLACK_OCCUPENCY(game);
+    Square en_passant_square = game->en_passant_target_square;
+
     if(game->turn == WHITE_TURN)
     {
-        generate_all_white_pawns_capture_moves_from_game_state(game, move_list);
-        generate_all_white_rooks_captures_from_game_state(game, move_list);
-        generate_all_white_knight_captures_from_game_state(game, move_list);
-        generate_all_white_bishop_captures_from_game_state(game, move_list);
-        generate_all_white_queens_captures_from_game_state(game, move_list);
-        generate_all_white_king_capture_moves_from_game_state(game, move_list);
+        generate_all_white_pawns_capture_moves(game->white_pawns, black_occupency, all_occupency, en_passant_square, move_list);
+        generate_all_white_rooks_captures(game->white_rooks, black_occupency, all_occupency, move_list);
+        generate_all_white_knight_captures(game->white_knights, black_occupency, move_list);
+        generate_all_white_bishop_captures(game->white_bishops, black_occupency, all_occupency, move_list);
+        generate_all_white_queens_captures(game->white_queens, black_occupency, all_occupency, move_list);
+        generate_all_white_king_capture_moves(game->white_king, black_occupency, move_list);
     }else{
-        generate_all_black_pawns_capture_moves_from_game_state(game, move_list);
-        generate_all_black_rooks_captures_from_game_state(game, move_list);
-        generate_all_black_knight_captures_from_game_state(game, move_list);
-        generate_all_black_bishop_captures_from_game_state(game, move_list);
-        generate_all_black_queens_captures_from_game_state(game, move_list);
-        generate_all_black_king_capture_moves_from_game_state(game, move_list);
+        generate_all_black_pawns_capture_moves(game->black_pawns, white_occupency, all_occupency, en_passant_square, move_list);
+        generate_all_black_rooks_captures(game->black_rooks, white_occupency, all_occupency, move_list);
+        generate_all_black_knight_captures(game->black_knights, white_occupency, move_list);
+        generate_all_black_bishop_captures(game->black_bishops, white_occupency, all_occupency, move_list);
+        generate_all_black_queens_captures(game->black_queens, white_occupency, all_occupency, move_list);
+        generate_all_black_king_capture_moves(game->black_king, white_occupency, move_list);
     }
 }
 

@@ -101,12 +101,10 @@ Bitboard generate_king_moves_from_square(Square square)
     return moves;
 }
 
-void generate_all_white_king_quiet_and_capture_moves_from_game_state(Game* board_state, MoveList* moves_list)
+void generate_all_white_king_quiet_and_capture_moves(Bitboard white_king, Bitboard black_occupency, Bitboard all_occupency, MoveList* moves_list)
 {
     Square source_square, target_square;
-    Bitboard white_king = board_state->white_king;
     Bitboard move, attack;
-    Bitboard all_occupency = ALL_OCCUPENCY(board_state), black_occupency = BLACK_OCCUPENCY(board_state);
 
     while(white_king){
         source_square = GET_LSB_INDEX(white_king);
@@ -144,12 +142,10 @@ void generate_all_white_king_quiet_and_capture_moves_from_game_state(Game* board
     }
 }
 
-void generate_all_black_king_quiet_and_capture_moves_from_game_state(Game* board_state, MoveList* moves_list)
+void generate_all_black_king_quiet_and_capture_moves(Bitboard black_king, Bitboard white_occupency, Bitboard all_occupency, MoveList* moves_list)
 {
     Square source_square, target_square;
-    Bitboard black_king = board_state->black_king;
     Bitboard move, attack;
-    Bitboard all_occupency = ALL_OCCUPENCY(board_state), white_occupency = WHITE_OCCUPENCY(board_state);
 
     while(black_king){
         source_square = GET_LSB_INDEX(black_king);
@@ -236,16 +232,15 @@ int is_square_attacked_by_side(Game* board_state, Square square, Side side)
 
 void generate_all_white_king_castling_moves_from_game_state(Game* board_state, MoveList* moves_list)
 {   
-    Bitboard square_between_white_king_and_white_rook = 0x6000000000000000; // F1 and G1
-    Bitboard square_between_white_king_and_white_queen_rook = 0x0E00000000000000; // D1, C1 and B1
-    Bitboard occupency = ALL_OCCUPENCY(board_state);
+    Bitboard occupency;
 
     if (board_state->castling_rights & WHITE_KING_SIDE_CASTLING)
     {
         if(!is_square_attacked_by_side(board_state, E1, BLACK) &&
            !is_square_attacked_by_side(board_state, F1, BLACK) )
         {
-            if(!(occupency & square_between_white_king_and_white_rook))
+            occupency = ALL_OCCUPENCY(board_state);
+            if(!(occupency & F1_G1_BITBOARD))
                 moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(E1, G1, WHITE_KING, KING_CASTLE);
         }
     }
@@ -254,7 +249,8 @@ void generate_all_white_king_castling_moves_from_game_state(Game* board_state, M
         if (!is_square_attacked_by_side(board_state, E1, BLACK) &&
             !is_square_attacked_by_side(board_state, D1, BLACK) )
         {
-            if(!(occupency & square_between_white_king_and_white_queen_rook))
+            occupency = ALL_OCCUPENCY(board_state);
+            if(!(occupency & D1_C1_B1_BITBOARD))
                 moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(E1, C1, WHITE_KING, QUEEN_CASTLE);
         }
     }
@@ -262,16 +258,15 @@ void generate_all_white_king_castling_moves_from_game_state(Game* board_state, M
 
 void generate_all_black_king_castling_moves_from_game_state(Game* board_state, MoveList* moves_list)
 {   
-    Bitboard square_between_black_king_and_black_rook = 0x0000000000000060; // F8 and G8
-    Bitboard square_between_black_king_and_black_queen_rook = 0x000000000000000E; // D8, C8 and B8
-    Bitboard occupency = ALL_OCCUPENCY(board_state);
+    Bitboard occupency;
 
     if (board_state->castling_rights & BLACK_KING_SIDE_CASTLING)
     {
         if(!is_square_attacked_by_side(board_state, E8, WHITE) &&
            !is_square_attacked_by_side(board_state, F8, WHITE) )
         {
-            if(!(occupency & square_between_black_king_and_black_rook))
+            occupency = ALL_OCCUPENCY(board_state);
+            if(!(occupency & F8_G8_BITBOARD))
                 moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(E8, G8, BLACK_KING, KING_CASTLE);
         }
     }
@@ -280,7 +275,8 @@ void generate_all_black_king_castling_moves_from_game_state(Game* board_state, M
         if (!is_square_attacked_by_side(board_state, E8, WHITE) &&
             !is_square_attacked_by_side(board_state, D8, WHITE) )
         {
-            if(!(occupency & square_between_black_king_and_black_queen_rook))
+            occupency = ALL_OCCUPENCY(board_state);
+            if(!(occupency & D8_C8_B8_BITBOARD))
                 moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE);
         }
     }
@@ -299,15 +295,14 @@ int is_king_attacked_by_side(Game* board_state, Side side)
     }
 }
 
-void generate_all_white_king_capture_moves_from_game_state(Game* board_state, MoveList* moves_list)
+void generate_all_white_king_capture_moves(Bitboard white_king, Bitboard black_occupency, MoveList* moves_list)
 {
     Square source_square, target_square;
-    Bitboard white_king = board_state->white_king;
     Bitboard move;
 
     source_square = GET_LSB_INDEX(white_king);
 
-    move = pre_calculated_king_moves[source_square] & BLACK_OCCUPENCY(board_state);
+    move = pre_calculated_king_moves[source_square] & black_occupency;
     while(move){
         target_square = GET_LSB_INDEX(move);
        
@@ -322,15 +317,14 @@ void generate_all_white_king_capture_moves_from_game_state(Game* board_state, Mo
     }
 }
 
-void generate_all_black_king_capture_moves_from_game_state(Game* board_state, MoveList* moves_list)
+void generate_all_black_king_capture_moves(Bitboard black_king, Bitboard white_occupency, MoveList* moves_list)
 {
     Square source_square, target_square;
-    Bitboard black_king = board_state->black_king;
     Bitboard move;
 
     source_square = GET_LSB_INDEX(black_king);
 
-    move = pre_calculated_king_moves[source_square] & WHITE_OCCUPENCY(board_state);
+    move = pre_calculated_king_moves[source_square] & white_occupency;
     while(move){
         target_square = GET_LSB_INDEX(move);
 

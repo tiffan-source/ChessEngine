@@ -141,7 +141,7 @@ void test_generate_all_white_king_move_from_tricky_position(void)
         CREATE_SCORED_MOVE(H1, H2, WHITE_KING, CAPTURE),
     };
     
-    generate_all_white_king_quiet_and_capture_moves_from_game_state(game_white, result_for_white);
+    generate_all_white_king_quiet_and_capture_moves(game_white->white_king, BLACK_OCCUPENCY(game_white), ALL_OCCUPENCY(game_white), result_for_white);
 
     TEST_ASSERT_EQUAL_INT(2, result_for_white->current_index);
     assert_move_lists_equal(expected_for_white, result_for_white->moves, 2);
@@ -168,7 +168,7 @@ void test_generate_all_black_king_move_from_tricky_position(void)
         CREATE_SCORED_MOVE(E8, F7, BLACK_KING, CAPTURE),
     };
     
-    generate_all_black_king_quiet_and_capture_moves_from_game_state(game_black, result_for_black);
+    generate_all_black_king_quiet_and_capture_moves(game_black->black_king, WHITE_OCCUPENCY(game_black), ALL_OCCUPENCY(game_black), result_for_black);
     
     qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected_for_black, 4, sizeof(ScoredMove), test_helper_compare_scored_move);
@@ -467,7 +467,7 @@ void test_generate_all_white_king_capture_from_tricky_position(void)
         CREATE_SCORED_MOVE(H1, H2, WHITE_KING, CAPTURE),
     };
     
-    generate_all_white_king_capture_moves_from_game_state(game_white, result_for_white);
+    generate_all_white_king_capture_moves(game_white->white_king, BLACK_OCCUPENCY(game_white), result_for_white);
 
     TEST_ASSERT_EQUAL(1, result_for_white->current_index);
     assert_move_lists_equal(expected_for_white, result_for_white->moves, 1);
@@ -490,7 +490,7 @@ void test_generate_all_black_king_capture_from_tricky_position(void)
         CREATE_SCORED_MOVE(E8, F7, BLACK_KING, CAPTURE),
     };
     
-    generate_all_black_king_capture_moves_from_game_state(game_black, result_for_black);
+    generate_all_black_king_capture_moves(game_black->black_king, WHITE_OCCUPENCY(game_black), result_for_black);
     
     TEST_ASSERT_EQUAL(1, result_for_black->current_index);
     assert_move_lists_equal(expected_for_black, result_for_black->moves, 1);
