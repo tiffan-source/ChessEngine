@@ -5,10 +5,12 @@
 #include "game.h"
 #include "moves.h"
 
-extern Bitboard pre_calculated_pawn_moves[2][64];
+extern Bitboard pre_calculated_pawn_push[2][64];
+extern Bitboard pre_calculated_pawn_double_push[2][64];
 extern Bitboard pre_calculated_pawn_attacks[2][64];
 
-Bitboard generate_pawns_quiet_moves_from_square(Side side, Square square);
+Bitboard generate_pawns_quiet_moves_one_square_from_square(Side side, Square square);
+Bitboard generate_pawns_quiet_moves_two_squares_from_square(Side side, Square square);
 Bitboard generate_pawns_capture_moves_from_square(Side side, Square square);
 
 void generate_all_white_pawns_moves(Bitboard white_pawns, Bitboard black_occupency, Bitboard all_occupency, Square en_passant_square, MoveList* moves);

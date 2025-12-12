@@ -1,40 +1,49 @@
 
 #include "pawns_moves.h"
 
-Bitboard pre_calculated_pawn_moves[2][64];
+Bitboard pre_calculated_pawn_push[2][64];
+Bitboard pre_calculated_pawn_double_push[2][64];
 Bitboard pre_calculated_pawn_attacks[2][64];
 
-Bitboard generate_pawns_quiet_moves_from_square(Side side, Square square)
+Bitboard generate_pawns_quiet_moves_one_square_from_square(Side side, Square square)
 {
     Bitboard source = SET_BIT_ON_BITBOARD(0x0ULL, square);
     Bitboard moves = 0x0ULL;
 
     if(side == WHITE)
     {
-        // One square forward
         if(!BIT_ON_BITBOARD_HIT_8_RANK(source))
         {
             moves = SET_BIT_ON_BITBOARD(moves, square - 8);
-
-            // Two squares forward
-            if(BIT_ON_BITBOARD_HIT_2_RANK(source))
-            {
-                moves = SET_BIT_ON_BITBOARD(moves, square - 16);
-            }
         }
     }
     else // BLACK
     {
-        // One square forward
         if(!BIT_ON_BITBOARD_HIT_1_RANK(source))
         {
             moves = SET_BIT_ON_BITBOARD(moves, square + 8);
+        }
+    }
+    return moves;
+}
 
-            // Two squares forward from starting position
-            if(BIT_ON_BITBOARD_HIT_7_RANK(source))
-            {
-                moves = SET_BIT_ON_BITBOARD(moves, square + 16);
-            }
+Bitboard generate_pawns_quiet_moves_two_squares_from_square(Side side, Square square)
+{
+    Bitboard source = SET_BIT_ON_BITBOARD(0x0ULL, square);
+    Bitboard moves = 0x0ULL;
+
+    if(side == WHITE)
+    {
+        if(BIT_ON_BITBOARD_HIT_2_RANK(source))
+        {
+            moves = SET_BIT_ON_BITBOARD(moves, square - 16);
+        }
+    }
+    else // BLACK
+    {
+        if(BIT_ON_BITBOARD_HIT_7_RANK(source))
+        {
+            moves = SET_BIT_ON_BITBOARD(moves, square + 16);
         }
     }
     return moves;
@@ -78,8 +87,11 @@ void initialize_pre_calculated_pawn_moves_database()
 {
     for (Square square = 0; square < 64; square++)
     {
-        pre_calculated_pawn_moves[WHITE][square] = generate_pawns_quiet_moves_from_square(WHITE, square);
-        pre_calculated_pawn_moves[BLACK][square] = generate_pawns_quiet_moves_from_square(BLACK, square);
+        pre_calculated_pawn_push[WHITE][square] = generate_pawns_quiet_moves_one_square_from_square(WHITE, square);
+        pre_calculated_pawn_push[BLACK][square] = generate_pawns_quiet_moves_one_square_from_square(BLACK, square);
+
+        pre_calculated_pawn_double_push[WHITE][square] = generate_pawns_quiet_moves_two_squares_from_square(WHITE, square);
+        pre_calculated_pawn_double_push[BLACK][square] = generate_pawns_quiet_moves_two_squares_from_square(BLACK, square);
     }
 }
 
@@ -104,7 +116,7 @@ void generate_all_white_pawns_moves(Bitboard white_pawns, Bitboard black_occupen
     {
         Bitboard source_attack = pre_calculated_pawn_attacks[BLACK][en_passant_square] & white_pawns;
 
-        while (source_attack)
+        while (source_attack) // TODO: potentiellement optimisable
         {
             Square pawn_square = GET_LSB_INDEX(source_attack);
             moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
@@ -121,8 +133,8 @@ void generate_all_white_pawns_moves(Bitboard white_pawns, Bitboard black_occupen
         source_square = GET_LSB_INDEX(white_pawns);
 
         // Pawn moves
-        move = pre_calculated_pawn_moves[WHITE][source_square] & ~all_occupency;
-        while(move){
+        move = pre_calculated_pawn_push[WHITE][source_square] & ~all_occupency;
+        if(move){
             target_square = GET_LSB_INDEX(move);
 
             if ((pre_calculated_bit_shifts[target_square]) & RANK_8)
@@ -153,28 +165,29 @@ void generate_all_white_pawns_moves(Bitboard white_pawns, Bitboard black_occupen
             }
             else
             {
-                diff_source_tag = abs(source_square - target_square);
-                if (diff_source_tag == 16 && ((pre_calculated_bit_shifts[target_square + 8]) & all_occupency) == 0 ){
-                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
-                        source_square,
-                        target_square,
-                        WHITE_PAWN, DOUBLE_PAWN_PUSH
-                    );
-                }else if (diff_source_tag != 16){
-                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
-                        source_square,
-                        target_square,
-                        WHITE_PAWN, QUIET_MOVES
-                    );
-                }
+                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
+                    source_square,
+                    target_square,
+                    WHITE_PAWN, QUIET_MOVES
+                );   
             }
-
-            move = CLEAR_BIT_ON_BITBOARD(move, target_square);
         }
 
+        //Double pawn moves
+        move = pre_calculated_pawn_double_push[WHITE][source_square] & ~all_occupency;
+        if(move){
+            target_square = GET_LSB_INDEX(move);
+            if(!(pre_calculated_bit_shifts[target_square + 8] & all_occupency)) // Check if the square in between is empty
+                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
+                    source_square,
+                    target_square,
+                    WHITE_PAWN, DOUBLE_PAWN_PUSH
+                );
+        }
+    
         // Pawn attacks
         attack = pre_calculated_pawn_attacks[WHITE][source_square] & black_occupency;
-        while(attack){
+        while(attack){ // Peut potentiellement inclure en passant ici
             target_square = GET_LSB_INDEX(attack);
 
             if ((pre_calculated_bit_shifts[target_square]) & RANK_8){
@@ -227,7 +240,7 @@ void generate_all_black_pawns_moves(Bitboard black_pawns, Bitboard white_occupen
     {
         Bitboard source_attack = pre_calculated_pawn_attacks[WHITE][en_passant_square] & black_pawns;
 
-        while (source_attack)
+        while (source_attack) // TODO: potentiellement optimisable
         {
             Square pawn_square = GET_LSB_INDEX(source_attack);
             moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
@@ -244,8 +257,8 @@ void generate_all_black_pawns_moves(Bitboard black_pawns, Bitboard white_occupen
         source_square = GET_LSB_INDEX(black_pawns);
 
         // Pawn moves
-        move = pre_calculated_pawn_moves[BLACK][source_square]  &  ~all_occupency;
-        while(move){
+        move = pre_calculated_pawn_push[BLACK][source_square]  &  ~all_occupency;
+        if(move){
             target_square = GET_LSB_INDEX(move);
 
             if ((pre_calculated_bit_shifts[target_square]) & RANK_1)
@@ -274,34 +287,30 @@ void generate_all_black_pawns_moves(Bitboard black_pawns, Bitboard white_occupen
                     BLACK_PAWN, KNIGHT_PROMOTION
                 );
             }else{
-                diff_source_tag = abs(source_square - target_square);
-                if (
-                    diff_source_tag == 16
-                    &&
-                    ((pre_calculated_bit_shifts[target_square - 8]) & all_occupency) == 0
-                )
-                {
-                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
-                        source_square,
-                        target_square,
-                        BLACK_PAWN, DOUBLE_PAWN_PUSH
-                    );
-                }else if (diff_source_tag != 16){
-                    moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
-                        source_square,
-                        target_square,
-                        BLACK_PAWN, QUIET_MOVES
-                    );
-                }
-                
+                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
+                    source_square,
+                    target_square,
+                    BLACK_PAWN, QUIET_MOVES
+                );
             }
                 
-            move = CLEAR_BIT_ON_BITBOARD(move, target_square);
+        }
+
+        //Double pawn moves
+        move = pre_calculated_pawn_double_push[BLACK][source_square] & ~all_occupency;
+        if(move){
+            target_square = GET_LSB_INDEX(move);
+            if(!(pre_calculated_bit_shifts[target_square - 8] & all_occupency)) // Check if the square in between is empty
+                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
+                    source_square,
+                    target_square,
+                    BLACK_PAWN, DOUBLE_PAWN_PUSH
+                );
         }
 
         // Pawn attacks
         attack = pre_calculated_pawn_attacks[BLACK][source_square] & white_occupency;
-        while(attack){
+        while(attack){ // Peut potentiellement inclure en passant ici
             target_square = GET_LSB_INDEX(attack);
 
             if ((pre_calculated_bit_shifts[target_square]) & RANK_1){
