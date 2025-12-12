@@ -103,83 +103,97 @@ Bitboard generate_king_moves_from_square(Square square)
 
 void generate_all_king_quiet_and_capture_moves_from_game_state(Game* board_state, MoveList* moves_list)
 {
-    Square source_square, target_square;
-    Bitboard white_king = board_state->white_king;
-    Bitboard black_king = board_state->black_king;
-    Bitboard move, attack;
-    Bitboard all_occupency = ALL_OCCUPENCY(board_state), white_occupency = WHITE_OCCUPENCY(board_state), black_occupency = BLACK_OCCUPENCY(board_state);
-
     if(board_state->turn == WHITE)
     {
-        while(white_king){
-            source_square = GET_LSB_INDEX(white_king);
-
-            move = pre_calculated_king_moves[source_square] & ~all_occupency;
-            attack = pre_calculated_king_moves[source_square] & black_occupency;
-
-            while(move){
-                target_square = GET_LSB_INDEX(move);
-
-                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
-                    source_square,
-                    target_square,
-                    WHITE_KING,
-                    QUIET_MOVES
-                );
-
-                move = CLEAR_BIT_ON_BITBOARD(move, target_square);
-            }
-
-            while(attack){
-                target_square = GET_LSB_INDEX(attack);
-
-                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
-                    source_square,
-                    target_square,
-                    WHITE_KING,
-                    CAPTURE
-                );
-
-                attack = CLEAR_BIT_ON_BITBOARD(attack, target_square);
-            }
-
-            white_king = CLEAR_BIT_ON_BITBOARD(white_king, source_square);
-        }
+        generate_all_white_king_quiet_and_capture_moves_from_game_state(board_state, moves_list);
     } else {
-        while(black_king){
-            source_square = GET_LSB_INDEX(black_king);
+        generate_all_black_king_quiet_and_capture_moves_from_game_state(board_state, moves_list);
+    }
+}
 
-            move = pre_calculated_king_moves[source_square] & ~all_occupency;
-            attack = pre_calculated_king_moves[source_square] & white_occupency;
+void generate_all_white_king_quiet_and_capture_moves_from_game_state(Game* board_state, MoveList* moves_list)
+{
+    Square source_square, target_square;
+    Bitboard white_king = board_state->white_king;
+    Bitboard move, attack;
+    Bitboard all_occupency = ALL_OCCUPENCY(board_state), black_occupency = BLACK_OCCUPENCY(board_state);
 
-            while(move){
-                target_square = GET_LSB_INDEX(move);
+    while(white_king){
+        source_square = GET_LSB_INDEX(white_king);
 
-                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
-                    source_square,
-                    target_square,
-                    BLACK_KING,
-                    QUIET_MOVES    
-                );
+        move = pre_calculated_king_moves[source_square] & ~all_occupency;
+        attack = pre_calculated_king_moves[source_square] & black_occupency;
 
-                move = CLEAR_BIT_ON_BITBOARD(move, target_square);
-            }
+        while(move){
+            target_square = GET_LSB_INDEX(move);
 
-            while(attack){
-                target_square = GET_LSB_INDEX(attack);
+            moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
+                source_square,
+                target_square,
+                WHITE_KING,
+                QUIET_MOVES
+            );
 
-                moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
-                    source_square,
-                    target_square,
-                    BLACK_KING,
-                    CAPTURE
-                );
-
-                attack = CLEAR_BIT_ON_BITBOARD(attack, target_square);
-            }
-
-            black_king = CLEAR_BIT_ON_BITBOARD(black_king, source_square);
+            move = CLEAR_BIT_ON_BITBOARD(move, target_square);
         }
+
+        while(attack){
+            target_square = GET_LSB_INDEX(attack);
+
+            moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
+                source_square,
+                target_square,
+                WHITE_KING,
+                CAPTURE
+            );
+
+            attack = CLEAR_BIT_ON_BITBOARD(attack, target_square);
+        }
+
+        white_king = CLEAR_BIT_ON_BITBOARD(white_king, source_square);
+    }
+}
+
+void generate_all_black_king_quiet_and_capture_moves_from_game_state(Game* board_state, MoveList* moves_list)
+{
+    Square source_square, target_square;
+    Bitboard black_king = board_state->black_king;
+    Bitboard move, attack;
+    Bitboard all_occupency = ALL_OCCUPENCY(board_state), white_occupency = WHITE_OCCUPENCY(board_state);
+
+    while(black_king){
+        source_square = GET_LSB_INDEX(black_king);
+
+        move = pre_calculated_king_moves[source_square] & ~all_occupency;
+        attack = pre_calculated_king_moves[source_square] & white_occupency;
+
+        while(move){
+            target_square = GET_LSB_INDEX(move);
+
+            moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
+                source_square,
+                target_square,
+                BLACK_KING,
+                QUIET_MOVES    
+            );
+
+            move = CLEAR_BIT_ON_BITBOARD(move, target_square);
+        }
+
+        while(attack){
+            target_square = GET_LSB_INDEX(attack);
+
+            moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
+                source_square,
+                target_square,
+                BLACK_KING,
+                CAPTURE
+            );
+
+            attack = CLEAR_BIT_ON_BITBOARD(attack, target_square);
+        }
+
+        black_king = CLEAR_BIT_ON_BITBOARD(black_king, source_square);
     }
 }
 
@@ -294,43 +308,56 @@ int is_king_attacked_by_side(Game* board_state, Side side)
 
 void generate_all_king_capture_moves_from_game_state(Game* board_state, MoveList* moves_list)
 {
-    Square source_square, target_square;
-    Bitboard white_king = board_state->white_king;
-    Bitboard black_king = board_state->black_king;
-    Bitboard move, attack;
-
     if(board_state->turn == WHITE)
     {
-        source_square = GET_LSB_INDEX(white_king);
-
-        move = pre_calculated_king_moves[source_square] & BLACK_OCCUPENCY(board_state);
-        while(move){
-            target_square = GET_LSB_INDEX(move);
-           
-            moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
-                source_square,
-                target_square,
-                WHITE_KING,
-                CAPTURE
-            );
-
-            move = CLEAR_BIT_ON_BITBOARD(move, target_square);
-        }
+        generate_all_white_king_capture_moves_from_game_state(board_state, moves_list);
     } else {
-        source_square = GET_LSB_INDEX(black_king);
+        generate_all_black_king_capture_moves_from_game_state(board_state, moves_list);
+    }
+}
 
-        move = pre_calculated_king_moves[source_square] & WHITE_OCCUPENCY(board_state);
-        while(move){
-            target_square = GET_LSB_INDEX(move);
+void generate_all_white_king_capture_moves_from_game_state(Game* board_state, MoveList* moves_list)
+{
+    Square source_square, target_square;
+    Bitboard white_king = board_state->white_king;
+    Bitboard move;
 
-            moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
-                source_square,
-                target_square,
-                BLACK_KING,
-                CAPTURE
-            );
+    source_square = GET_LSB_INDEX(white_king);
 
-            move = CLEAR_BIT_ON_BITBOARD(move, target_square);
-        }
+    move = pre_calculated_king_moves[source_square] & BLACK_OCCUPENCY(board_state);
+    while(move){
+        target_square = GET_LSB_INDEX(move);
+       
+        moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
+            source_square,
+            target_square,
+            WHITE_KING,
+            CAPTURE
+        );
+
+        move = CLEAR_BIT_ON_BITBOARD(move, target_square);
+    }
+}
+
+void generate_all_black_king_capture_moves_from_game_state(Game* board_state, MoveList* moves_list)
+{
+    Square source_square, target_square;
+    Bitboard black_king = board_state->black_king;
+    Bitboard move;
+
+    source_square = GET_LSB_INDEX(black_king);
+
+    move = pre_calculated_king_moves[source_square] & WHITE_OCCUPENCY(board_state);
+    while(move){
+        target_square = GET_LSB_INDEX(move);
+
+        moves_list->moves[moves_list->current_index++] = CREATE_SCORED_MOVE(
+            source_square,
+            target_square,
+            BLACK_KING,
+            CAPTURE
+        );
+
+        move = CLEAR_BIT_ON_BITBOARD(move, target_square);
     }
 }

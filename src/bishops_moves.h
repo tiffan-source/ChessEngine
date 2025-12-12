@@ -40,6 +40,11 @@ void initialize_pre_calculated_bishop_moves_database();
 Bitboard retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(Square square, Bitboard blocker);
 
 void generate_all_bishop_moves_from_game_state(Game* board_state, MoveList* moves_list);
+void generate_all_white_bishop_moves_from_game_state(Game* board_state, MoveList* moves_list);
+void generate_all_black_bishop_moves_from_game_state(Game* board_state, MoveList* moves_list);
+
 void generate_all_bishop_captures_from_game_state(Game* board_state, MoveList* moves_list);
+void generate_all_white_bishop_captures_from_game_state(Game* board_state, MoveList* moves_list);
+void generate_all_black_bishop_captures_from_game_state(Game* board_state, MoveList* moves_list);
 
 #endif // BISHOPS_MOVES_H
