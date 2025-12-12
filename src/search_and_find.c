@@ -3,6 +3,42 @@
 
 U64 nodes_searched = 0;
 
+int Quiesce(Game* game, int alpha, int beta ) {
+    int static_eval = material_evaluation_for_side(game);
+    int score;
+
+    // Stand Pat
+    int best_value = static_eval;
+    if( best_value >= beta )
+        return best_value;
+    if( best_value > alpha )
+        alpha = best_value;
+
+    MoveList moves_list = { .current_index = 0 };
+    generate_all_pseudo_legal_capture_moves_from_game_state(game, &moves_list);
+    
+    for (int i = 0; i < moves_list.current_index; i++)
+    {
+        Game new_game_state = make_move(*game, moves_list.moves[i].move);
+        nodes_searched++;
+
+        if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){ // Little hack here Side and TURN are aligned
+
+            score = -Quiesce(&new_game_state, -beta, -alpha);
+
+            if( score >= beta )
+                return score;
+            if( score > best_value )
+                best_value = score;
+            if( score > alpha )
+                alpha = score;
+        }
+    }
+
+    return best_value;
+}
+
+
 ScoredMove call_search_algorithm(Game* game, int depth)
 {
     nodes_searched = 0;
@@ -365,7 +401,7 @@ ScoredMove nega_alpha_beta_with_move_ordering(Game *game, int depth, int alpha, 
 
     if(depth == 0)
     {
-        ScoredMove scored_move = { .score = material_evaluation_for_side(game) };
+        ScoredMove scored_move = { .score = Quiesce(game, alpha, beta) };
         return scored_move;
     }
 

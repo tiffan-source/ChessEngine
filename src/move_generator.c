@@ -43,7 +43,7 @@ void generate_all_pseudo_legal_moves_from_game_state(Game* game, MoveList* move_
     }
 }
 
-void generate_all_capture_moves_from_game_state(Game* game, MoveList* move_list)
+void generate_all_pseudo_legal_capture_moves_from_game_state(Game* game, MoveList* move_list)
 {
     Bitboard all_occupency = ALL_OCCUPENCY(game);
     Bitboard white_occupency = WHITE_OCCUPENCY(game);
