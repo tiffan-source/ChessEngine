@@ -103,14 +103,13 @@ Bitboard generate_knights_moves_from_square(Square square)
 void generate_all_white_knight_moves(Bitboard white_knights, Bitboard black_occupency, Bitboard all_occupency, MoveList* moves_list)
 {
     Square from_square, to_square;
-    Bitboard possible_moves, attacks_moves, pre_calculated_knight_moves;
+    Bitboard possible_moves, attacks_moves;
     
     while (white_knights)
     {
         from_square = (Square)GET_LSB_INDEX(white_knights);
-        pre_calculated_knight_moves = generate_knights_moves_from_square(from_square);
-        possible_moves = pre_calculated_knight_moves & ~all_occupency;
-        attacks_moves = pre_calculated_knight_moves & black_occupency;
+        possible_moves = pre_calculated_knight_moves[from_square] & ~all_occupency;
+        attacks_moves = pre_calculated_knight_moves[from_square] & black_occupency;
 
         while (possible_moves)
         {
@@ -134,14 +133,13 @@ void generate_all_white_knight_moves(Bitboard white_knights, Bitboard black_occu
 void generate_all_black_knight_moves(Bitboard black_knights, Bitboard white_occupency, Bitboard all_occupency, MoveList* moves_list)
 {
     Square from_square, to_square;
-    Bitboard possible_moves, attacks_moves, pre_calculated_knight_moves;
+    Bitboard possible_moves, attacks_moves;
     
     while (black_knights)
     {
         from_square = (Square)GET_LSB_INDEX(black_knights);
-        pre_calculated_knight_moves = generate_knights_moves_from_square(from_square);
-        possible_moves = pre_calculated_knight_moves & ~all_occupency;
-        attacks_moves = pre_calculated_knight_moves & white_occupency;
+        possible_moves = pre_calculated_knight_moves[from_square] & ~all_occupency;
+        attacks_moves = pre_calculated_knight_moves[from_square] & white_occupency;
 
         while (possible_moves)
         {

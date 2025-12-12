@@ -12,7 +12,7 @@
 #define RANDOM_U64_FEWBITS() (random_U64() & random_U64() & random_U64())
 
 #define HASH_FUNCTION_FOR_INDEXING_U64_CONFIGURATION(blocker_configuration, magic_number, relevant_bits) \
-    ((int)(((U64)(blocker_configuration) * (U64)(magic_number)) >> (64 - (int)(relevant_bits))))
+    ((((blocker_configuration) * (magic_number)) >> (64 - relevant_bits)))
 
 
 typedef unsigned long long int U64;

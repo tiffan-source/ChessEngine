@@ -185,49 +185,78 @@ void generate_all_black_king_quiet_and_capture_moves(Bitboard black_king, Bitboa
 
 int is_square_attacked_by_side(Game* board_state, Square square, Side side)
 {
-    //Attack by pawns
-    Bitboard pawn_attacks = generate_pawns_capture_moves_from_square(side == WHITE ? BLACK : WHITE, square);
-    Bitboard pawns = (side == WHITE) ? board_state->white_pawns : board_state->black_pawns;
-    if(pawn_attacks & pawns)
-        return 1;
+    Bitboard danger;
+    if (side == WHITE)
+    {
+        // Attack by pawns
+        Bitboard pawn_attacks = generate_pawns_capture_moves_from_square(BLACK, square);
+        if (pawn_attacks & board_state->white_pawns) return 1;
 
-    //Attack by knights
-    Bitboard knight_attacks = generate_knights_moves_from_square(square);
-    Bitboard knights = (side == WHITE) ? board_state->white_knights : board_state->black_knights;
-    if(knight_attacks & knights)
-        return 1;
+        // Attack by knights
+        Bitboard knight_attacks = generate_knights_moves_from_square(square);
+        if (knight_attacks & board_state->white_knights) return 1;
 
-    //Attack by bishops
-    Bitboard bishop_attacks = retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(
-        square,
-        ALL_OCCUPENCY(board_state)
-    );
-    Bitboard bishops = (side == WHITE) ? board_state->white_bishops : board_state->black_bishops;
-    if(bishop_attacks & bishops)
-        return 1;
+        // Attack by kings
+        Bitboard king_attacks = pre_calculated_king_moves[square];
+        if (king_attacks & board_state->white_king) return 1;
 
-    //Attack by rooks
-    Bitboard rook_attacks = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(
-        square,
-        ALL_OCCUPENCY(board_state)
-    );
-    Bitboard rooks = (side == WHITE) ? board_state->white_rooks : board_state->black_rooks;
-    if(rook_attacks & rooks)
-        return 1;
+        // Attack by bishops or queens
+        danger = board_state->white_bishops | board_state->white_queens;
+        if(danger){
+            Bitboard bishop_attacks = retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(
+                square,
+                ALL_OCCUPENCY(board_state)
+            );
+            if (bishop_attacks & danger) return 1;
+        }
 
-    //Attack by queens
-    Bitboard queens = (side == WHITE) ? board_state->white_queens : board_state->black_queens;
-    Bitboard queen_attacks = bishop_attacks | rook_attacks;
-    if(queen_attacks & queens)
-        return 1;
+        // Attack by rooks or queens
+        danger = board_state->white_rooks | board_state->white_queens;
+        if(danger){
+            Bitboard rook_attacks = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(
+                square,
+                ALL_OCCUPENCY(board_state)
+            );
+            if (rook_attacks & danger) return 1;
+            return 0;
+        }
+    }
+    else
+    {
+        // Attack by pawns
+        Bitboard pawn_attacks = generate_pawns_capture_moves_from_square(WHITE, square);
+        if (pawn_attacks & board_state->black_pawns) return 1;
 
-    //Attack by kings
-    Bitboard king_attacks = pre_calculated_king_moves[square];
-    Bitboard king = (side == WHITE) ? board_state->white_king : board_state->black_king;
-    if(king_attacks & king)
-        return 1;
-    
-    return 0;
+        // Attack by knights
+        Bitboard knight_attacks = generate_knights_moves_from_square(square);
+        if (knight_attacks & board_state->black_knights) return 1;
+
+        // Attack by kings
+        Bitboard king_attacks = pre_calculated_king_moves[square];
+        if (king_attacks & board_state->black_king) return 1;
+
+        // Attack by bishops or queens
+        danger = board_state->black_bishops | board_state->black_queens;
+        if(danger){
+            Bitboard bishop_attacks = retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(
+                square,
+                ALL_OCCUPENCY(board_state)
+            );
+            if (bishop_attacks & danger) return 1;
+        }
+
+        // Attack by rooks or queens
+        danger = board_state->black_rooks | board_state->black_queens;
+        if(danger){
+            Bitboard rook_attacks = retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(
+                square,
+                ALL_OCCUPENCY(board_state)
+            );
+            if (rook_attacks & danger) return 1;
+        }
+
+        return 0;
+    }
 }
 
 void generate_all_white_king_castling_moves_from_game_state(Game* board_state, MoveList* moves_list)
