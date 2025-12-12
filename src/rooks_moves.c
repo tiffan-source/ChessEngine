@@ -358,26 +358,6 @@ Bitboard retrieve_pre_calculated_rook_moves_for_giving_blocker_configuration(Squ
     return pre_calculated_rook_moves_database[square][index_by_magic];
 }
 
-void generate_all_rooks_moves_from_game_state(Game* board_state, MoveList* moves_list)
-{
-    if (board_state->turn == WHITE)
-    {
-        generate_all_white_rooks_moves_from_game_state(board_state, moves_list);
-    } else {
-        generate_all_black_rooks_moves_from_game_state(board_state, moves_list);
-    }
-}
-
-void generate_all_rooks_captures_from_game_state(Game* game, MoveList* move_list)
-{
-    if (game->turn == WHITE)
-    {
-        generate_all_white_rooks_captures_from_game_state(game, move_list);
-    } else {
-        generate_all_black_rooks_captures_from_game_state(game, move_list);
-    }
-}
-
 void generate_all_white_rooks_moves_from_game_state(Game* board_state, MoveList* moves_list)
 {
     Square source_square, target_square;

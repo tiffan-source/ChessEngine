@@ -391,7 +391,7 @@ Game make_move(Game game, Move move)
         game.en_passant_target_square = -1; // No en passant target
     }
     
-    game.turn = (game.turn == WHITE_TURN) ? BLACK_TURN : WHITE_TURN;
+    game.turn = !game.turn; // Switch turn
 
     return game;
 }

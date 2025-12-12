@@ -92,28 +92,6 @@ void initialize_pre_calculated_pawn_attacks_database()
     }
 }
 
-void generate_all_pawns_moves_from_game_state(Game* board_state, MoveList* moves_list)
-{
-    if (board_state->turn == WHITE_TURN)
-    {
-        generate_all_white_pawns_moves_from_game_state(board_state, moves_list);
-    }
-    else
-    {
-        generate_all_black_pawns_moves_from_game_state(board_state, moves_list);
-    }    
-}
-
-void generate_all_pawns_capture_moves_from_game_state(Game* game, MoveList* move_list)
-{
-    if (game->turn ==  WHITE_TURN)
-    {
-        generate_all_white_pawns_capture_moves_from_game_state(game, move_list);
-    } else {
-        generate_all_black_pawns_capture_moves_from_game_state(game, move_list);
-    }
-}
-
 void generate_all_white_pawns_moves_from_game_state(Game* board_state, MoveList* moves_list)
 {
     Square source_square, target_square;

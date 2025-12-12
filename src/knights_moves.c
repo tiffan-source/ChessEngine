@@ -100,18 +100,6 @@ Bitboard generate_knights_moves_from_square(Square square)
     return moves;
 }
 
-void generate_all_knight_moves_from_game_state(Game* board_state, MoveList* moves_list)
-{
-    if (board_state->turn == WHITE)
-    {
-        generate_all_white_knight_moves_from_game_state(board_state, moves_list);
-    }
-    else
-    {
-        generate_all_black_knight_moves_from_game_state(board_state, moves_list);
-    }  
-}
-
 void generate_all_white_knight_moves_from_game_state(Game* board_state, MoveList* moves_list)
 {
     Bitboard knights = board_state->white_knights;
@@ -179,19 +167,6 @@ void generate_all_black_knight_moves_from_game_state(Game* board_state, MoveList
         
 
         knights = CLEAR_BIT_ON_BITBOARD(knights, from_square);
-    }
-}
-
-
-void generate_all_knight_captures_from_game_state(Game* board_state, MoveList* moves_list)
-{
-    if (board_state->turn == WHITE)
-    {
-        generate_all_white_knight_captures_from_game_state(board_state, moves_list);
-    }
-    else
-    {
-        generate_all_black_knight_captures_from_game_state(board_state, moves_list);
     }
 }
 

@@ -292,7 +292,7 @@ void test_generate_all_type_white_pawn_move_from_tricky_position(void)
         CREATE_SCORED_MOVE(H2, H4, WHITE_PAWN, DOUBLE_PAWN_PUSH),
     };
     
-    generate_all_pawns_moves_from_game_state(game_white, result_for_white);
+    generate_all_white_pawns_moves_from_game_state(game_white, result_for_white);
 
     qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected_for_white, 8, sizeof(ScoredMove), test_helper_compare_scored_move);    
@@ -334,7 +334,7 @@ void test_generate_all_type_black_pawn_move_from_tricky_position(void)
         CREATE_SCORED_MOVE(G7, H6, BLACK_PAWN, CAPTURE),
     };
     
-    generate_all_pawns_moves_from_game_state(game_black, result_for_black);
+    generate_all_black_pawns_moves_from_game_state(game_black, result_for_black);
     
     qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected_for_black, 13, sizeof(ScoredMove), test_helper_compare_scored_move);
@@ -362,7 +362,7 @@ void test_generate_all_pawns_move_from_position_whith_en_passant_for_white(void)
         CREATE_SCORED_MOVE(D5, D6, WHITE_PAWN, QUIET_MOVES),
     };
     
-    generate_all_pawns_moves_from_game_state(game_white, result_for_white);
+    generate_all_white_pawns_moves_from_game_state(game_white, result_for_white);
 
     qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected_for_white, 2, sizeof(ScoredMove), test_helper_compare_scored_move);    
@@ -400,7 +400,7 @@ void test_generate_all_pawns_move_from_position_without_en_passant(void)
         CREATE_SCORED_MOVE(H5, H4, BLACK_PAWN, QUIET_MOVES),
     };
 
-    generate_all_pawns_moves_from_game_state(game, result);
+    generate_all_black_pawns_moves_from_game_state(game, result);
 
     qsort(result->moves, result->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected, 15, sizeof(ScoredMove), test_helper_compare_scored_move);
@@ -426,7 +426,7 @@ void test_generate_all_pawns_move_from_position_whith_en_passant_for_black(void)
         CREATE_SCORED_MOVE(D4, D3, BLACK_PAWN, QUIET_MOVES),
     };
     
-    generate_all_pawns_moves_from_game_state(game_black, result_for_black);
+    generate_all_black_pawns_moves_from_game_state(game_black, result_for_black);
 
     qsort(result_for_black->moves, result_for_black->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected_for_black, 2, sizeof(ScoredMove), test_helper_compare_scored_move);    
@@ -451,7 +451,7 @@ void test_generate_all_white_pawns_capture_moves_from_position(void)
         CREATE_SCORED_MOVE(G2, H3, WHITE_PAWN, CAPTURE),
     };
 
-    generate_all_pawns_capture_moves_from_game_state(game, result);
+    generate_all_white_pawns_capture_moves_from_game_state(game, result);
 
     qsort(result->moves, result->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected, 2, sizeof(ScoredMove), test_helper_compare_scored_move);  
@@ -478,7 +478,7 @@ void test_generate_all_black_pawns_capture_moves_from_position(void)
         CREATE_SCORED_MOVE(H3, G2, BLACK_PAWN, CAPTURE),
     };
 
-    generate_all_pawns_capture_moves_from_game_state(game, result);
+    generate_all_black_pawns_capture_moves_from_game_state(game, result);
 
     qsort(result->moves, result->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected, 4, sizeof(ScoredMove), test_helper_compare_scored_move);  

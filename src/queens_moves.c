@@ -1,16 +1,6 @@
 
 #include "queens_moves.h"
 
-void generate_all_queens_moves_from_game_state(Game* board_state, MoveList* moves_list)
-{
-    if (board_state->turn == WHITE)
-    {
-        generate_all_white_queens_moves_from_game_state(board_state, moves_list);
-    } else {
-        generate_all_black_queens_moves_from_game_state(board_state, moves_list);
-    }
-}
-
 void generate_all_white_queens_moves_from_game_state(Game* board_state, MoveList* moves_list)
 {
     Square source_square, target_square;
@@ -109,16 +99,6 @@ void generate_all_black_queens_moves_from_game_state(Game* board_state, MoveList
             attack = CLEAR_BIT_ON_BITBOARD(attack, target_square);
         }
         black_queens = CLEAR_BIT_ON_BITBOARD(black_queens, source_square);
-    }
-}
-
-void generate_all_queens_captures_from_game_state(Game* board_state, MoveList* moves_list)
-{
-    if (board_state->turn == WHITE)
-    {
-        generate_all_white_queens_captures_from_game_state(board_state, moves_list);
-    } else {
-        generate_all_black_queens_captures_from_game_state(board_state, moves_list);
     }
 }
 

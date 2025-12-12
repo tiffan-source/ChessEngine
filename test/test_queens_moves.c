@@ -41,7 +41,7 @@ void test_generate_all_white_queens_move_from_tricky_position(void)
         CREATE_SCORED_MOVE(D1, E2, WHITE_QUEEN, QUIET_MOVES),
     };
     
-    generate_all_queens_moves_from_game_state(game_white, result_for_white);
+    generate_all_white_queens_moves_from_game_state(game_white, result_for_white);
 
     qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected_for_white, 6, sizeof(ScoredMove), test_helper_compare_scored_move);    
@@ -77,7 +77,7 @@ void test_generate_all_white_queens_move_from_Kiwipete_position(void)
         CREATE_SCORED_MOVE(F3, H5, WHITE_QUEEN, QUIET_MOVES),
     };
     
-    generate_all_queens_moves_from_game_state(game_white, result_for_white);
+    generate_all_white_queens_moves_from_game_state(game_white, result_for_white);
 
     qsort(result_for_white->moves, result_for_white->current_index, sizeof(ScoredMove), test_helper_compare_scored_move);
     qsort(expected_for_white, 9, sizeof(ScoredMove), test_helper_compare_scored_move);    

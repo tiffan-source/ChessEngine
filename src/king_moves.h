@@ -17,15 +17,14 @@ extern const Bitboard pre_calculated_king_moves[64];
 
 Bitboard generate_king_moves_from_square(Square square);
 
-void generate_all_king_quiet_and_capture_moves_from_game_state(Game* board_state, MoveList* moves_list);
 void generate_all_white_king_quiet_and_capture_moves_from_game_state(Game* board_state, MoveList* moves_list);
 void generate_all_black_king_quiet_and_capture_moves_from_game_state(Game* board_state, MoveList* moves_list);
 
-void generate_all_king_capture_moves_from_game_state(Game* board_state, MoveList* moves_list);
 void generate_all_white_king_capture_moves_from_game_state(Game* board_state, MoveList* moves_list);
 void generate_all_black_king_capture_moves_from_game_state(Game* board_state, MoveList* moves_list);
 
-void generate_all_king_castling_moves_from_game_state(Game* board_state, MoveList* moves_list);
+void generate_all_white_king_castling_moves_from_game_state(Game* board_state, MoveList* moves_list);
+void generate_all_black_king_castling_moves_from_game_state(Game* board_state, MoveList* moves_list);
 
 /**
  * @brief Checks if a given square is attacked by the specified side.

@@ -38,7 +38,7 @@ ScoredMove min_max_best_move_min(Game* game, int depth)
 
         Game new_game_state = make_move(*game, moves_list.moves[i].move);
 
-        if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn == WHITE_TURN ? WHITE : BLACK)){
+        if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){
             move_found = 1;
             scored_move = min_max_best_move_max(&new_game_state, depth - 1);
             if (scored_move.score < min)
@@ -52,7 +52,7 @@ ScoredMove min_max_best_move_min(Game* game, int depth)
     if (!move_found)
     {
         // Check for checkmate or stalemate
-        if (is_king_attacked_by_side(game, game->turn == WHITE_TURN ? BLACK : WHITE))
+        if (is_king_attacked_by_side(game, !game->turn))
         {
             scored_move = (ScoredMove){ .score = MAX - (GET_DEPTH_FROM_CONFIG(get_config()) - depth) };
             return scored_move; // Checkmate
@@ -89,7 +89,7 @@ ScoredMove min_max_best_move_max(Game* game, int depth)
     {
         Game new_game_state = make_move(*game, moves_list.moves[i].move);
 
-        if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn == WHITE_TURN ? WHITE : BLACK)){
+        if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){
             move_found = 1;
             scored_move = min_max_best_move_min(&new_game_state, depth - 1);
             if (scored_move.score > max)
@@ -103,7 +103,7 @@ ScoredMove min_max_best_move_max(Game* game, int depth)
     if (!move_found)
     {
         // Check for checkmate or stalemate
-        if (is_king_attacked_by_side(game, game->turn == WHITE_TURN ? BLACK : WHITE))
+        if (is_king_attacked_by_side(game, !game->turn))
         {
             scored_move = (ScoredMove){ .score = MIN + (GET_DEPTH_FROM_CONFIG(get_config()) - depth) };
             return scored_move; // Checkmate
@@ -141,7 +141,7 @@ ScoredMove negamax_best_move(Game* game, int depth)
     {
         Game new_game_state = make_move(*game, moves_list.moves[i].move);
 
-        if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn == WHITE_TURN ? WHITE : BLACK)){
+        if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){
             move_found = 1;
             scored_move = negamax_best_move(&new_game_state, depth - 1);
             if (scored_move.score * -1 > max)
@@ -154,9 +154,7 @@ ScoredMove negamax_best_move(Game* game, int depth)
 
     if (!move_found)
     {
-        // Check for checkmate or stalemate
-        int white_turn = game->turn == WHITE_TURN;
-        if (is_king_attacked_by_side(game, white_turn ? BLACK : WHITE))
+        if (is_king_attacked_by_side(game, !game->turn))
         {
             scored_move = (ScoredMove){ .score = MIN + (GET_DEPTH_FROM_CONFIG(get_config()) - depth) };
             return scored_move;
@@ -196,7 +194,7 @@ ScoredMove alpha_beta_min(Game* game, int depth, int alpha, int beta)
 
         Game new_game_state = make_move(*game, moves_list.moves[i].move);
 
-        if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn == WHITE_TURN ? WHITE : BLACK)){
+        if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){
             move_found = 1;
             scored_move = alpha_beta_max(&new_game_state, depth - 1, alpha, beta);
             if (scored_move.score < min)
@@ -218,7 +216,7 @@ ScoredMove alpha_beta_min(Game* game, int depth, int alpha, int beta)
     if (!move_found)
     {
         // Check for checkmate or stalemate
-        if (is_king_attacked_by_side(game, game->turn == WHITE_TURN ? BLACK : WHITE))
+        if (is_king_attacked_by_side(game, !game->turn))
         {
             scored_move = (ScoredMove){ .score = MAX - (GET_DEPTH_FROM_CONFIG(get_config()) - depth) };
             return scored_move; // Checkmate
@@ -255,7 +253,7 @@ ScoredMove alpha_beta_max(Game* game, int depth, int alpha, int beta)
     {
         Game new_game_state = make_move(*game, moves_list.moves[i].move);
 
-        if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn == WHITE_TURN ? WHITE : BLACK)){
+        if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){
             move_found = 1;
             scored_move = alpha_beta_min(&new_game_state, depth - 1, alpha, beta);
             if (scored_move.score > max)
@@ -277,7 +275,7 @@ ScoredMove alpha_beta_max(Game* game, int depth, int alpha, int beta)
     if (!move_found)
     {
         // Check for checkmate or stalemate
-        if (is_king_attacked_by_side(game, game->turn == WHITE_TURN ? BLACK : WHITE))
+        if (is_king_attacked_by_side(game, !game->turn))
         {
             scored_move = (ScoredMove){ .score = MIN + (GET_DEPTH_FROM_CONFIG(get_config()) - depth) };
             return scored_move; // Checkmate
@@ -316,7 +314,7 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta)
     {
         Game new_game_state = make_move(*game, moves_list.moves[i].move);
 
-        if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn == WHITE_TURN ? WHITE : BLACK)){
+        if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){
             move_found = 1;
             scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha);
             if (scored_move.score * -1 > max)
@@ -338,8 +336,7 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta)
     if (!move_found)
     {
         // Check for checkmate or stalemate
-        int white_turn = game->turn == WHITE_TURN;
-        if (is_king_attacked_by_side(game, white_turn ? BLACK : WHITE))
+        if (is_king_attacked_by_side(game, !game->turn))
         {
             scored_move = (ScoredMove){ .score = MIN + (GET_DEPTH_FROM_CONFIG(get_config()) - depth) };
             return scored_move;
@@ -381,7 +378,7 @@ ScoredMove nega_alpha_beta_with_move_ordering(Game *game, int depth, int alpha, 
     {
         Game new_game_state = make_move(*game, moves_list.moves[i].move);
 
-        if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn == WHITE_TURN ? WHITE : BLACK)){
+        if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){ // Little hack here Side and TURN are aligned
             move_found = 1;
             scored_move = nega_alpha_beta_with_move_ordering(&new_game_state, depth - 1, -beta, -alpha);
             if (scored_move.score * -1 > max)
@@ -403,8 +400,7 @@ ScoredMove nega_alpha_beta_with_move_ordering(Game *game, int depth, int alpha, 
     if (!move_found)
     {
         // Check for checkmate or stalemate
-        int white_turn = game->turn == WHITE_TURN;
-        if (is_king_attacked_by_side(game, white_turn ? BLACK : WHITE))
+        if (is_king_attacked_by_side(game, !game->turn))
         {
             scored_move = (ScoredMove){ .score = MIN + (GET_DEPTH_FROM_CONFIG(get_config()) - depth) };
             return scored_move;

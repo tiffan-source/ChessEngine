@@ -18,23 +18,44 @@ void initialize_move_generation_databases()
 
 void generate_all_pseudo_legal_moves_from_game_state(Game* game, MoveList* move_list)
 {
-    generate_all_pawns_moves_from_game_state(game, move_list);
-    generate_all_rooks_moves_from_game_state(game, move_list);
-    generate_all_knight_moves_from_game_state(game, move_list);
-    generate_all_bishop_moves_from_game_state(game, move_list);
-    generate_all_queens_moves_from_game_state(game, move_list);
-    generate_all_king_castling_moves_from_game_state(game, move_list);
-    generate_all_king_quiet_and_capture_moves_from_game_state(game, move_list);
+    if (game->turn ==  WHITE_TURN)
+    {
+        generate_all_white_pawns_moves_from_game_state(game, move_list);
+        generate_all_white_rooks_moves_from_game_state(game, move_list);
+        generate_all_white_knight_moves_from_game_state(game, move_list);
+        generate_all_white_bishop_moves_from_game_state(game, move_list);
+        generate_all_white_queens_moves_from_game_state(game, move_list);
+        generate_all_white_king_castling_moves_from_game_state(game, move_list);
+        generate_all_white_king_quiet_and_capture_moves_from_game_state(game, move_list);
+    }else {
+        generate_all_black_pawns_moves_from_game_state(game, move_list);
+        generate_all_black_rooks_moves_from_game_state(game, move_list);
+        generate_all_black_knight_moves_from_game_state(game, move_list);
+        generate_all_black_bishop_moves_from_game_state(game, move_list);
+        generate_all_black_queens_moves_from_game_state(game, move_list);
+        generate_all_black_king_castling_moves_from_game_state(game, move_list);
+        generate_all_black_king_quiet_and_capture_moves_from_game_state(game, move_list);
+    }
 }
 
 void generate_all_capture_moves_from_game_state(Game* game, MoveList* move_list)
 {
-    generate_all_pawns_capture_moves_from_game_state(game, move_list);
-    generate_all_rooks_captures_from_game_state(game, move_list);
-    generate_all_knight_captures_from_game_state(game, move_list);
-    generate_all_bishop_captures_from_game_state(game, move_list);
-    generate_all_queens_captures_from_game_state(game, move_list);
-    generate_all_king_capture_moves_from_game_state(game, move_list);
+    if(game->turn == WHITE_TURN)
+    {
+        generate_all_white_pawns_capture_moves_from_game_state(game, move_list);
+        generate_all_white_rooks_captures_from_game_state(game, move_list);
+        generate_all_white_knight_captures_from_game_state(game, move_list);
+        generate_all_white_bishop_captures_from_game_state(game, move_list);
+        generate_all_white_queens_captures_from_game_state(game, move_list);
+        generate_all_white_king_capture_moves_from_game_state(game, move_list);
+    }else{
+        generate_all_black_pawns_capture_moves_from_game_state(game, move_list);
+        generate_all_black_rooks_captures_from_game_state(game, move_list);
+        generate_all_black_knight_captures_from_game_state(game, move_list);
+        generate_all_black_bishop_captures_from_game_state(game, move_list);
+        generate_all_black_queens_captures_from_game_state(game, move_list);
+        generate_all_black_king_capture_moves_from_game_state(game, move_list);
+    }
 }
 
 U64 generate_moves_from_position_at_depth(Game* game, int depth)
@@ -49,7 +70,7 @@ U64 generate_moves_from_position_at_depth(Game* game, int depth)
     {
         Game new_game = make_move(*game, move_list->moves[i].move);
 
-        if(!is_king_attacked_by_side(&new_game, new_game.turn == WHITE_TURN ? WHITE : BLACK)){
+        if(!is_king_attacked_by_side(&new_game, new_game.turn)){ // Little hack here Side and TURN are aligned
             if(depth > 1){
                 result += generate_moves_from_position_at_depth(&new_game, depth - 1);
             }else{
@@ -78,18 +99,13 @@ U64 test_helper_generate_moves_from_position_at_depth(Game* game, int depth, int
     {
         Game new_game = make_move(*game, move_list->moves[i].move);
 
-        if(!is_king_attacked_by_side(&new_game, new_game.turn == WHITE_TURN ? WHITE : BLACK)){
+        if(!is_king_attacked_by_side(&new_game, new_game.turn)){ // Little hack here Side and TURN are aligned  
             if(depth > 1){
                 new_node = generate_moves_from_position_at_depth(&new_game, depth - 1);
                 result += new_node;
             }else{
                 result++;
             }
-
-            // if(depth == original_depth){
-            //     print_move_as_uci(move_list->moves[i]);
-            //     printf("\n");
-            // }
         }
 
     }

@@ -317,16 +317,6 @@ Bitboard retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(S
     return blocker;
 }
 
-void generate_all_bishop_moves_from_game_state(Game* board_state, MoveList* moves_list)
-{
-    if (board_state->turn == WHITE)
-    {
-        generate_all_white_bishop_moves_from_game_state(board_state, moves_list);
-    } else {
-        generate_all_black_bishop_moves_from_game_state(board_state, moves_list);
-    }
-}
-
 void generate_all_white_bishop_moves_from_game_state(Game* board_state, MoveList* moves_list)
 {
     Square source_square, target_square;
@@ -418,16 +408,6 @@ void generate_all_black_bishop_moves_from_game_state(Game* board_state, MoveList
         }
 
         black_bishops = CLEAR_BIT_ON_BITBOARD(black_bishops, source_square);
-    }
-}
-
-void generate_all_bishop_captures_from_game_state(Game* board_state, MoveList* moves_list)
-{
-    if (board_state->turn == WHITE)
-    {
-        generate_all_white_bishop_captures_from_game_state(board_state, moves_list);
-    } else {
-        generate_all_black_bishop_captures_from_game_state(board_state, moves_list);
     }
 }
 
