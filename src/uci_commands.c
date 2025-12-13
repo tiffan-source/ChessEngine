@@ -82,7 +82,10 @@ void handle_go_command(Game* game, const char* input, char* response)
         int depth = atoi(perf + 6);
         if ((depth > 0))
         {
-            U64 nodes = test_helper_generate_moves_from_position_at_depth(game, depth, depth);
+            int init_time = get_time_ms();
+            U64 nodes = generate_moves_from_position_at_depth(game, depth);
+            int end_time = get_time_ms() - init_time;
+            printf("Time %d ms\n", end_time);
             snprintf(response, UCI_RESPONSE_MAX_LENGTH, "nodes %llu\n", nodes);
             free(input_copy);
         }

@@ -313,8 +313,7 @@ Bitboard retrieve_pre_calculated_bishop_moves_for_giving_blocker_configuration(S
 {
     Bitboard know_blocker_configuration = blocker & pre_calculated_bishop_masks[square];
     int index_by_magic = HASH_FUNCTION_FOR_INDEXING_U64_CONFIGURATION(know_blocker_configuration, bishop_magic_numbers[square], number_of_bit_in_bishop_mask_for_square[square]);
-    blocker = pre_calculated_bishop_moves_database[square][index_by_magic];
-    return blocker;
+    return pre_calculated_bishop_moves_database[square][index_by_magic];
 }
 
 void generate_all_white_bishop_moves(Bitboard white_bishops, Bitboard black_occupency, Bitboard all_occupency, MoveList* moves_list)
