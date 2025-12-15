@@ -19,7 +19,8 @@ int Quiesce(Game* game, int alpha, int beta ) {
     
     for (int i = 0; i < moves_list.current_index; i++)
     {
-        Game new_game_state = make_move(*game, moves_list.moves[i].move);
+        Game new_game_state = *game;
+        make_move(&new_game_state, moves_list.moves[i].move);
         nodes_searched++;
 
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){ // Little hack here Side and TURN are aligned
@@ -72,7 +73,8 @@ ScoredMove min_max_best_move_min(Game* game, int depth)
     for (int i = 0; i < moves_list.current_index; i++)
     {
 
-        Game new_game_state = make_move(*game, moves_list.moves[i].move);
+        Game new_game_state = *game;
+        make_move(&new_game_state, moves_list.moves[i].move);
 
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){
             move_found = 1;
@@ -123,7 +125,8 @@ ScoredMove min_max_best_move_max(Game* game, int depth)
 
     for (int i = 0; i < moves_list.current_index; i++)
     {
-        Game new_game_state = make_move(*game, moves_list.moves[i].move);
+        Game new_game_state = *game;
+        make_move(&new_game_state, moves_list.moves[i].move);
 
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){
             move_found = 1;
@@ -175,7 +178,8 @@ ScoredMove negamax_best_move(Game* game, int depth)
 
     for (int i = 0; i < moves_list.current_index; i++)
     {
-        Game new_game_state = make_move(*game, moves_list.moves[i].move);
+        Game new_game_state = *game;
+        make_move(&new_game_state, moves_list.moves[i].move);
 
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){
             move_found = 1;
@@ -228,7 +232,8 @@ ScoredMove alpha_beta_min(Game* game, int depth, int alpha, int beta)
     for (int i = 0; i < moves_list.current_index; i++)
     {
 
-        Game new_game_state = make_move(*game, moves_list.moves[i].move);
+        Game new_game_state = *game;
+        make_move(&new_game_state, moves_list.moves[i].move);
 
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){
             move_found = 1;
@@ -287,7 +292,8 @@ ScoredMove alpha_beta_max(Game* game, int depth, int alpha, int beta)
 
     for (int i = 0; i < moves_list.current_index; i++)
     {
-        Game new_game_state = make_move(*game, moves_list.moves[i].move);
+        Game new_game_state = *game;
+        make_move(&new_game_state, moves_list.moves[i].move);
 
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){
             move_found = 1;
@@ -348,7 +354,8 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta)
 
     for (int i = 0; i < moves_list.current_index; i++)
     {
-        Game new_game_state = make_move(*game, moves_list.moves[i].move);
+        Game new_game_state = *game;
+        make_move(&new_game_state, moves_list.moves[i].move);
 
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){
             move_found = 1;
@@ -401,7 +408,8 @@ ScoredMove nega_alpha_beta_with_move_ordering(Game *game, int depth, int alpha, 
 
     if(depth == 0)
     {
-        ScoredMove scored_move = { .score = Quiesce(game, alpha, beta) };
+        scored_move = (ScoredMove) { .score = Quiesce(game, alpha, beta) };
+        // scored_move = (ScoredMove){ .score = material_evaluation_for_side(game) };
         return scored_move;
     }
 
@@ -412,7 +420,9 @@ ScoredMove nega_alpha_beta_with_move_ordering(Game *game, int depth, int alpha, 
 
     for (int i = 0; i < moves_list.current_index; i++)
     {
-        Game new_game_state = make_move(*game, moves_list.moves[i].move);
+        Game new_game_state;
+        memcpy(&new_game_state, game, sizeof(Game));
+        make_move(&new_game_state, moves_list.moves[i].move);
 
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){ // Little hack here Side and TURN are aligned
             move_found = 1;

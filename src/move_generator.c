@@ -78,7 +78,10 @@ U64 generate_moves_from_position_at_depth(Game* game, int depth)
 
     for (int i = 0; i < move_list->current_index; i++)
     {
-        Game new_game = make_move(*game, move_list->moves[i].move);
+        Game new_game;
+
+        memcpy(&new_game, game, sizeof(Game));
+        make_move(&new_game, move_list->moves[i].move);
 
         if(!is_king_attacked_by_side(&new_game, new_game.turn)){ // Little hack here Side and TURN are aligned
             if(depth > 1){
@@ -107,7 +110,8 @@ U64 test_helper_generate_moves_from_position_at_depth(Game* game, int depth, int
 
     for (int i = 0; i < move_list->current_index; i++)
     {
-        Game new_game = make_move(*game, move_list->moves[i].move);
+        Game new_game = *game;
+        make_move(&new_game, move_list->moves[i].move);
 
         if(!is_king_attacked_by_side(&new_game, new_game.turn)){ // Little hack here Side and TURN are aligned  
             if(depth > 1){

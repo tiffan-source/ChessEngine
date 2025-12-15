@@ -59,7 +59,7 @@ void handle_position_command(Game** game, const char* input)
             printf("Invalid move: %s\n", token_moves);
             continue;
         }
-        **game = make_move(**game, move);
+        make_move(*game, move);
     }
 
     free(input_copy);
@@ -101,6 +101,7 @@ void handle_go_command(Game* game, const char* input, char* response)
     int init_time = get_time_ms();
     result = call_search_algorithm(game, GET_DEPTH_FROM_CONFIG(config));
     int end_time = get_time_ms() - init_time;
+    printf("Score: %ld\n", result.score);
     printf("End time: %d ms\n", end_time);
     printf("Nodes searched: %llu\n", get_nodes_searched());
 

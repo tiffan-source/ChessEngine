@@ -189,11 +189,11 @@ int is_square_attacked_by_side(Game* board_state, Square square, Side side)
     if (side == WHITE)
     {
         // Attack by pawns
-        Bitboard pawn_attacks = generate_pawns_capture_moves_from_square(BLACK, square);
+        Bitboard pawn_attacks = pre_calculated_pawn_attacks[BLACK][square];
         if (pawn_attacks & board_state->white_pawns) return 1;
 
         // Attack by knights
-        Bitboard knight_attacks = generate_knights_moves_from_square(square);
+        Bitboard knight_attacks = pre_calculated_knight_moves[square];
         if (knight_attacks & board_state->white_knights) return 1;
 
         // Attack by kings
@@ -224,11 +224,11 @@ int is_square_attacked_by_side(Game* board_state, Square square, Side side)
     else
     {
         // Attack by pawns
-        Bitboard pawn_attacks = generate_pawns_capture_moves_from_square(WHITE, square);
+        Bitboard pawn_attacks = pre_calculated_pawn_attacks[WHITE][square];
         if (pawn_attacks & board_state->black_pawns) return 1;
 
         // Attack by knights
-        Bitboard knight_attacks = generate_knights_moves_from_square(square);
+        Bitboard knight_attacks = pre_calculated_knight_moves[square];
         if (knight_attacks & board_state->black_knights) return 1;
 
         // Attack by kings

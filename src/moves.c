@@ -299,99 +299,97 @@ void promote_to_piece(Game* game, Move move, PieceType new_piece_type)
     }
 }
 
-Game make_move(Game game, Move move)
+void make_move(Game* game, Move move)
 {
     switch (GET_MOVE_TYPE_FROM_MOVE(move)) {
         case CAPTURE:
-            move_piece(&game, move);
-            capture_piece_on_square(&game, GET_DESTINATION_SQUARE_FROM_MOVE(move));
+            move_piece(game, move);
+            capture_piece_on_square(game, GET_DESTINATION_SQUARE_FROM_MOVE(move));
             break;
 
         case EN_PASSANT_CAPTURE:
-            move_piece(&game, move);
+            move_piece(game, move);
             {
-                int ep_square = (game.turn == WHITE_TURN) ? GET_DESTINATION_SQUARE_FROM_MOVE(move) + 8 : GET_DESTINATION_SQUARE_FROM_MOVE(move) - 8;
-                capture_piece_on_square(&game, ep_square);
+                int ep_square = (game->turn == WHITE_TURN) ? GET_DESTINATION_SQUARE_FROM_MOVE(move) + 8 : GET_DESTINATION_SQUARE_FROM_MOVE(move) - 8;
+                capture_piece_on_square(game, ep_square);
             }
             break;
         
         case QUIET_MOVES:
         case DOUBLE_PAWN_PUSH:
-            move_piece(&game, move);
+            move_piece(game, move);
             break;
 
         case QUEEN_PROMOTION:
-            promote_to_piece(&game, move, (game.turn == WHITE_TURN) ? WHITE_QUEEN : BLACK_QUEEN);
+            promote_to_piece(game, move, (game->turn == WHITE_TURN) ? WHITE_QUEEN : BLACK_QUEEN);
             break;
 
         case ROOK_PROMOTION:
-            promote_to_piece(&game, move, (game.turn == WHITE_TURN) ? WHITE_ROOK : BLACK_ROOK);
+            promote_to_piece(game, move, (game->turn == WHITE_TURN) ? WHITE_ROOK : BLACK_ROOK);
             break;
 
         case BISHOP_PROMOTION:
-            promote_to_piece(&game, move, (game.turn == WHITE_TURN) ? WHITE_BISHOP : BLACK_BISHOP);
+            promote_to_piece(game, move, (game->turn == WHITE_TURN) ? WHITE_BISHOP : BLACK_BISHOP);
             break;
 
         case KNIGHT_PROMOTION:
-            promote_to_piece(&game, move, (game.turn == WHITE_TURN) ? WHITE_KNIGHT : BLACK_KNIGHT);
+            promote_to_piece(game, move, (game->turn == WHITE_TURN) ? WHITE_KNIGHT : BLACK_KNIGHT);
             break;
 
 
         case QUEEN_PROMOTION_CAPTURE:
-            capture_piece_on_square(&game, GET_DESTINATION_SQUARE_FROM_MOVE(move));
-            promote_to_piece(&game, move, (game.turn == WHITE_TURN) ? WHITE_QUEEN : BLACK_QUEEN);
+            capture_piece_on_square(game, GET_DESTINATION_SQUARE_FROM_MOVE(move));
+            promote_to_piece(game, move, (game->turn == WHITE_TURN) ? WHITE_QUEEN : BLACK_QUEEN);
             break;
 
         case KNIGHT_PROMOTION_CAPTURE:
-            capture_piece_on_square(&game, GET_DESTINATION_SQUARE_FROM_MOVE(move));
-            promote_to_piece(&game, move, (game.turn == WHITE_TURN) ? WHITE_KNIGHT : BLACK_KNIGHT);
+            capture_piece_on_square(game, GET_DESTINATION_SQUARE_FROM_MOVE(move));
+            promote_to_piece(game, move, (game->turn == WHITE_TURN) ? WHITE_KNIGHT : BLACK_KNIGHT);
             break;
 
         case BISHOP_PROMOTION_CAPTURE:
-            capture_piece_on_square(&game, GET_DESTINATION_SQUARE_FROM_MOVE(move));
-            promote_to_piece(&game, move, (game.turn == WHITE_TURN) ? WHITE_BISHOP: BLACK_BISHOP);
+            capture_piece_on_square(game, GET_DESTINATION_SQUARE_FROM_MOVE(move));
+            promote_to_piece(game, move, (game->turn == WHITE_TURN) ? WHITE_BISHOP: BLACK_BISHOP);
             break;
 
         case ROOK_PROMOTION_CAPTURE:
-            capture_piece_on_square(&game, GET_DESTINATION_SQUARE_FROM_MOVE(move));
-            promote_to_piece(&game, move, (game.turn == WHITE_TURN) ? WHITE_ROOK : BLACK_ROOK);
+            capture_piece_on_square(game, GET_DESTINATION_SQUARE_FROM_MOVE(move));
+            promote_to_piece(game, move, (game->turn == WHITE_TURN) ? WHITE_ROOK : BLACK_ROOK);
             break;
 
         case KING_CASTLE:
-            move_piece(&game, move);
-            if(game.turn == WHITE_TURN){
-                move_piece(&game, CREATE_MOVE(H1, F1, WHITE_ROOK, QUIET_MOVES));
-                REVOK_CASTLING_RIGHT((&game), WHITE_KING_SIDE_CASTLING | WHITE_QUEEN_SIDE_CASTLING);
+            move_piece(game, move);
+            if(game->turn == WHITE_TURN){
+                move_piece(game, CREATE_MOVE(H1, F1, WHITE_ROOK, QUIET_MOVES));
+                REVOK_CASTLING_RIGHT ((game), WHITE_KING_SIDE_CASTLING | WHITE_QUEEN_SIDE_CASTLING);
             }
             else{
-                move_piece(&game, CREATE_MOVE(H8, F8, BLACK_ROOK, QUIET_MOVES));
-                REVOK_CASTLING_RIGHT((&game), BLACK_KING_SIDE_CASTLING | BLACK_QUEEN_SIDE_CASTLING);
+                move_piece(game, CREATE_MOVE(H8, F8, BLACK_ROOK, QUIET_MOVES));
+                REVOK_CASTLING_RIGHT((game), BLACK_KING_SIDE_CASTLING | BLACK_QUEEN_SIDE_CASTLING);
             }
             break;
 
         case QUEEN_CASTLE:
-            move_piece(&game, move);
-            if(game.turn == WHITE_TURN){
-                move_piece(&game, CREATE_MOVE(A1, D1, WHITE_ROOK, QUIET_MOVES));
-                REVOK_CASTLING_RIGHT((&game), WHITE_KING_SIDE_CASTLING | WHITE_QUEEN_SIDE_CASTLING);
+            move_piece(game, move);
+            if(game->turn == WHITE_TURN){
+                move_piece(game, CREATE_MOVE(A1, D1, WHITE_ROOK, QUIET_MOVES));
+                REVOK_CASTLING_RIGHT((game), WHITE_KING_SIDE_CASTLING | WHITE_QUEEN_SIDE_CASTLING);
             }
             else{
-                move_piece(&game, CREATE_MOVE(A8, D8, BLACK_ROOK, QUIET_MOVES));
-                REVOK_CASTLING_RIGHT((&game), BLACK_KING_SIDE_CASTLING | BLACK_QUEEN_SIDE_CASTLING);
+                move_piece(game, CREATE_MOVE(A8, D8, BLACK_ROOK, QUIET_MOVES));
+                REVOK_CASTLING_RIGHT((game), BLACK_KING_SIDE_CASTLING | BLACK_QUEEN_SIDE_CASTLING);
             }
             break;
     }
 
     if (GET_MOVE_TYPE_FROM_MOVE(move) == DOUBLE_PAWN_PUSH)
     {
-        game.en_passant_target_square = GET_DESTINATION_SQUARE_FROM_MOVE(move) + ((GET_PIECE_TYPE_FROM_MOVE(move) == WHITE_PAWN) ? 8 : -8);
+        game->en_passant_target_square = GET_DESTINATION_SQUARE_FROM_MOVE(move) + ((GET_PIECE_TYPE_FROM_MOVE(move) == WHITE_PAWN) ? 8 : -8);
     }
     else
     {
-        game.en_passant_target_square = -1; // No en passant target
+        game->en_passant_target_square = -1; // No en passant target
     }
     
-    game.turn = !game.turn; // Switch turn
-
-    return game;
+    game->turn = !game->turn; // Switch turn
 }
