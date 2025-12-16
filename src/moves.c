@@ -140,7 +140,7 @@ void move_piece(Game* game, Move move)
             game->black_rooks |= to_bitboard;
             if(source_square == A8)
                 REVOK_CASTLING_RIGHT(game, BLACK_QUEEN_SIDE_CASTLING);
-            else
+            else if(source_square == H8)
                 REVOK_CASTLING_RIGHT(game, BLACK_KING_SIDE_CASTLING);
             break;
         case WHITE_QUEEN:

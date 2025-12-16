@@ -228,4 +228,18 @@ void print_representation_of_chess_game(Game* game)
         }
     }
     printf("  a b c d e f g h\n");
+
+    printf("Turn: %s\n", (game->turn == WHITE_TURN) ? "White" : "Black");
+    printf("Castling rights: ");
+    if (game->castling_rights & WHITE_KING_SIDE_CASTLING)
+        printf("K");
+    if (game->castling_rights & WHITE_QUEEN_SIDE_CASTLING)
+        printf("Q");
+    if (game->castling_rights & BLACK_KING_SIDE_CASTLING)
+        printf("k");
+    if (game->castling_rights & BLACK_QUEEN_SIDE_CASTLING)
+        printf("q");
+    if (game->castling_rights == 0)
+        printf("-");
+    printf("\n");
 }

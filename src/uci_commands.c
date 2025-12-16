@@ -75,7 +75,20 @@ void handle_go_command(Game* game, const char* input, char* response)
     Config* config = get_config();
 
     char* perf = strstr(input_copy, "perft ");
+    char* perft_debug = strstr(input_copy, "perft_debug ");
     char *depth = strstr(input_copy, "depth ");
+
+    if(perft_debug != NULL)
+    {
+        int depth = atoi(perft_debug + 11);
+        if ((depth > 0))
+        {
+            U64 nodes = test_helper_generate_moves_from_position_at_depth(game, depth, depth);
+            snprintf(response, UCI_RESPONSE_MAX_LENGTH, "nodes %llu\n", nodes);
+            free(input_copy);
+        }
+        return;
+    }
 
     if (perf != NULL)
     {

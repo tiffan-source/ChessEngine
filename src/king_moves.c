@@ -218,8 +218,9 @@ int is_square_attacked_by_side(Game* board_state, Square square, Side side)
                 ALL_OCCUPENCY(board_state)
             );
             if (rook_attacks & danger) return 1;
-            return 0;
         }
+        return 0;
+
     }
     else
     {
