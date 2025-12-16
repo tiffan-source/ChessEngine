@@ -9,6 +9,13 @@
 #define MIN -1000000
 #define MAX 1000000
 
+typedef struct PV
+{
+    int move_count;
+    Move moves[256];
+}PV;
+
+
 U64 get_nodes_searched();
 
 ScoredMove call_search_algorithm(Game* game, int depth);
@@ -27,5 +34,7 @@ ScoredMove alpha_beta_max(Game* game, int depth, int alpha, int beta);
 // Function to find the best move using NegaAlphaBeta
 ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta);
 ScoredMove nega_alpha_beta_with_move_ordering(Game *game, int depth, int alpha, int beta);
+
+ScoredMove nega_alpha_beta_with_move_ordering_and_pv(Game *game, int depth, int alpha, int beta, PV *pv);
 
 #endif // SEARCH_AND_FIND_H
