@@ -12,10 +12,8 @@
 void initialize_move_generation_databases();
 void generate_all_pseudo_legal_moves_from_game_state(Game* game, MoveList* move_list);
 void generate_all_pseudo_legal_capture_moves_from_game_state(Game* game, MoveList* move_list);
-
 U64 generate_moves_from_position_at_depth(Game* game, int depth);
 int get_time_ms();
-U64 test_helper_generate_moves_from_position_at_depth(Game* game, int depth, int original_depth);
-
+U64 call_generator_perft(Game* game, int depth);
 Move retrieve_uci_move_from_move_list(const char* uci_move_str, MoveList* move_list);
 #endif // MOVE_GENERATOR_H

@@ -61,7 +61,7 @@ void test_mvv_lva_table_bishop_captures_queen(void)
 }
 
 // ============================================================================
-// TESTS: order_move_using_mvv_lva avec positions simples
+// TESTS: order_move avec positions simples
 // ============================================================================
 
 void test_order_move_with_single_capture_pawn_takes_queen(void)
@@ -75,7 +75,7 @@ void test_order_move_with_single_capture_pawn_takes_queen(void)
     move_list->current_index = 0;
 
     generate_all_pseudo_legal_moves_from_game_state(game, move_list);
-    order_move_using_mvv_lva(game, move_list);
+    order_move(game, move_list, 0);
 
     // Le premier coup devrait être la capture PxQ (score 506)
     int found_pawn_captures_queen = 0;
@@ -101,7 +101,7 @@ void test_order_move_with_multiple_captures_different_victims(void)
     move_list->current_index = 0;
 
     generate_all_pseudo_legal_moves_from_game_state(game, move_list);
-    order_move_using_mvv_lva(game, move_list);
+    order_move(game, move_list, 0);
 
     // Le premier coup devrait être NxR (405)
     TEST_ASSERT_EQUAL_INT(405, move_list->moves[0].score);
@@ -135,7 +135,7 @@ void test_order_move_with_multiple_attackers_same_victim(void)
     move_list->current_index = 0;
 
     generate_all_pseudo_legal_moves_from_game_state(game, move_list);
-    order_move_using_mvv_lva(game, move_list);
+    order_move(game, move_list, 0);
 
     // Le premier coup devrait être PxQ (506)
     TEST_ASSERT_EQUAL_INT(506, move_list->moves[0].score);
@@ -173,7 +173,7 @@ void test_order_move_captures_before_quiet_moves(void)
     move_list->current_index = 0;
 
     generate_all_pseudo_legal_moves_from_game_state(game, move_list);
-    order_move_using_mvv_lva(game, move_list);
+    order_move(game, move_list, 0);
 
     // Le premier coup devrait être NxP (105)
     TEST_ASSERT_EQUAL_INT(105, move_list->moves[0].score);
@@ -200,7 +200,7 @@ void test_order_move_tricky_position_white(void)
     move_list->current_index = 0;
 
     generate_all_pseudo_legal_moves_from_game_state(game, move_list);
-    order_move_using_mvv_lva(game, move_list);
+    order_move(game, move_list, 0);
 
     // Verification par victime capturée
 
@@ -239,7 +239,7 @@ void test_order_move_tricky_position_black(void)
     move_list->current_index = 0;
 
     generate_all_pseudo_legal_moves_from_game_state(game, move_list);
-    order_move_using_mvv_lva(game, move_list);
+    order_move(game, move_list, 0);
 
     // Verification par victime capturée
 
@@ -306,7 +306,7 @@ void test_order_move_promotion_captures(void)
     move_list->current_index = 0;
 
     generate_all_pseudo_legal_moves_from_game_state(game, move_list);
-    order_move_using_mvv_lva(game, move_list);
+    order_move(game, move_list, 0);
 
     // Le premier coup devrait être la promotion avec capture
     TEST_ASSERT_EQUAL_INT(406, move_list->moves[0].score);
@@ -316,4 +316,49 @@ void test_order_move_promotion_captures(void)
 
     free_game(game);
     free(move_list);
+}
+
+void test_add_killer_move_at_ply(void)
+{
+    Move test_move = CREATE_MOVE(E2, E4, WHITE_PAWN, QUIET_MOVES);
+    int ply = 5;
+
+    add_killer_move_at_ply(test_move, ply);
+
+    TEST_ASSERT_EQUAL_UINT(test_move, killer_move[ply][0]);
+}
+
+void test_add_two_killer_moves_at_different_plies(void)
+{
+    Move first_move = CREATE_MOVE(E2, E4, WHITE_PAWN, QUIET_MOVES);
+    int first_ply = 3;
+
+    Move second_move = CREATE_MOVE(D7, D5, BLACK_PAWN, QUIET_MOVES);
+    int second_ply = 4;
+
+    add_killer_move_at_ply(first_move, first_ply);
+    add_killer_move_at_ply(second_move, second_ply);
+
+    // Vérification du premier coup
+    TEST_ASSERT_EQUAL_UINT(first_move, killer_move[first_ply][0]);
+
+    // Vérification du deuxième coup
+    TEST_ASSERT_EQUAL_UINT(second_move, killer_move[second_ply][0]);
+}
+
+void test_add_killer_move_overwrite_previous(void)
+{
+    Move first_move = CREATE_MOVE(E2, E4, WHITE_PAWN, QUIET_MOVES);
+    int ply = 2;
+
+    Move second_move = CREATE_MOVE(E7, E5, BLACK_PAWN, QUIET_MOVES);
+
+    add_killer_move_at_ply(first_move, ply);
+    add_killer_move_at_ply(second_move, ply); // Doit écraser le premier
+
+    // Vérification que le deuxième coup a écrasé le premier
+    TEST_ASSERT_EQUAL_UINT(second_move, killer_move[ply][0]);
+
+    // Le premier coup doit etre en deuxième position
+    TEST_ASSERT_EQUAL_UINT(first_move, killer_move[ply][1]);
 }

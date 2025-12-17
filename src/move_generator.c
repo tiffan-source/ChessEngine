@@ -68,6 +68,16 @@ void generate_all_pseudo_legal_capture_moves_from_game_state(Game* game, MoveLis
     }
 }
 
+U64 call_generator_perft(Game* game, int depth)
+{
+    U64 result = 0;
+    int init_time = get_time_ms();
+    result = generate_moves_from_position_at_depth(game, depth);
+    int end_time = get_time_ms() - init_time;
+    printf("time %d ms\n", end_time);
+    return result;
+}
+
 U64 generate_moves_from_position_at_depth(Game* game, int depth)
 {
     U64 result = 0;
@@ -95,40 +105,6 @@ U64 generate_moves_from_position_at_depth(Game* game, int depth)
 
     free(move_list);
     
-    return result;
-}
-
-U64 test_helper_generate_moves_from_position_at_depth(Game* game, int depth, int original_depth)
-{
-    U64 result = 0, old_node = 0, new_node = 0;
-    MoveList* move_list = malloc(sizeof(MoveList));
-    move_list->current_index = 0;
-
-    int init_time = get_time_ms();
-
-    generate_all_pseudo_legal_moves_from_game_state(game, move_list);
-
-    for (int i = 0; i < move_list->current_index; i++)
-    {
-        Game new_game = *game;
-        make_move(&new_game, move_list->moves[i].move);
-
-        if(!is_king_attacked_by_side(&new_game, new_game.turn)){ // Little hack here Side and TURN are aligned  
-            if(depth > 1){
-                new_node = generate_moves_from_position_at_depth(&new_game, depth - 1);
-                result += new_node;
-            }else{
-                result++;
-            }
-        }
-
-    }
-
-    free(move_list);
-
-    int end_time = get_time_ms() - init_time;
-    printf("End time: %d ms\n", end_time);
-
     return result;
 }
 

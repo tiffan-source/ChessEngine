@@ -42,22 +42,46 @@ int Quiesce(Game* game, int alpha, int beta ) {
 
 ScoredMove call_search_algorithm(Game* game, int depth)
 {
+    int move_to_show = depth;
     ScoredMove scored_move;
     nodes_searched = 0;
     
     PV pv = { .move_count = 0 };
-    
+
+    int start_time = get_time_ms();
     scored_move = nega_alpha_beta(game, depth, MIN, MAX, &pv);
+    int end_time = get_time_ms() - start_time;
     
-    printf("\npv: ");
-    for (int i = 0; i < pv.move_count; i++)
+    printf("info ");
+    printf("depth %d ", depth);
+    printf("score ");
+    
+    if(scored_move.score <= MIN + depth)
+    {
+        move_to_show = scored_move.score - MIN;
+        printf("mate %d ", (scored_move.score - MIN + 1) / 2);
+    }
+    else if (scored_move.score >= MAX - depth)
+    {
+        move_to_show = MAX - scored_move.score;
+        printf("mate -%d ", (MAX - scored_move.score + 1) / 2);
+    }
+    else
+    {
+        printf("cp %ld ", scored_move.score * 100);
+    }
+
+    printf("nodes %llu ", nodes_searched);
+    printf("time %d ", end_time);
+    printf("pv ");
+    for (int i = 0; i < move_to_show; i++)
     {
         print_move_as_uci(pv.moves[i]);
         printf(" ");
     }
     printf("\n");
-    return scored_move;
     
+    return scored_move;
 }
 
 U64 get_nodes_searched()
@@ -72,8 +96,7 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, PV *pv)
     Move max_move = 0;
     PV child_pv;
     ScoredMove scored_move;
-
-    nodes_searched++;
+    int ply = get_depth() - depth;
 
     if(depth == 0)
     {
@@ -84,7 +107,7 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, PV *pv)
 
     MoveList moves_list = { .current_index = 0 };
     generate_all_pseudo_legal_moves_from_game_state(game, &moves_list);
-    order_move_using_mvv_lva(game, &moves_list);
+    order_move(game, &moves_list, ply);
 
     for (int i = 0; i < moves_list.current_index; i++)
     {
@@ -92,6 +115,8 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, PV *pv)
         memcpy(&new_game_state, game, sizeof(Game));
         make_move(&new_game_state, moves_list.moves[i].move);
 
+        nodes_searched++;
+        
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){ // Little hack here Side and TURN are aligned
             move_found = 1;
             scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, &child_pv);
@@ -112,6 +137,7 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, PV *pv)
                 }
                 if (beta <= alpha)
                 {
+                    add_killer_move_at_ply(max_move, ply);
                     break;
                 }
             }
@@ -123,7 +149,7 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, PV *pv)
         // Check for checkmate or stalemate
         if (is_king_attacked_by_side(game, !game->turn))
         {
-            scored_move = (ScoredMove){ .score = MIN + (GET_DEPTH_FROM_CONFIG(get_config()) - depth) };
+            scored_move = (ScoredMove){ .score = MIN + ply };
             return scored_move;
         }
         else

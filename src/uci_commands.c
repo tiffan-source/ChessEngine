@@ -72,33 +72,18 @@ void handle_go_command(Game* game, const char* input, char* response)
     int input_size = strlen(input);
     char *input_copy = malloc(input_size + 1);
     memcpy(input_copy, input, input_size + 1);
-    Config* config = get_config();
-
+    int depth_value;
     char* perf = strstr(input_copy, "perft ");
-    char* perft_debug = strstr(input_copy, "perft_debug ");
     char *depth = strstr(input_copy, "depth ");
 
-    if(perft_debug != NULL)
-    {
-        int depth = atoi(perft_debug + 11);
-        if ((depth > 0))
-        {
-            U64 nodes = test_helper_generate_moves_from_position_at_depth(game, depth, depth);
-            snprintf(response, UCI_RESPONSE_MAX_LENGTH, "nodes %llu\n", nodes);
-            free(input_copy);
-        }
-        return;
-    }
 
     if (perf != NULL)
     {
-        int depth = atoi(perf + 6);
-        if ((depth > 0))
+        depth_value = atoi(perf + 6);
+        if ((depth_value > 0))
         {
-            int init_time = get_time_ms();
-            U64 nodes = generate_moves_from_position_at_depth(game, depth);
-            int end_time = get_time_ms() - init_time;
-            printf("Time %d ms\n", end_time);
+            set_depth(depth_value);
+            U64 nodes = call_generator_perft(game, get_depth());
             snprintf(response, UCI_RESPONSE_MAX_LENGTH, "nodes %llu\n", nodes);
             free(input_copy);
         }
@@ -107,16 +92,11 @@ void handle_go_command(Game* game, const char* input, char* response)
 
     if(depth != NULL)
     {
-        int depth_value = atoi(depth + 6);
-        SET_DEPTH_IN_CONFIG(config, depth_value > 0 ? depth_value : GET_DEPTH_FROM_CONFIG(config));
+        depth_value = atoi(depth + 6);
+        set_depth(depth_value > 0 ? depth_value : get_depth());
     }
 
-    int init_time = get_time_ms();
-    result = call_search_algorithm(game, GET_DEPTH_FROM_CONFIG(config));
-    int end_time = get_time_ms() - init_time;
-    printf("Score: %ld\n", result.score);
-    printf("End time: %d ms\n", end_time);
-    printf("Nodes searched: %llu\n", get_nodes_searched());
+    result = call_search_algorithm(game, get_depth());
 
     build_move_as_uci(result.move, move_uci);
 
@@ -133,20 +113,13 @@ void handle_quit_command(char* response)
 void handle_command(Game** game, const char* command, char* response)
 {
     if (strncmp(command, "uci", 3) == 0)
-    {
         handle_uci_command(response);
-    } else if (strncmp(command, "isready", 7) == 0)
-    {
+    else if (strncmp(command, "isready", 7) == 0)
         handle_isready_command(response);
-    } else if (strncmp(command, "position", 8) == 0)
-    {
+    else if (strncmp(command, "position", 8) == 0)
         handle_position_command(game, command + 8);
-    } else if (strncmp(command, "go", 2) == 0)
-    {
+    else if (strncmp(command, "go", 2) == 0)
         handle_go_command(*game, command, response);
-    } else if(strncmp(command, "quit", 4) == 0)
-    {
+    else if(strncmp(command, "quit", 4) == 0)
         handle_quit_command(response);
-    }
-
 }

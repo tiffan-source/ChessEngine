@@ -1,7 +1,7 @@
 
 #include "config.h"
 
-Config* global_config = NULL;
+static Config* global_config = NULL;
 
 void init_config(int depth)
 {
@@ -11,15 +11,20 @@ void init_config(int depth)
     }
 }
 
+int get_depth(void)
+{
+    return global_config->depth;
+}
+
+void set_depth(int depth_value)
+{
+    global_config->depth = depth_value;
+}
+
 void free_config()
 {
     if (global_config != NULL) {
         free(global_config);
         global_config = NULL;
     }
-}
-
-Config* get_config()
-{
-    return global_config;
 }
