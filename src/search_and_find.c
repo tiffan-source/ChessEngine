@@ -79,6 +79,7 @@ ScoredMove call_search_algorithm(Game* game, int depth)
     ScoredMove scored_move;
 
     reset_killer_moves();
+    reset_history_heuristic();
     
     for (int curr_depth = 1; curr_depth <= depth; curr_depth++)
     {
@@ -92,7 +93,7 @@ ScoredMove call_search_algorithm(Game* game, int depth)
         
         print_info_at_end_of_search(curr_depth, scored_move, pv, end_time);
     }
-    
+
     return scored_move;
 }
 
@@ -146,9 +147,13 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, PV *pv)
                     pv->moves[0] = max_move;
                     memcpy(pv->moves + 1, child_pv.moves, sizeof(Move) * child_pv.move_count);
                     pv->move_count = child_pv.move_count + 1;
+
                 }
                 if (beta <= alpha)
                 {
+                    if (GET_MOVE_TYPE_FROM_MOVE(max_move) != CAPTURE)
+                        update_history_heuristic(moves_list.moves + i, 300 * depth - 250);
+
                     add_killer_move_at_ply(max_move, ply);
                     break;
                 }

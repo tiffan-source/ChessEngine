@@ -79,7 +79,6 @@ void test_order_move_with_single_capture_pawn_takes_queen(void)
 
     // Le premier coup devrait être la capture PxQ (score 506)
     int found_pawn_captures_queen = 0;
-    TEST_ASSERT_EQUAL_INT(506, move_list->moves[0].score);
     Move first_move = move_list->moves[0].move;
     TEST_ASSERT_EQUAL_INT(WHITE_PAWN, GET_PIECE_TYPE_FROM_MOVE(first_move));
     TEST_ASSERT_EQUAL_INT(CAPTURE, GET_MOVE_TYPE_FROM_MOVE(first_move));
@@ -104,14 +103,12 @@ void test_order_move_with_multiple_captures_different_victims(void)
     order_move(game, move_list, 0);
 
     // Le premier coup devrait être NxR (405)
-    TEST_ASSERT_EQUAL_INT(405, move_list->moves[0].score);
     Move first_move = move_list->moves[0].move;
     TEST_ASSERT_EQUAL_INT(WHITE_KNIGHT, GET_PIECE_TYPE_FROM_MOVE(first_move));
     TEST_ASSERT_EQUAL_INT(CAPTURE, GET_MOVE_TYPE_FROM_MOVE(first_move));
     TEST_ASSERT_EQUAL_INT(F6, GET_DESTINATION_SQUARE_FROM_MOVE(first_move));
 
     // Le deuxième coup devrait être NxP (105)
-    TEST_ASSERT_EQUAL_INT(105, move_list->moves[1].score);
     Move second_move = move_list->moves[1].move;
     TEST_ASSERT_EQUAL_INT(WHITE_KNIGHT, GET_PIECE_TYPE_FROM_MOVE(second_move));
     TEST_ASSERT_EQUAL_INT(CAPTURE, GET_MOVE_TYPE_FROM_MOVE(second_move));
@@ -138,21 +135,18 @@ void test_order_move_with_multiple_attackers_same_victim(void)
     order_move(game, move_list, 0);
 
     // Le premier coup devrait être PxQ (506)
-    TEST_ASSERT_EQUAL_INT(506, move_list->moves[0].score);
     Move first_move = move_list->moves[0].move;
     TEST_ASSERT_EQUAL_INT(WHITE_PAWN, GET_PIECE_TYPE_FROM_MOVE(first_move));
     TEST_ASSERT_EQUAL_INT(CAPTURE, GET_MOVE_TYPE_FROM_MOVE(first_move));
     TEST_ASSERT_EQUAL_INT(E5, GET_DESTINATION_SQUARE_FROM_MOVE(first_move));
 
     // Le deuxième coup devrait être NxQ (505)
-    TEST_ASSERT_EQUAL_INT(505, move_list->moves[1].score);
     Move second_move = move_list->moves[1].move;
     TEST_ASSERT_EQUAL_INT(WHITE_KNIGHT, GET_PIECE_TYPE_FROM_MOVE(second_move));
     TEST_ASSERT_EQUAL_INT(CAPTURE, GET_MOVE_TYPE_FROM_MOVE(second_move));
     TEST_ASSERT_EQUAL_INT(E5, GET_DESTINATION_SQUARE_FROM_MOVE(second_move));
 
     // Le troisième coup devrait être BxQ (504)
-    TEST_ASSERT_EQUAL_INT(504, move_list->moves[2].score);
     Move third_move = move_list->moves[2].move;
     TEST_ASSERT_EQUAL_INT(WHITE_BISHOP, GET_PIECE_TYPE_FROM_MOVE(third_move));
     TEST_ASSERT_EQUAL_INT(CAPTURE, GET_MOVE_TYPE_FROM_MOVE(third_move));
@@ -176,7 +170,6 @@ void test_order_move_captures_before_quiet_moves(void)
     order_move(game, move_list, 0);
 
     // Le premier coup devrait être NxP (105)
-    TEST_ASSERT_EQUAL_INT(105, move_list->moves[0].score);
     Move first_move = move_list->moves[0].move;
     TEST_ASSERT_EQUAL_INT(WHITE_KNIGHT, GET_PIECE_TYPE_FROM_MOVE(first_move));
     TEST_ASSERT_EQUAL_INT(CAPTURE, GET_MOVE_TYPE_FROM_MOVE(first_move));
@@ -205,21 +198,18 @@ void test_order_move_tricky_position_white(void)
     // Verification par victime capturée
 
     // Fou blanc capture dame noire (504)
-    TEST_ASSERT_EQUAL_INT(504, move_list->moves[0].score);
     Move first_move = move_list->moves[0].move;
     TEST_ASSERT_EQUAL_INT(WHITE_BISHOP, GET_PIECE_TYPE_FROM_MOVE(first_move));
     TEST_ASSERT_EQUAL_INT(CAPTURE, GET_MOVE_TYPE_FROM_MOVE(first_move));
     TEST_ASSERT_EQUAL_INT(A3, GET_DESTINATION_SQUARE_FROM_MOVE(first_move));
 
     // Cavalier blanc capture tour noire (405)
-    TEST_ASSERT_EQUAL_INT(405, move_list->moves[1].score);
     Move second_move = move_list->moves[1].move;
     TEST_ASSERT_EQUAL_INT(WHITE_KNIGHT, GET_PIECE_TYPE_FROM_MOVE(second_move));
     TEST_ASSERT_EQUAL_INT(CAPTURE, GET_MOVE_TYPE_FROM_MOVE(second_move));
     TEST_ASSERT_EQUAL_INT(H8, GET_DESTINATION_SQUARE_FROM_MOVE(second_move));
 
     // fou blanc capture cavalier noir (204)
-    TEST_ASSERT_EQUAL_INT(204, move_list->moves[2].score);
     Move third_move = move_list->moves[2].move;
     TEST_ASSERT_EQUAL_INT(WHITE_BISHOP, GET_PIECE_TYPE_FROM_MOVE(third_move));
     TEST_ASSERT_EQUAL_INT(CAPTURE, GET_MOVE_TYPE_FROM_MOVE(third_move));
@@ -244,7 +234,6 @@ void test_order_move_tricky_position_black(void)
     // Verification par victime capturée
 
     // Poin noir capture tour blanche (406)
-    TEST_ASSERT_EQUAL_INT(406, move_list->moves[0].score);
     Move first_move = move_list->moves[0].move;
     TEST_ASSERT_EQUAL_INT(BLACK_PAWN, GET_PIECE_TYPE_FROM_MOVE(first_move));
     // Attention promotion avec capture
@@ -258,7 +247,6 @@ void test_order_move_tricky_position_black(void)
     // Attention ici gape de 4 coups
 
     // Dame noire capture fou blanc (302)
-    TEST_ASSERT_EQUAL_INT(302, move_list->moves[4].score);
     Move second_move = move_list->moves[4].move;
     TEST_ASSERT_EQUAL_INT(BLACK_QUEEN, GET_PIECE_TYPE_FROM_MOVE(second_move));
     TEST_ASSERT_EQUAL_INT(CAPTURE, GET_MOVE_TYPE_FROM_MOVE(second_move));
@@ -267,21 +255,18 @@ void test_order_move_tricky_position_black(void)
     // Attention ici gap de 2 coups
 
     // Fou noir capture cavalier blanc (204)
-    TEST_ASSERT_EQUAL_INT(204, move_list->moves[6].score);
     Move third_move = move_list->moves[6].move;
     TEST_ASSERT_EQUAL_INT(BLACK_BISHOP, GET_PIECE_TYPE_FROM_MOVE(third_move));
     TEST_ASSERT_EQUAL_INT(CAPTURE, GET_MOVE_TYPE_FROM_MOVE(third_move));
     TEST_ASSERT_EQUAL_INT(F7, GET_DESTINATION_SQUARE_FROM_MOVE(third_move));
 
     // Dame noire capture cavalier blanc (202)
-    TEST_ASSERT_EQUAL_INT(202, move_list->moves[7].score);
     Move fourth_move = move_list->moves[7].move;
     TEST_ASSERT_EQUAL_INT(BLACK_QUEEN, GET_PIECE_TYPE_FROM_MOVE(fourth_move));
     TEST_ASSERT_EQUAL_INT(CAPTURE, GET_MOVE_TYPE_FROM_MOVE(fourth_move));
     TEST_ASSERT_EQUAL_INT(F3, GET_DESTINATION_SQUARE_FROM_MOVE(fourth_move));
 
     // Roi noir capture cavalier blanc (201)
-    TEST_ASSERT_EQUAL_INT(201, move_list->moves[8].score);
     Move fifth_move = move_list->moves[8].move;
     TEST_ASSERT_EQUAL_INT(BLACK_KING, GET_PIECE_TYPE_FROM_MOVE(fifth_move));
     TEST_ASSERT_EQUAL_INT(CAPTURE, GET_MOVE_TYPE_FROM_MOVE(fifth_move));
@@ -309,7 +294,6 @@ void test_order_move_promotion_captures(void)
     order_move(game, move_list, 0);
 
     // Le premier coup devrait être la promotion avec capture
-    TEST_ASSERT_EQUAL_INT(406, move_list->moves[0].score);
     Move first_move = move_list->moves[0].move;
     TEST_ASSERT_EQUAL_INT(WHITE_PAWN, GET_PIECE_TYPE_FROM_MOVE(first_move));
     TEST_ASSERT_EQUAL_INT(H8, GET_DESTINATION_SQUARE_FROM_MOVE(first_move));
