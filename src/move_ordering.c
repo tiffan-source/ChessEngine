@@ -24,6 +24,15 @@ const int score_mvv_lva[6][6] = {
 // killer_move[ply][index]
 Move killer_move[MAX_DEPTH][2] = {0};
 
+void reset_killer_moves()
+{
+    for (int i = 0; i < MAX_DEPTH; i++)
+    {
+        killer_move[i][0] = 0;
+        killer_move[i][1] = 0;
+    }
+}
+
 void add_killer_move_at_ply(Move move, int ply)
 {
     killer_move[ply][1] = killer_move[ply][0];

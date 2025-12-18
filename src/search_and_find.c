@@ -39,19 +39,10 @@ int Quiesce(Game* game, int alpha, int beta ) {
     return best_value;
 }
 
-
-ScoredMove call_search_algorithm(Game* game, int depth)
+void print_info_at_end_of_search(int depth, ScoredMove scored_move, PV pv, int end_time)
 {
     int move_to_show = depth;
-    ScoredMove scored_move;
-    nodes_searched = 0;
-    
-    PV pv = { .move_count = 0 };
 
-    int start_time = get_time_ms();
-    scored_move = nega_alpha_beta(game, depth, MIN, MAX, &pv);
-    int end_time = get_time_ms() - start_time;
-    
     printf("info ");
     printf("depth %d ", depth);
     printf("score ");
@@ -59,12 +50,12 @@ ScoredMove call_search_algorithm(Game* game, int depth)
     if(scored_move.score <= MIN + depth)
     {
         move_to_show = scored_move.score - MIN;
-        printf("mate %d ", (scored_move.score - MIN + 1) / 2);
+        printf("mate %ld ", (scored_move.score - MIN + 1) / 2);
     }
     else if (scored_move.score >= MAX - depth)
     {
         move_to_show = MAX - scored_move.score;
-        printf("mate -%d ", (MAX - scored_move.score + 1) / 2);
+        printf("mate -%ld ", (MAX - scored_move.score + 1) / 2);
     }
     else
     {
@@ -80,6 +71,27 @@ ScoredMove call_search_algorithm(Game* game, int depth)
         printf(" ");
     }
     printf("\n");
+}
+
+
+ScoredMove call_search_algorithm(Game* game, int depth)
+{
+    ScoredMove scored_move;
+
+    reset_killer_moves();
+    
+    for (int curr_depth = 1; curr_depth <= depth; curr_depth++)
+    {
+        nodes_searched = 0;
+
+        PV pv = { .move_count = 0 };
+
+        int start_time = get_time_ms();
+        scored_move = nega_alpha_beta(game, curr_depth, MIN, MAX, &pv);
+        int end_time = get_time_ms() - start_time;
+        
+        print_info_at_end_of_search(curr_depth, scored_move, pv, end_time);
+    }
     
     return scored_move;
 }
