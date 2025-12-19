@@ -4,7 +4,8 @@
 U64 nodes_searched = 0;
 
 int Quiesce(Game* game, int alpha, int beta ) {
-    int static_eval = material_evaluation_for_side(game);
+    int static_eval = material_evaluation_with_piece_square_table_for_side(game);
+
     int score;
 
     // Stand Pat
@@ -16,7 +17,8 @@ int Quiesce(Game* game, int alpha, int beta ) {
 
     MoveList moves_list = { .current_index = 0 };
     generate_all_pseudo_legal_capture_moves_from_game_state(game, &moves_list);
-    
+    order_move(game, &moves_list, 0); // Ply est inutile ici car pas necessaire pour sort les captures
+
     for (int i = 0; i < moves_list.current_index; i++)
     {
         Game new_game_state = *game;
@@ -59,7 +61,7 @@ void print_info_at_end_of_search(int depth, ScoredMove scored_move, PV pv, int e
     }
     else
     {
-        printf("cp %ld ", scored_move.score * 100);
+        printf("cp %ld ", scored_move.score);
     }
 
     printf("nodes %llu ", nodes_searched);
@@ -77,21 +79,21 @@ void print_info_at_end_of_search(int depth, ScoredMove scored_move, PV pv, int e
 ScoredMove call_search_algorithm(Game* game, int depth)
 {
     ScoredMove scored_move;
+    int cumulative_time = 0;
 
     reset_killer_moves();
     reset_history_heuristic();
     
     for (int curr_depth = 1; curr_depth <= depth; curr_depth++)
     {
-        nodes_searched = 0;
-
         PV pv = { .move_count = 0 };
 
         int start_time = get_time_ms();
         scored_move = nega_alpha_beta(game, curr_depth, MIN, MAX, &pv);
         int end_time = get_time_ms() - start_time;
+        cumulative_time += end_time;
         
-        print_info_at_end_of_search(curr_depth, scored_move, pv, end_time);
+        print_info_at_end_of_search(curr_depth, scored_move, pv, cumulative_time);
     }
 
     return scored_move;
