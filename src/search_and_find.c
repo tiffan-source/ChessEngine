@@ -80,6 +80,7 @@ ScoredMove call_search_algorithm(Game* game, int depth)
 {
     ScoredMove scored_move;
     int cumulative_time = 0;
+    nodes_searched = 0;
 
     reset_killer_moves();
     reset_history_heuristic();
