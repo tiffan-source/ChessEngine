@@ -15,9 +15,11 @@
 #include "board.h"
 #include "binary_tools.h"
 #include "pieces.h"
+#include "zobrist_key.h"
 
 void setUp(void)
 {
+    initialize_magic_zobrist_numbers();
     initialize_move_generation_databases();
 }
 

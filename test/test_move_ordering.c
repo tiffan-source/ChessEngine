@@ -16,9 +16,11 @@
 #include "rooks_moves.h"
 #include "queens_moves.h"
 #include "test_helpers.h"
+#include "zobrist_key.h"
 
 void setUp(void)
 {
+    initialize_magic_zobrist_numbers();
     initialize_move_generation_databases();
 }
 

@@ -10,6 +10,7 @@
 #include "binary_tools.h"
 #include "pieces.h"
 #include "test_helpers.h"
+#include "zobrist_key.h"
 
 void setUp(void)
 {

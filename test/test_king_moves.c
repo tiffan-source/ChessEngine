@@ -13,7 +13,7 @@
 #include "pieces.h"
 #include "pawns_moves.h"
 #include "test_helpers.h"
-
+#include "zobrist_key.h"
 
 void setUp(void)
 {

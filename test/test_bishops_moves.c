@@ -10,6 +10,7 @@
 #include "moves.h"
 #include "pieces.h"
 #include "test_helpers.h"
+#include "zobrist_key.h"
 
 void setUp(void)
 {

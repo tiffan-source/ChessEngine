@@ -15,6 +15,7 @@
 #include "pieces.h"
 #include "move_generator.h"
 #include "queens_moves.h"
+#include "zobrist_key.h"
 
 void setUp(void)
 {

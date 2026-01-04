@@ -14,18 +14,21 @@
 #include "queens_moves.h"
 #include "rooks_moves.h"
 #include "bishops_moves.h"
-#include "search_and_find.h"
+#include "search_move.h"
 #include "evaluation.h"
 #include "knights_moves.h"
 #include "binary_tools.h"
 #include "pieces.h"
 #include "move_ordering.h"
 #include "config.h"
+#include "zobrist_key.h"
+#include "tt.h"
 
 Game* test_game = NULL;
 
 void setUp(void)
 {
+    initialize_magic_zobrist_numbers();
     initialize_move_generation_databases();
     init_config(5);
 }

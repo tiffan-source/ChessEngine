@@ -11,6 +11,7 @@
 #include "game.h"
 #include "moves.h"
 #include "pieces.h"
+#include "zobrist_key.h"
 #include "test_helpers.h"
 
 void setUp(void)
