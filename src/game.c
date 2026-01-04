@@ -22,6 +22,8 @@ Game* create_game()
     game->turn = WHITE_TURN;
     game->castling_rights = ALL_CASTLING_RIGHTS;
     game->en_passant_target_square = -1;
+
+    game->zobrist_key = create_zobrist_key_from_game_state(game);
     return game;
 }
 
@@ -180,6 +182,8 @@ Game* create_game_from_FEN(char* FEN)
         game->en_passant_target_square = (8 - rank) * 8 + file;
     }
 
+    game->zobrist_key = create_zobrist_key_from_game_state(game);
+
     return game;
 }
 
@@ -242,4 +246,78 @@ void print_representation_of_chess_game(Game* game)
     if (game->castling_rights == 0)
         printf("-");
     printf("\n");
+}
+
+U64 create_zobrist_key_from_game_state(Game* game)
+{
+    U64 zobrist_key = 0;
+
+    // Pieces
+    for (int square = 0; square < 64; square++)
+    {
+        if (game->black_pawns & (1ULL << square))
+        {
+            zobrist_key ^= pawn_zobrist_magic_number[0][square];
+        }
+        else if (game->white_pawns & (1ULL << square))
+        {
+            zobrist_key ^= pawn_zobrist_magic_number[1][square];
+        }
+        else if (game->black_knights & (1ULL << square))
+        {
+            zobrist_key ^= knight_zobrist_magic_number[0][square];
+        }
+        else if (game->white_knights & (1ULL << square))
+        {
+            zobrist_key ^= knight_zobrist_magic_number[1][square];
+        }
+        else if (game->black_bishops & (1ULL << square))
+        {
+            zobrist_key ^= bishop_zobrist_magic_number[0][square];
+        }
+        else if (game->white_bishops & (1ULL << square))
+        {
+            zobrist_key ^= bishop_zobrist_magic_number[1][square];
+        }
+        else if (game->black_rooks & (1ULL << square))
+        {
+            zobrist_key ^= rook_zobrist_magic_number[0][square];
+        }
+        else if (game->white_rooks & (1ULL << square))
+        {
+            zobrist_key ^= rook_zobrist_magic_number[1][square];
+        }
+        else if (game->black_queens & (1ULL << square))
+        {
+            zobrist_key ^= queen_zobrist_magic_number[0][square];
+        }
+        else if (game->white_queens & (1ULL << square))
+        {
+            zobrist_key ^= queen_zobrist_magic_number[1][square];
+        }
+        else if (game->black_king & (1ULL << square))
+        {
+            zobrist_key ^= king_zobrist_magic_number[0][square];
+        }
+        else if (game->white_king & (1ULL << square))
+        {
+            zobrist_key ^= king_zobrist_magic_number[1][square];
+        }
+    }
+
+    // Turn
+    if (game->turn == BLACK)
+        zobrist_key ^= black_to_move_zobrist_magic_number;
+
+    // Castling rights
+    int castling_index = game->castling_rights;
+    zobrist_key ^= castling_rights_zobrist_magic_number[castling_index];
+
+    // En passant target square
+    if (game->en_passant_target_square != -1)
+    {
+        zobrist_key ^= en_passant_square_zobrist_magic_number[game->en_passant_target_square];
+    }
+
+    return zobrist_key;
 }
