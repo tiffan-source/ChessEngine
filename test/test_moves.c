@@ -6,9 +6,12 @@
 #include "pieces.h"
 #include "board.h"
 #include "binary_tools.h"
+#include "zobrist_key.h"
+#include "game.h"
 
 void setUp(void)
 {
+    initialize_magic_zobrist_numbers();
 }
 
 void tearDown(void)
@@ -287,354 +290,427 @@ void test_CREATE_MOVE_should_create_different_moves_for_different_parameters(voi
     TEST_ASSERT_NOT_EQUAL(move1, move5);
 }
 
-void test_make_move_should_make_white_pawn_double_push(void)
+// Tests for make_move function
+
+void test_make_move_should_make_white_pawn_double_push_and_update_zobrist_key(void)
 {
-    Game game = {0};
-    game.white_pawns = 1ULL << E2; // Place a white pawn on E2
-    game.turn = WHITE;
+    Game* game = create_game_from_FEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
     Move move = CREATE_MOVE(E2, E4, WHITE_PAWN, DOUBLE_PAWN_PUSH);
-    make_move(&game, move);
+    make_move(game, move);
 
-    TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << E2)); // Pawn should no longer be on E2
-    TEST_ASSERT_EQUAL(1ULL << E4, game.white_pawns & (1ULL << E4)); // Pawn should be on E4
-    TEST_ASSERT_EQUAL(E3, game.en_passant_target_square); // En passant target should be set to E3
-    TEST_ASSERT_EQUAL(BLACK_TURN, game.turn); // Turn should switch to black
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(game);
+
+    TEST_ASSERT_EQUAL(0ULL, game->white_pawns & (1ULL << E2)); // Pawn should no longer be on E2
+    TEST_ASSERT_EQUAL(1ULL << E4, game->white_pawns & (1ULL << E4)); // Pawn should be on E4
+    TEST_ASSERT_EQUAL(E3, game->en_passant_target_square); // En passant target should be set to E3
+    TEST_ASSERT_EQUAL(BLACK_TURN, game->turn); // Turn should switch to black
+
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game->zobrist_key); // Zobrist key should match expected
 }
 
-void test_make_move_should_make_black_pawn_double_push(void)
+void test_make_move_should_make_black_pawn_double_push_and_update_zobrist_key(void)
 {
-    Game game = {0};
-    game.black_pawns = 1ULL << E7; // Place a black pawn on E7
-    game.turn = BLACK;
+    Game* game = create_game_from_FEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1");
 
     Move move = CREATE_MOVE(E7, E5, BLACK_PAWN, DOUBLE_PAWN_PUSH);
-    make_move(&game, move);
+    make_move(game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(game);
 
-    TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << E7)); // Pawn should no longer be on E7
-    TEST_ASSERT_EQUAL(1ULL << E5, game.black_pawns & (1ULL << E5)); // Pawn should be on E5
-    TEST_ASSERT_EQUAL(E6, game.en_passant_target_square); // En passant target should be set to E6
-    TEST_ASSERT_EQUAL(WHITE_TURN, game.turn); // Turn should switch to white
+    TEST_ASSERT_EQUAL(0ULL, game->black_pawns & (1ULL << E7)); // Pawn should no longer be on E7
+    TEST_ASSERT_EQUAL(1ULL << E5, game->black_pawns & (1ULL << E5)); // Pawn should be on E5
+    TEST_ASSERT_EQUAL(E6, game->en_passant_target_square); // En passant target should be set to E6
+    TEST_ASSERT_EQUAL(WHITE_TURN, game->turn); // Turn should switch to white
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game->zobrist_key);
 }
 
-void test_make_move_should_make_white_pawn_quiet_move(void)
+void test_make_move_should_make_white_pawn_quiet_move_and_update_zobrist_key(void)
 {
-    Game game = {0};
-    game.white_pawns = 1ULL << E4; // Place a white pawn on E4
-    game.turn = WHITE;
+    Game* game = create_game_from_FEN("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR w - - 0 1");
 
     Move move = CREATE_MOVE(E4, E5, WHITE_PAWN, QUIET_MOVES);
-    make_move(&game, move);
+    make_move(game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(game);
 
-    TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << E4)); // Pawn should no longer be on E4
-    TEST_ASSERT_EQUAL(1ULL << E5, game.white_pawns & (1ULL << E5)); // Pawn should be on E5
-    TEST_ASSERT_EQUAL(-1, game.en_passant_target_square); // En passant target should be reset
-    TEST_ASSERT_EQUAL(BLACK_TURN, game.turn); // Turn should switch to black
+    TEST_ASSERT_EQUAL(0ULL, game->white_pawns & (1ULL << E4)); // Pawn should no longer be on E4
+    TEST_ASSERT_EQUAL(1ULL << E5, game->white_pawns & (1ULL << E5)); // Pawn should be on E5
+    TEST_ASSERT_EQUAL(-1, game->en_passant_target_square); // En passant target should be reset
+    TEST_ASSERT_EQUAL(BLACK_TURN, game->turn); // Turn should switch to black
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game->zobrist_key);
 }
 
-void test_make_move_should_make_black_pawn_quiet_move(void)
+void test_make_move_should_make_black_pawn_quiet_move_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.black_pawns = 1ULL << E5; // Place a black pawn on E5
     game.turn = BLACK;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(E5, E4, BLACK_PAWN, QUIET_MOVES);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << E5)); // Pawn should no longer be on E5
     TEST_ASSERT_EQUAL(1ULL << E4, game.black_pawns & (1ULL << E4)); // Pawn should be on E4
     TEST_ASSERT_EQUAL(-1, game.en_passant_target_square); // En passant target should be reset
     TEST_ASSERT_EQUAL(WHITE_TURN, game.turn); // Turn should switch to white
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_make_white_pawn_capture(void)
+void test_make_move_should_make_white_pawn_capture_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.white_pawns = 1ULL << E4; // Place a white pawn on E4
     game.black_pawns = 1ULL << D5; // Place a black pawn on D5
     game.turn = WHITE;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(E4, D5, WHITE_PAWN, CAPTURE);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << E4)); // White pawn should no longer be on E4
     TEST_ASSERT_EQUAL(1ULL << D5, game.white_pawns & (1ULL << D5)); // White pawn should be on D5
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << D5)); // Black pawn should be captured
     TEST_ASSERT_EQUAL(-1, game.en_passant_target_square); // En passant target should be reset
     TEST_ASSERT_EQUAL(BLACK_TURN, game.turn); // Turn should switch to black
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-
-void test_make_move_should_make_white_pawn_capture_on_bishop(void)
+void test_make_move_should_make_white_pawn_capture_on_bishop_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.white_pawns = 1ULL << E4; // Place a white pawn on E4
     game.black_bishops = 1ULL << D5; // Place a black bishop on D5
     game.turn = WHITE;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(E4, D5, WHITE_PAWN, CAPTURE);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << E4)); // White pawn should no longer be on E4
     TEST_ASSERT_EQUAL(1ULL << D5, game.white_pawns & (1ULL << D5)); // White pawn should be on D5
     TEST_ASSERT_EQUAL(0ULL, game.black_bishops & (1ULL << D5)); // Black bishop should be captured
     TEST_ASSERT_EQUAL(-1, game.en_passant_target_square); // En passant target should be reset
     TEST_ASSERT_EQUAL(BLACK_TURN, game.turn); // Turn should switch to black
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_make_black_pawn_capture(void)
+void test_make_move_should_make_black_pawn_capture_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.black_pawns = 1ULL << E5; // Place un pion noir sur E5
     game.white_pawns = 1ULL << D4; // Place un pion blanc sur D4
     game.turn = BLACK;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(E5, D4, BLACK_PAWN, CAPTURE);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << E5)); // Le pion noir ne doit plus être sur E5
     TEST_ASSERT_EQUAL(1ULL << D4, game.black_pawns & (1ULL << D4)); // Le pion noir doit être sur D4
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << D4)); // Le pion blanc doit être capturé
     TEST_ASSERT_EQUAL(-1, game.en_passant_target_square); // La cible En Passant doit être réinitialisée
     TEST_ASSERT_EQUAL(WHITE_TURN, game.turn); // Le tour doit passer à blanc
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_make_black_pawn_capture_on_bishop(void)
+void test_make_move_should_make_black_pawn_capture_on_bishop_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.black_pawns = 1ULL << E5; // Place un pion noir sur E5
     game.white_bishops = 1ULL << D4; // Place un fou blanc sur D4
     game.turn = BLACK;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(E5, D4, BLACK_PAWN, CAPTURE);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << E5)); // Le pion noir ne doit plus être sur E5
     TEST_ASSERT_EQUAL(1ULL << D4, game.black_pawns & (1ULL << D4)); // Le pion noir doit être sur D4
     TEST_ASSERT_EQUAL(0ULL, game.white_bishops & (1ULL << D4)); // Le fou blanc doit être capturé
     TEST_ASSERT_EQUAL(-1, game.en_passant_target_square); // La cible En Passant doit être réinitialisée
     TEST_ASSERT_EQUAL(WHITE_TURN, game.turn); // Le tour doit passer à blanc
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_make_white_pawn_en_passant_capture(void)
+void test_make_move_should_make_white_pawn_en_passant_capture_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.white_pawns = 1ULL << E5; // Pion blanc sur E5
     game.black_pawns = 1ULL << D5; // Pion noir sur D5 (pion à capturer)
     game.turn = WHITE;
     game.en_passant_target_square = D6; // La cible En Passant est D6 (case vide après le déplacement double)
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(E5, D6, WHITE_PAWN, EN_PASSANT_CAPTURE);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << E5)); // Le pion blanc ne doit plus être sur E5
     TEST_ASSERT_EQUAL(1ULL << D6, game.white_pawns & (1ULL << D6)); // Le pion blanc doit être sur D6
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << D5)); // Le pion noir capturé (en D5) doit être retiré
     TEST_ASSERT_EQUAL(-1, game.en_passant_target_square); // La cible En Passant doit être réinitialisée
     TEST_ASSERT_EQUAL(BLACK_TURN, game.turn); // Le tour doit passer à noir
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_make_black_pawn_en_passant_capture(void)
+void test_make_move_should_make_black_pawn_en_passant_capture_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.black_pawns = 1ULL << E4; // Pion noir sur E4
     game.white_pawns = 1ULL << D4; // Pion blanc sur D4 (pion à capturer)
     game.turn = BLACK;
     game.en_passant_target_square = D3; // La cible En Passant est D3
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(E4, D3, BLACK_PAWN, EN_PASSANT_CAPTURE);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << E4)); // Le pion noir ne doit plus être sur E4
     TEST_ASSERT_EQUAL(1ULL << D3, game.black_pawns & (1ULL << D3)); // Le pion noir doit être sur D3
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << D4)); // Le pion blanc capturé (en D4) doit être retiré
     TEST_ASSERT_EQUAL(-1, game.en_passant_target_square); // La cible En Passant doit être réinitialisée
     TEST_ASSERT_EQUAL(WHITE_TURN, game.turn); // Le tour doit passer à blanc
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_make_white_pawn_promotion_to_queen_quiet_move(void)
+void test_make_move_should_make_white_pawn_promotion_to_queen_quiet_move_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.white_pawns = 1ULL << E7; // Pion blanc sur E7
     game.turn = WHITE;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(E7, E8, WHITE_PAWN, QUEEN_PROMOTION);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << E7)); // Le pion ne doit plus être sur E7
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << E8)); // Le pion ne doit pas être sur E8
     TEST_ASSERT_EQUAL(1ULL << E8, game.white_queens & (1ULL << E8)); // La Dame doit être sur E8
     TEST_ASSERT_EQUAL(-1, game.en_passant_target_square);
     TEST_ASSERT_EQUAL(BLACK_TURN, game.turn);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_make_black_pawn_promotion_to_knight_capture(void)
+void test_make_move_should_make_black_pawn_promotion_to_knight_capture_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.black_pawns = 1ULL << E2; // Pion noir sur E2
     game.white_rooks = 1ULL << D1; // Tour blanche à capturer sur D1
     game.turn = BLACK;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(E2, D1, BLACK_PAWN, KNIGHT_PROMOTION_CAPTURE);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << E2)); // Le pion ne doit plus être sur E2
     TEST_ASSERT_EQUAL(0ULL, game.white_rooks & (1ULL << D1)); // La Tour blanche doit être capturée
     TEST_ASSERT_EQUAL(1ULL << D1, game.black_knights & (1ULL << D1)); // Le Cavalier noir doit être sur D1
     TEST_ASSERT_EQUAL(-1, game.en_passant_target_square);
     TEST_ASSERT_EQUAL(WHITE_TURN, game.turn);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-// Promotion tranquille en Tour (ROOK_PROMOTION)
-void test_make_move_should_make_white_pawn_promotion_to_rook_quiet_move(void)
+void test_make_move_should_make_white_pawn_promotion_to_rook_quiet_move_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.white_pawns = 1ULL << H7;
     game.turn = WHITE;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(H7, H8, WHITE_PAWN, ROOK_PROMOTION);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << H7));
     TEST_ASSERT_EQUAL(1ULL << H8, game.white_rooks & (1ULL << H8)); // Vérifie la Tour
     TEST_ASSERT_EQUAL(BLACK_TURN, game.turn);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-// Promotion tranquille en Fou (BISHOP_PROMOTION)
-void test_make_move_should_make_white_pawn_promotion_to_bishop_quiet_move(void)
+void test_make_move_should_make_white_pawn_promotion_to_bishop_quiet_move_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.white_pawns = 1ULL << A7;
     game.turn = WHITE;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(A7, A8, WHITE_PAWN, BISHOP_PROMOTION);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << A7));
     TEST_ASSERT_EQUAL(1ULL << A8, game.white_bishops & (1ULL << A8)); // Vérifie le Fou
     TEST_ASSERT_EQUAL(BLACK_TURN, game.turn);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-// Promotion tranquille en Cavalier (KNIGHT_PROMOTION)
-void test_make_move_should_make_white_pawn_promotion_to_knight_quiet_move(void)
+void test_make_move_should_make_white_pawn_promotion_to_knight_quiet_move_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.white_pawns = 1ULL << B7;
     game.turn = WHITE;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(B7, B8, WHITE_PAWN, KNIGHT_PROMOTION);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << B7));
     TEST_ASSERT_EQUAL(1ULL << B8, game.white_knights & (1ULL << B8)); // Vérifie le Cavalier
     TEST_ASSERT_EQUAL(BLACK_TURN, game.turn);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_make_white_pawn_promotion_to_queen_capture(void)
+void test_make_move_should_make_white_pawn_promotion_to_queen_capture_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.white_pawns = 1ULL << G7;
     game.black_rooks = 1ULL << H8; // Pièce à capturer
     game.turn = WHITE;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(G7, H8, WHITE_PAWN, QUEEN_PROMOTION_CAPTURE);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << G7));
     TEST_ASSERT_EQUAL(0ULL, game.black_rooks & (1ULL << H8)); // La pièce noire est capturée
     TEST_ASSERT_EQUAL(1ULL << H8, game.white_queens & (1ULL << H8)); // La Dame est placée
     TEST_ASSERT_EQUAL(BLACK_TURN, game.turn);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-// Promotion avec capture en Tour (ROOK_PROMOTION_CAPTURE)
-void test_make_move_should_make_white_pawn_promotion_to_rook_capture(void)
+void test_make_move_should_make_white_pawn_promotion_to_rook_capture_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.white_pawns = 1ULL << B7;
     game.black_knights = 1ULL << A8; // Pièce à capturer
     game.turn = WHITE;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(B7, A8, WHITE_PAWN, ROOK_PROMOTION_CAPTURE);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     TEST_ASSERT_EQUAL(0ULL, game.white_pawns & (1ULL << B7));
     TEST_ASSERT_EQUAL(0ULL, game.black_knights & (1ULL << A8)); // Le Cavalier est capturé
     TEST_ASSERT_EQUAL(1ULL << A8, game.white_rooks & (1ULL << A8)); // La Tour est placée
     TEST_ASSERT_EQUAL(BLACK_TURN, game.turn);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_make_black_pawn_promotion_to_queen_quiet_move(void)
+void test_make_move_should_make_black_pawn_promotion_to_queen_quiet_move_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.black_pawns = 1ULL << E2; // Pion noir sur E2
     game.turn = BLACK;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(E2, E1, BLACK_PAWN, QUEEN_PROMOTION);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << E2));
     TEST_ASSERT_EQUAL(1ULL << E1, game.black_queens & (1ULL << E1)); // Vérifie la Dame noire
     TEST_ASSERT_EQUAL(WHITE_TURN, game.turn);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-// Promotion tranquille en Cavalier Noir (KNIGHT_PROMOTION)
-void test_make_move_should_make_black_pawn_promotion_to_knight_quiet_move(void)
+void test_make_move_should_make_black_pawn_promotion_to_knight_quiet_move_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.black_pawns = 1ULL << G2; // Pion noir sur G2
     game.turn = BLACK;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(G2, G1, BLACK_PAWN, KNIGHT_PROMOTION);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << G2));
     TEST_ASSERT_EQUAL(1ULL << G1, game.black_knights & (1ULL << G1)); // Vérifie le Cavalier noir
     TEST_ASSERT_EQUAL(WHITE_TURN, game.turn);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_make_black_pawn_promotion_to_rook_capture(void)
+void test_make_move_should_make_black_pawn_promotion_to_rook_capture_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.black_pawns = 1ULL << D2;
     game.white_bishops = 1ULL << E1; // Pièce blanche à capturer
     game.turn = BLACK;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(D2, E1, BLACK_PAWN, ROOK_PROMOTION_CAPTURE);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << D2));
     TEST_ASSERT_EQUAL(0ULL, game.white_bishops & (1ULL << E1)); // Le Fou est capturé
     TEST_ASSERT_EQUAL(1ULL << E1, game.black_rooks & (1ULL << E1)); // La Tour noire est placée
     TEST_ASSERT_EQUAL(WHITE_TURN, game.turn);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-// Promotion avec capture en Fou Noir (BISHOP_PROMOTION_CAPTURE)
-void test_make_move_should_make_black_pawn_promotion_to_bishop_capture(void)
+void test_make_move_should_make_black_pawn_promotion_to_bishop_capture_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.black_pawns = 1ULL << B2;
     game.white_queens = 1ULL << A1; // Pièce blanche à capturer
     game.turn = BLACK;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(B2, A1, BLACK_PAWN, BISHOP_PROMOTION_CAPTURE);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     TEST_ASSERT_EQUAL(0ULL, game.black_pawns & (1ULL << B2));
     TEST_ASSERT_EQUAL(0ULL, game.white_queens & (1ULL << A1)); // La Dame est capturée
     TEST_ASSERT_EQUAL(1ULL << A1, game.black_bishops & (1ULL << A1)); // Le Fou noir est placé
     TEST_ASSERT_EQUAL(WHITE_TURN, game.turn);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_make_white_king_castle_king_side(void)
+void test_make_move_should_make_white_king_castle_king_side_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.white_king = 1ULL << E1;  // Roi blanc sur E1
     game.white_rooks = 1ULL << H1;  // Tour blanche sur H1
     game.turn = WHITE;
     game.castling_rights = 15; // Supposons une variable pour les droits de roque
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(E1, G1, WHITE_KING, KING_CASTLE);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     // Vérification du déplacement du Roi : E1 -> G1
     TEST_ASSERT_EQUAL(0ULL, game.white_king & (1ULL << E1));
@@ -651,18 +727,22 @@ void test_make_move_should_make_white_king_castle_king_side(void)
     
     TEST_ASSERT_EQUAL(-1, game.en_passant_target_square);
     TEST_ASSERT_EQUAL(BLACK_TURN, game.turn);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_make_white_king_castle_queen_side(void)
+void test_make_move_should_make_white_king_castle_queen_side_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.white_king = 1ULL << E1;  // Roi blanc sur E1
     game.white_rooks = 1ULL << A1;  // Tour blanche sur A1
     game.turn = WHITE;
     game.castling_rights = 15;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(E1, C1, WHITE_KING, QUEEN_CASTLE);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     // Vérification du déplacement du Roi : E1 -> C1
     TEST_ASSERT_EQUAL(0ULL, game.white_king & (1ULL << E1));
@@ -677,18 +757,22 @@ void test_make_move_should_make_white_king_castle_queen_side(void)
     
     TEST_ASSERT_EQUAL(-1, game.en_passant_target_square);
     TEST_ASSERT_EQUAL(BLACK_TURN, game.turn);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_make_black_king_castle_king_side(void)
+void test_make_move_should_make_black_king_castle_king_side_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.black_king = 1ULL << E8;  // Roi noir sur E8
     game.black_rooks = 1ULL << H8;  // Tour noire sur H8
     game.turn = BLACK;
     game.castling_rights = 15;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(E8, G8, BLACK_KING, KING_CASTLE);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     // Vérification du déplacement du Roi : E8 -> G8
     TEST_ASSERT_EQUAL(0ULL, game.black_king & (1ULL << E8));
@@ -703,18 +787,22 @@ void test_make_move_should_make_black_king_castle_king_side(void)
     
     TEST_ASSERT_EQUAL(-1, game.en_passant_target_square);
     TEST_ASSERT_EQUAL(WHITE_TURN, game.turn);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_make_black_king_castle_queen_side(void)
+void test_make_move_should_make_black_king_castle_queen_side_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.black_king = 1ULL << E8;  // Roi noir sur E8
     game.black_rooks = 1ULL << A8;  // Tour noire sur A8
     game.turn = BLACK;
     game.castling_rights = 15;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(E8, C8, BLACK_KING, QUEEN_CASTLE);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     // Vérification du déplacement du Roi : E8 -> C8
     TEST_ASSERT_EQUAL(0ULL, game.black_king & (1ULL << E8));
@@ -729,17 +817,21 @@ void test_make_move_should_make_black_king_castle_queen_side(void)
     
     TEST_ASSERT_EQUAL(-1, game.en_passant_target_square);
     TEST_ASSERT_EQUAL(WHITE_TURN, game.turn);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_revoke_white_castling_rights_when_white_king_moves(void)
+void test_make_move_should_revoke_white_castling_rights_when_white_king_moves_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.white_king = 1ULL << E1; // Roi blanc sur E1
     game.turn = WHITE;
     game.castling_rights = 15; // Tous les droits sont actifs
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(E1, D1, WHITE_KING, QUIET_MOVES); // Mouvement tranquille du Roi
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     // Les droits de roque blancs doivent être révoqués
     TEST_ASSERT_FALSE(game.castling_rights & WHITE_KING_SIDE_CASTLING); 
@@ -750,17 +842,21 @@ void test_make_move_should_revoke_white_castling_rights_when_white_king_moves(vo
     TEST_ASSERT_TRUE(game.castling_rights & BLACK_QUEEN_SIDE_CASTLING);
     
     TEST_ASSERT_EQUAL(BLACK_TURN, game.turn);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_revoke_black_castling_rights_when_black_king_moves(void)
+void test_make_move_should_revoke_black_castling_rights_when_black_king_moves_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.black_king = 1ULL << E8; // Roi noir sur E8
     game.turn = BLACK;
     game.castling_rights = 15;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(E8, D8, BLACK_KING, QUIET_MOVES); // Mouvement tranquille du Roi
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     // Les droits de roque noirs doivent être révoqués
     TEST_ASSERT_FALSE(game.castling_rights & BLACK_KING_SIDE_CASTLING);
@@ -771,17 +867,21 @@ void test_make_move_should_revoke_black_castling_rights_when_black_king_moves(vo
     TEST_ASSERT_TRUE(game.castling_rights & WHITE_QUEEN_SIDE_CASTLING);
     
     TEST_ASSERT_EQUAL(WHITE_TURN, game.turn);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_revoke_white_kingside_castling_when_h1_rook_moves(void)
+void test_make_move_should_revoke_white_kingside_castling_when_h1_rook_moves_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.white_rooks = 1ULL << H1; // Tour blanche sur H1
     game.turn = WHITE;
     game.castling_rights = 15;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(H1, H2, WHITE_ROOK, QUIET_MOVES);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     // Droit K-side Blanc révoqué
     TEST_ASSERT_FALSE(game.castling_rights & WHITE_KING_SIDE_CASTLING); 
@@ -790,17 +890,21 @@ void test_make_move_should_revoke_white_kingside_castling_when_h1_rook_moves(voi
     TEST_ASSERT_TRUE(game.castling_rights & WHITE_QUEEN_SIDE_CASTLING);
     TEST_ASSERT_TRUE(game.castling_rights & BLACK_KING_SIDE_CASTLING);
     TEST_ASSERT_TRUE(game.castling_rights & BLACK_QUEEN_SIDE_CASTLING);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_revoke_white_queenside_castling_when_a1_rook_moves(void)
+void test_make_move_should_revoke_white_queenside_castling_when_a1_rook_moves_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.white_rooks = 1ULL << A1; // Tour blanche sur A1
     game.turn = WHITE;
     game.castling_rights = 15;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(A1, A2, WHITE_ROOK, QUIET_MOVES);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     // Droit Q-side Blanc révoqué
     TEST_ASSERT_FALSE(game.castling_rights & WHITE_QUEEN_SIDE_CASTLING);
@@ -809,17 +913,21 @@ void test_make_move_should_revoke_white_queenside_castling_when_a1_rook_moves(vo
     TEST_ASSERT_TRUE(game.castling_rights & WHITE_KING_SIDE_CASTLING);
     TEST_ASSERT_TRUE(game.castling_rights & BLACK_KING_SIDE_CASTLING);
     TEST_ASSERT_TRUE(game.castling_rights & BLACK_QUEEN_SIDE_CASTLING);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_revoke_black_kingside_castling_when_h8_rook_moves(void)
+void test_make_move_should_revoke_black_kingside_castling_when_h8_rook_moves_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.black_rooks = 1ULL << H8; // Tour noire sur H8
     game.turn = BLACK;
     game.castling_rights = 15;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(H8, H7, BLACK_ROOK, QUIET_MOVES);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     // Droit K-side Noir révoqué
     TEST_ASSERT_FALSE(game.castling_rights & BLACK_KING_SIDE_CASTLING);
@@ -828,17 +936,21 @@ void test_make_move_should_revoke_black_kingside_castling_when_h8_rook_moves(voi
     TEST_ASSERT_TRUE(game.castling_rights & WHITE_KING_SIDE_CASTLING);
     TEST_ASSERT_TRUE(game.castling_rights & WHITE_QUEEN_SIDE_CASTLING);
     TEST_ASSERT_TRUE(game.castling_rights & BLACK_QUEEN_SIDE_CASTLING);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_revoke_black_queenside_castling_when_a8_rook_moves(void)
+void test_make_move_should_revoke_black_queenside_castling_when_a8_rook_moves_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.black_rooks = 1ULL << A8; // Tour noire sur A8
     game.turn = BLACK;
     game.castling_rights = 15;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(A8, A7, BLACK_ROOK, QUIET_MOVES);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     // Droit Q-side Noir révoqué
     TEST_ASSERT_FALSE(game.castling_rights & BLACK_QUEEN_SIDE_CASTLING);
@@ -847,18 +959,22 @@ void test_make_move_should_revoke_black_queenside_castling_when_a8_rook_moves(vo
     TEST_ASSERT_TRUE(game.castling_rights & WHITE_KING_SIDE_CASTLING);
     TEST_ASSERT_TRUE(game.castling_rights & WHITE_QUEEN_SIDE_CASTLING);
     TEST_ASSERT_TRUE(game.castling_rights & BLACK_KING_SIDE_CASTLING);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_revoke_white_kingside_castling_when_h1_rook_is_captured(void)
+void test_make_move_should_revoke_white_kingside_castling_when_h1_rook_is_captured_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.black_pawns = 1ULL << G2; // Pièce attaquante noire
     game.white_rooks = 1ULL << H1; // Tour blanche sur H1
     game.turn = BLACK;
     game.castling_rights = 15;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(G2, H1, BLACK_PAWN, CAPTURE);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     // Droit K-side Blanc révoqué
     TEST_ASSERT_FALSE(game.castling_rights & WHITE_KING_SIDE_CASTLING); 
@@ -867,18 +983,22 @@ void test_make_move_should_revoke_white_kingside_castling_when_h1_rook_is_captur
     TEST_ASSERT_TRUE(game.castling_rights & WHITE_QUEEN_SIDE_CASTLING);
     TEST_ASSERT_TRUE(game.castling_rights & BLACK_KING_SIDE_CASTLING);
     TEST_ASSERT_TRUE(game.castling_rights & BLACK_QUEEN_SIDE_CASTLING);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_revoke_white_queenside_castling_when_a1_rook_is_captured(void)
+void test_make_move_should_revoke_white_queenside_castling_when_a1_rook_is_captured_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.black_knights = 1ULL << B3; // Pièce attaquante noire
     game.white_rooks = 1ULL << A1; // Tour blanche sur A1
     game.turn = BLACK;
     game.castling_rights = 15;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(B3, A1, BLACK_KNIGHT, CAPTURE); // Attention: Le type de pièce dans la Move est l'ATTAQUANT
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     // Droit Q-side Blanc révoqué
     TEST_ASSERT_FALSE(game.castling_rights & WHITE_QUEEN_SIDE_CASTLING); 
@@ -887,18 +1007,22 @@ void test_make_move_should_revoke_white_queenside_castling_when_a1_rook_is_captu
     TEST_ASSERT_TRUE(game.castling_rights & WHITE_KING_SIDE_CASTLING);
     TEST_ASSERT_TRUE(game.castling_rights & BLACK_KING_SIDE_CASTLING);
     TEST_ASSERT_TRUE(game.castling_rights & BLACK_QUEEN_SIDE_CASTLING);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_revoke_black_kingside_castling_when_h8_rook_is_captured(void)
+void test_make_move_should_revoke_black_kingside_castling_when_h8_rook_is_captured_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.white_bishops = 1ULL << F6; // Pièce attaquante blanche
     game.black_rooks = 1ULL << H8; // Tour noire sur H8
     game.turn = WHITE;
     game.castling_rights = 15;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(F6, H8, WHITE_BISHOP, CAPTURE);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     // Droit K-side Noir révoqué
     TEST_ASSERT_FALSE(game.castling_rights & BLACK_KING_SIDE_CASTLING);
@@ -907,18 +1031,22 @@ void test_make_move_should_revoke_black_kingside_castling_when_h8_rook_is_captur
     TEST_ASSERT_TRUE(game.castling_rights & WHITE_KING_SIDE_CASTLING);
     TEST_ASSERT_TRUE(game.castling_rights & WHITE_QUEEN_SIDE_CASTLING);
     TEST_ASSERT_TRUE(game.castling_rights & BLACK_QUEEN_SIDE_CASTLING);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
 
-void test_make_move_should_revoke_black_queenside_castling_when_a8_rook_is_captured(void)
+void test_make_move_should_revoke_black_queenside_castling_when_a8_rook_is_captured_and_update_zobrist_key(void)
 {
     Game game = {0};
     game.white_rooks = 1ULL << A4; // Pièce attaquante blanche
     game.black_rooks = 1ULL << A8; // Tour noire sur A8
     game.turn = WHITE;
     game.castling_rights = 15;
-
+    game.zobrist_key = create_zobrist_key_from_game_state(&game);
     Move move = CREATE_MOVE(A4, A8, WHITE_ROOK, CAPTURE);
+    
     make_move(&game, move);
+    U64 expected_zobrist_key = create_zobrist_key_from_game_state(&game);
 
     // Droit Q-side Noir révoqué
     TEST_ASSERT_FALSE(game.castling_rights & BLACK_QUEEN_SIDE_CASTLING);
@@ -927,5 +1055,8 @@ void test_make_move_should_revoke_black_queenside_castling_when_a8_rook_is_captu
     TEST_ASSERT_TRUE(game.castling_rights & WHITE_KING_SIDE_CASTLING);
     TEST_ASSERT_TRUE(game.castling_rights & WHITE_QUEEN_SIDE_CASTLING);
     TEST_ASSERT_TRUE(game.castling_rights & BLACK_KING_SIDE_CASTLING);
+    
+    TEST_ASSERT_EQUAL_UINT64(expected_zobrist_key, game.zobrist_key);
 }
-// #endif // TEST
+
+
