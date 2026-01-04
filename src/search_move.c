@@ -100,6 +100,9 @@ ScoredMove call_search_algorithm(Game* game, int depth)
         scored_move = nega_alpha_beta(game, curr_depth, MIN, MAX, tt);
         int end_time = get_time_ms() - start_time;
         cumulative_time += end_time;
+
+        if(cumulative_time > 1000)
+            break;
         
         print_info_at_end_of_search(game, curr_depth, scored_move, cumulative_time);
     }
