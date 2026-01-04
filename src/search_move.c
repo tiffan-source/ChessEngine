@@ -1,9 +1,12 @@
 
-#include "search_and_find.h"
+#include "search_move.h"
+
+Move pv_list[64][64];
+int pv_length[64];
 
 U64 nodes_searched = 0;
 
-int Quiesce(Game* game, int alpha, int beta ) {
+int quiesce(Game* game, int alpha, int beta ) {
     int static_eval = material_evaluation_with_piece_square_table_for_side(game);
 
     int score;
@@ -27,7 +30,7 @@ int Quiesce(Game* game, int alpha, int beta ) {
 
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){ // Little hack here Side and TURN are aligned
 
-            score = -Quiesce(&new_game_state, -beta, -alpha);
+            score = -quiesce(&new_game_state, -beta, -alpha);
 
             if( score >= beta )
                 return score;
@@ -41,7 +44,7 @@ int Quiesce(Game* game, int alpha, int beta ) {
     return best_value;
 }
 
-void print_info_at_end_of_search(int depth, ScoredMove scored_move, PV pv, int end_time)
+void print_info_at_end_of_search(Game* game, int depth, ScoredMove scored_move, int end_time)
 {
     int move_to_show = depth;
 
@@ -51,25 +54,25 @@ void print_info_at_end_of_search(int depth, ScoredMove scored_move, PV pv, int e
     
     if(scored_move.score <= MIN + depth)
     {
-        move_to_show = scored_move.score - MIN;
-        printf("mate %ld ", (scored_move.score - MIN + 1) / 2);
+        printf("mate %d ", (int)ceil((float)pv_length[0] / 2));
     }
     else if (scored_move.score >= MAX - depth)
     {
-        move_to_show = MAX - scored_move.score;
-        printf("mate -%ld ", (MAX - scored_move.score + 1) / 2);
+        printf("mate -%d ", (int)ceil((float)pv_length[0] / 2));
     }
     else
     {
         printf("cp %ld ", scored_move.score);
     }
 
-    printf("nodes %llu ", nodes_searched);
+
+    printf(" nodes %llu ", nodes_searched);
     printf("time %d ", end_time);
+
     printf("pv ");
-    for (int i = 0; i < move_to_show; i++)
+    for (int i = 0; i < pv_length[0]; i++)
     {
-        print_move_as_uci(pv.moves[i]);
+        print_move_as_uci(pv_list[0][i]);
         printf(" ");
     }
     printf("\n");
@@ -81,21 +84,27 @@ ScoredMove call_search_algorithm(Game* game, int depth)
     ScoredMove scored_move;
     int cumulative_time = 0;
     nodes_searched = 0;
-
+    TranspositionTable* tt = malloc(sizeof(TranspositionTable));
+    if(tt == NULL){
+        fprintf(stderr, "Failed to allocate memory for Transposition Table\n");
+        return (ScoredMove){ .score = 0, .move = 0 };
+    }
+    initialize_transposition_table(tt);
     reset_killer_moves();
     reset_history_heuristic();
     
     for (int curr_depth = 1; curr_depth <= depth; curr_depth++)
     {
-        PV pv = { .move_count = 0 };
-
+        set_depth(curr_depth);
         int start_time = get_time_ms();
-        scored_move = nega_alpha_beta(game, curr_depth, MIN, MAX, &pv);
+        scored_move = nega_alpha_beta(game, curr_depth, MIN, MAX, tt);
         int end_time = get_time_ms() - start_time;
         cumulative_time += end_time;
         
-        print_info_at_end_of_search(curr_depth, scored_move, pv, cumulative_time);
+        print_info_at_end_of_search(game, curr_depth, scored_move, cumulative_time);
     }
+
+    free(tt);
 
     return scored_move;
 }
@@ -105,19 +114,26 @@ U64 get_nodes_searched()
     return nodes_searched;
 }
 
-ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, PV *pv)
+ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, TranspositionTable* tt)
 {
     int move_found = 0;
     int max = MIN;
-    Move max_move = 0;
-    PV child_pv;
+    Move best_move = 0;
     ScoredMove scored_move;
     int ply = get_depth() - depth;
+    int original_alpha = alpha;
+
+    // Probe TT
+    TTEntry entry = probe(tt, game->zobrist_key, depth, alpha, beta);
+    if (entry.flag != TT_NOT_FOUND) {
+        pv_length[ply] = 0;
+        return entry.best_move;
+    }
 
     if(depth == 0)
     {
-        pv->move_count = 0;
-        scored_move = (ScoredMove) { .score = Quiesce(game, alpha, beta) };
+        pv_length[ply] = 0;
+        scored_move = (ScoredMove) { .score = quiesce(game, alpha, beta) };
         return scored_move;
     }
 
@@ -135,29 +151,28 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, PV *pv)
         
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){ // Little hack here Side and TURN are aligned
             move_found = 1;
-            scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, &child_pv);
+            scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, tt);
 
             if (scored_move.score * -1 > max)
             {
                 max = scored_move.score * -1;
-                max_move = moves_list.moves[i].move;
+                best_move = moves_list.moves[i].move;
 
                 if (max > alpha)
                 {
                     alpha = max;
-
+                    // if(best_move == CREATE_MOVE())
                     // Update PV
-                    pv->moves[0] = max_move;
-                    memcpy(pv->moves + 1, child_pv.moves, sizeof(Move) * child_pv.move_count);
-                    pv->move_count = child_pv.move_count + 1;
-
+                    pv_list[ply][0] = best_move;
+                    memcpy(&pv_list[ply][1], &pv_list[ply + 1][0], pv_length[ply + 1] * sizeof(Move));
+                    pv_length[ply] = pv_length[ply + 1] + 1;
                 }
                 if (beta <= alpha)
                 {
-                    if (GET_MOVE_TYPE_FROM_MOVE(max_move) != CAPTURE)
+                    if (GET_MOVE_TYPE_FROM_MOVE(best_move) != CAPTURE)
                         update_history_heuristic(moves_list.moves + i, 300 * depth - 250);
 
-                    add_killer_move_at_ply(max_move, ply);
+                    add_killer_move_at_ply(best_move, ply);
                     break;
                 }
             }
@@ -166,6 +181,7 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, PV *pv)
 
     if (!move_found)
     {
+        pv_length[ply] = 0;
         // Check for checkmate or stalemate
         if (is_king_attacked_by_side(game, !game->turn))
         {
@@ -180,6 +196,20 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, PV *pv)
     }
 
     scored_move.score = max;
-    scored_move.move = max_move;
+    scored_move.move = best_move;
+
+    if(max <= original_alpha)
+    {
+        record(tt, game->zobrist_key, depth, scored_move, TT_UPPERBOUND);
+    }
+    else if (max >= beta)
+    {
+        record(tt, game->zobrist_key, depth, scored_move, TT_LOWERBOUND);
+    }
+    else
+    {
+        record(tt, game->zobrist_key, depth, scored_move, TT_EXACT);
+    }
+
     return scored_move;
 }
