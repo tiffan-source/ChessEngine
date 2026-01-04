@@ -4,6 +4,7 @@
 #include "config.h"
 
 int main(int argc, char *argv[]) {
+    initialize_magic_zobrist_numbers();
     initialize_move_generation_databases();
     init_config(8);
 

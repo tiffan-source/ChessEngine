@@ -6,7 +6,7 @@
 #include "game.h"
 #include "moves.h"
 #include "move_generator.h"
-#include "search_and_find.h"
+#include "search_move.h"
 #include "config.h"
 
 #define COMMAND_MAX_LENGTH 256 * 4
