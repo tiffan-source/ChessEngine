@@ -4,6 +4,7 @@
 
 #include "pieces.h"
 #include "game.h"
+#include "zobrist_key.h"
 
 /**
  * To represent a chess move inside our engine we need to encode the following information:
