@@ -13,6 +13,6 @@ U64 get_nodes_searched();
 
 ScoredMove call_search_algorithm(Game* game, int depth);
 
-ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, TranspositionTable* tt);
+ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta);
 
 #endif // SEARCH_AND_FIND_H

@@ -28,9 +28,12 @@ typedef struct TranspositionTable {
     TTEntry entries[TRANSPOSITION_TABLE_SIZE];
 } TranspositionTable;
 
-void initialize_transposition_table(TranspositionTable* tt);
+extern TranspositionTable* tt;
 
-TTEntry probe(TranspositionTable* tt, U64 zobrist_key, int depth, int alpha, int beta);
-void record(TranspositionTable* tt, U64 zobrist_key, int depth, ScoredMove best_move, TTFlag flag);
+void initialize_transposition_table();
+void free_transposition_table();
+
+TTEntry probe(U64 zobrist_key, int depth, int alpha, int beta);
+void record(U64 zobrist_key, int depth, ScoredMove best_move, TTFlag flag);
 
 #endif // TT_H
