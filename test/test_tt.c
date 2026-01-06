@@ -8,6 +8,7 @@
 #include "board.h"
 #include "pieces.h"
 #include <stdlib.h>
+#include "config.h"
 
 TranspositionTable* tt;
 

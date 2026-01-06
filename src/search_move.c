@@ -54,11 +54,11 @@ void print_info_at_end_of_search(Game* game, int depth, ScoredMove scored_move, 
     
     if(scored_move.score <= MIN + depth)
     {
-        printf("mate %d ", (int)ceil((float)pv_length[0] / 2));
+        printf("mate %ld ", (scored_move.score - MIN + 1) / 2);
     }
     else if (scored_move.score >= MAX - depth)
     {
-        printf("mate -%d ", (int)ceil((float)pv_length[0] / 2));
+        printf("mate -%ld ", (MAX - scored_move.score + 1) / 2);
     }
     else
     {
@@ -101,10 +101,10 @@ ScoredMove call_search_algorithm(Game* game, int depth)
         int end_time = get_time_ms() - start_time;
         cumulative_time += end_time;
 
-        if(cumulative_time > 1000)
-            break;
-        
         print_info_at_end_of_search(game, curr_depth, scored_move, cumulative_time);
+
+        if(cumulative_time > 1500)
+            break;
     }
 
     free(tt);
@@ -155,16 +155,18 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, Transposi
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){ // Little hack here Side and TURN are aligned
             move_found = 1;
             scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, tt);
+            scored_move.score *= -1;
 
-            if (scored_move.score * -1 > max)
+            if (scored_move.score > max)
             {
-                max = scored_move.score * -1;
+                max = scored_move.score;
                 best_move = moves_list.moves[i].move;
+
 
                 if (max > alpha)
                 {
                     alpha = max;
-                    // if(best_move == CREATE_MOVE())
+
                     // Update PV
                     pv_list[ply][0] = best_move;
                     memcpy(&pv_list[ply][1], &pv_list[ply + 1][0], pv_length[ply + 1] * sizeof(Move));
@@ -201,11 +203,11 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, Transposi
     scored_move.score = max;
     scored_move.move = best_move;
 
-    if(max <= original_alpha)
+    if(scored_move.score <= original_alpha)
     {
         record(tt, game->zobrist_key, depth, scored_move, TT_UPPERBOUND);
     }
-    else if (max >= beta)
+    else if (scored_move.score >= beta)
     {
         record(tt, game->zobrist_key, depth, scored_move, TT_LOWERBOUND);
     }
