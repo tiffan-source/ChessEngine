@@ -1,9 +1,6 @@
 
 #include "search_move.h"
 
-Move pv_list[64][64];
-int pv_length[64];
-
 U64 nodes_searched = 0;
 
 int quiesce(Game* game, int alpha, int beta ) {

@@ -22,6 +22,7 @@
 #include "move_ordering.h"
 #include "zobrist_key.h"
 #include "tt.h"
+#include "pv.h"
 
 TranspositionTable* tt;
 

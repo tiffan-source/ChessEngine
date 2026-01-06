@@ -6,6 +6,7 @@
 #include "config.h"
 #include "move_ordering.h"
 #include "tt.h"
+#include "pv.h"
 
 #define MIN -1000000
 #define MAX 1000000

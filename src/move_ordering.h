@@ -4,6 +4,7 @@
 
 #include "moves.h"
 #include "config.h"
+#include "pv.h"
 
 #define MAX_HISTORY 28000
 #define clamp(x, min, max) ((x) < (min) ? (min) : ((x) > (max) ? (max) : (x)))
