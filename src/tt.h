@@ -4,6 +4,7 @@
 
 #include "zobrist_key.h"
 #include "moves.h"
+#include "evaluation.h"
 #include "config.h"
 
 #define TRANSPOSITION_TABLE_SIZE 1048576 // 2^20 entries

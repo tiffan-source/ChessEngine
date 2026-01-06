@@ -40,8 +40,8 @@ void record(TranspositionTable* tt, U64 zobrist_key, int depth, ScoredMove best_
 {
     unsigned long long index = zobrist_key % TRANSPOSITION_TABLE_SIZE;
 
-    if(best_move.score > 900000) best_move.score += (get_depth() - depth);
-    if(best_move.score < -900000) best_move.score -= (get_depth() - depth);
+    if(best_move.score > (MAX - 100)) best_move.score += (get_depth() - depth);
+    if(best_move.score < -(MAX - 100)) best_move.score -= (get_depth() - depth);
 
     tt->entries[index].zobrist_key = zobrist_key;
     tt->entries[index].depth = depth;
