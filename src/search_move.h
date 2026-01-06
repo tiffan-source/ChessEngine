@@ -8,8 +8,6 @@
 #include "tt.h"
 #include "pv.h"
 
-#define MIN -1000000
-#define MAX 1000000
 
 U64 get_nodes_searched();
 

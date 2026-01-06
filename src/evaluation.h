@@ -9,6 +9,9 @@
 #include "move_generator.h"
 #include "standard_lib.h"
 
+#define MIN -1000000
+#define MAX 1000000
+
 extern int pawn_square_table[64];
 
 extern int knight_square_table[64];
