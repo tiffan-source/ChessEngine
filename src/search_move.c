@@ -120,6 +120,7 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, int follo
     ScoredMove scored_move;
     int ply = get_depth() - depth;
     int original_alpha = alpha;
+    int finded_pv_move = 0;
 
     // Probe TT
     TTEntry entry = probe(game->zobrist_key, depth, alpha, beta);
@@ -150,8 +151,26 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, int follo
         
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){ // Little hack here Side and TURN are aligned
             move_found = 1;
-            scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, follow_pv && i == 0 && old_pv_length[ply + 1] > 0);
-            scored_move.score *= -1;
+
+            if(finded_pv_move)
+            {
+                // If we already found a PV move, we can do a null window search
+                scored_move = nega_alpha_beta(&new_game_state, depth - 1, -alpha - 1, -alpha, follow_pv && i == 0 && old_pv_length[ply + 1] > 0);
+                scored_move.score *= -1;
+
+                if (scored_move.score > alpha && scored_move.score < beta)
+                {
+                    // We need to re-search
+                    scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, follow_pv && i == 0 && old_pv_length[ply + 1] > 0);
+                    scored_move.score *= -1;
+                }
+            }
+            else
+            {
+                // Normal search
+                scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, follow_pv && i == 0 && old_pv_length[ply + 1] > 0);
+                scored_move.score *= -1;
+            }
 
             if (scored_move.score > max)
             {
@@ -162,6 +181,7 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, int follo
                 if (max > alpha)
                 {
                     alpha = max;
+                    finded_pv_move = 1;
 
                     // Update PV
                     pv_list[ply][0] = best_move;

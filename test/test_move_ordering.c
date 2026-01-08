@@ -17,6 +17,7 @@
 #include "queens_moves.h"
 #include "test_helpers.h"
 #include "zobrist_key.h"
+#include "pv.h"
 
 void setUp(void)
 {
@@ -77,7 +78,7 @@ void test_order_move_with_single_capture_pawn_takes_queen(void)
     move_list->current_index = 0;
 
     generate_all_pseudo_legal_moves_from_game_state(game, move_list);
-    order_move(game, move_list, 0);
+    order_move(game, move_list, 0, 0);
 
     // Le premier coup devrait être la capture PxQ (score 506)
     int found_pawn_captures_queen = 0;
@@ -102,7 +103,7 @@ void test_order_move_with_multiple_captures_different_victims(void)
     move_list->current_index = 0;
 
     generate_all_pseudo_legal_moves_from_game_state(game, move_list);
-    order_move(game, move_list, 0);
+    order_move(game, move_list, 0, 0);
 
     // Le premier coup devrait être NxR (405)
     Move first_move = move_list->moves[0].move;
@@ -134,7 +135,7 @@ void test_order_move_with_multiple_attackers_same_victim(void)
     move_list->current_index = 0;
 
     generate_all_pseudo_legal_moves_from_game_state(game, move_list);
-    order_move(game, move_list, 0);
+    order_move(game, move_list, 0, 0);
 
     // Le premier coup devrait être PxQ (506)
     Move first_move = move_list->moves[0].move;
@@ -169,7 +170,7 @@ void test_order_move_captures_before_quiet_moves(void)
     move_list->current_index = 0;
 
     generate_all_pseudo_legal_moves_from_game_state(game, move_list);
-    order_move(game, move_list, 0);
+    order_move(game, move_list, 0, 0);
 
     // Le premier coup devrait être NxP (105)
     Move first_move = move_list->moves[0].move;
@@ -195,7 +196,7 @@ void test_order_move_tricky_position_white(void)
     move_list->current_index = 0;
 
     generate_all_pseudo_legal_moves_from_game_state(game, move_list);
-    order_move(game, move_list, 0);
+    order_move(game, move_list, 0, 0);
 
     // Verification par victime capturée
 
@@ -231,7 +232,7 @@ void test_order_move_tricky_position_black(void)
     move_list->current_index = 0;
 
     generate_all_pseudo_legal_moves_from_game_state(game, move_list);
-    order_move(game, move_list, 0);
+    order_move(game, move_list, 0, 0);
 
     // Verification par victime capturée
 
@@ -293,7 +294,7 @@ void test_order_move_promotion_captures(void)
     move_list->current_index = 0;
 
     generate_all_pseudo_legal_moves_from_game_state(game, move_list);
-    order_move(game, move_list, 0);
+    order_move(game, move_list, 0, 0);
 
     // Le premier coup devrait être la promotion avec capture
     Move first_move = move_list->moves[0].move;
