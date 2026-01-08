@@ -6,7 +6,7 @@
 int main(int argc, char *argv[]) {
     initialize_magic_zobrist_numbers();
     initialize_move_generation_databases();
-    init_config(9);
+    init_config(64);
 
     Game* internal_game = NULL;
     char command[COMMAND_MAX_LENGTH] = {0};
