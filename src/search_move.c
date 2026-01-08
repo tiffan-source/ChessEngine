@@ -99,6 +99,9 @@ ScoredMove call_search_algorithm(Game* game, int depth)
         int end_time = get_time_ms() - start_time;
         cumulative_time += end_time;
 
+        if(cumulative_time > 2000) // Hard limit of 2 seconds for now
+            break;
+
         print_info_at_end_of_search(game, curr_depth, scored_move, cumulative_time);
     }
 
