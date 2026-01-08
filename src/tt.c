@@ -5,6 +5,11 @@ TranspositionTable* tt = NULL;
 
 void initialize_transposition_table()
 {    
+    /* Free any existing transposition table to avoid memory leaks on re-initialization */  
+    if (tt != NULL) {  
+        free_transposition_table();  
+    }
+
     tt = malloc(sizeof(TranspositionTable));
     if(tt == NULL){
         fprintf(stderr, "Failed to allocate memory for Transposition Table\n");
@@ -34,8 +39,8 @@ TTEntry probe(U64 zobrist_key, int depth, int alpha, int beta)
 
     if (entry.zobrist_key == zobrist_key && entry.depth >= depth) {
 
-        if(entry.best_move.score > 900000) entry.best_move.score -= (get_depth() - depth);
-        if(entry.best_move.score < -900000) entry.best_move.score += (get_depth() - depth);
+        if(entry.best_move.score > (MAX - 100)) entry.best_move.score -= (get_depth() - depth);
+        if(entry.best_move.score < -(MAX - 100)) entry.best_move.score += (get_depth() - depth);
 
         if (entry.flag == TT_EXACT) {
             return entry;
