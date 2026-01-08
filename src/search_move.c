@@ -88,11 +88,13 @@ ScoredMove call_search_algorithm(Game* game, int depth)
     
     for (int curr_depth = 1; curr_depth <= depth; curr_depth++)
     {
+        // printf("Starting search at depth %d\n", curr_depth);
         set_depth(curr_depth);
         int start_time = get_time_ms();
         if(curr_depth > 1)
         {
             memcpy(old_pv_list, pv_list, sizeof(pv_list));
+            memcpy(old_pv_length, pv_length, sizeof(pv_length));
         }
         scored_move = nega_alpha_beta(game, curr_depth, MIN, MAX, curr_depth > 1);
         int end_time = get_time_ms() - start_time;
@@ -138,6 +140,17 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, int follo
     generate_all_pseudo_legal_moves_from_game_state(game, &moves_list);
     order_move(game, &moves_list, ply, following_pv);
 
+    // Print all moves for debugging
+    // printf("Depth %d Moves: ", depth);
+    // for (int i = 0; i < moves_list.current_index; i++)
+    // {
+    //     print_move_as_uci(moves_list.moves[i].move);
+    //     printf(" ");
+    // }
+    // printf("\n");
+    // printf("Following PV: %d\n", following_pv);
+    
+
     for (int i = 0; i < moves_list.current_index; i++)
     {
         Game new_game_state;
@@ -148,7 +161,7 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, int follo
         
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){ // Little hack here Side and TURN are aligned
             move_found = 1;
-            scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, i == 0 && following_pv);
+            scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, following_pv && i == 0 && old_pv_length[ply + 1] > 0);
             scored_move.score *= -1;
 
             if (scored_move.score > max)

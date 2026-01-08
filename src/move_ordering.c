@@ -125,7 +125,7 @@ void scored_move_using(Game *game, ScoredMove *scored_move, int ply, int follow_
 {
     if( follow_pv && scored_move->move == old_pv_list[ply][0] )
     {
-        scored_move->score = 40000;
+        scored_move->score = 100000;
         return;
     }
 
