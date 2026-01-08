@@ -86,7 +86,7 @@ ScoredMove call_search_algorithm(Game* game, int depth)
     reset_killer_moves();
     reset_history_heuristic();
     
-    for (int curr_depth = 1; curr_depth <= depth; curr_depth++)
+    for (int curr_depth = 1; curr_depth <= MAX_DEPTH; curr_depth++)
     {
         set_depth(curr_depth);
         int start_time = get_time_ms();
@@ -101,8 +101,9 @@ ScoredMove call_search_algorithm(Game* game, int depth)
 
         print_info_at_end_of_search(game, curr_depth, scored_move, cumulative_time);
 
-        if(cumulative_time > 2000) // Hard limit of 2 seconds for now
+        if(cumulative_time > 2000){
             break;
+        } // Hard limit of 2 seconds for now
     }
 
     free_transposition_table();
