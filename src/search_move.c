@@ -1,9 +1,6 @@
 
 #include "search_move.h"
 
-Move pv_list[64][64];
-int pv_length[64];
-
 U64 nodes_searched = 0;
 
 int quiesce(Game* game, int alpha, int beta ) {
@@ -20,7 +17,7 @@ int quiesce(Game* game, int alpha, int beta ) {
 
     MoveList moves_list = { .current_index = 0 };
     generate_all_pseudo_legal_capture_moves_from_game_state(game, &moves_list);
-    order_move(game, &moves_list, 0); // Ply est inutile ici car pas necessaire pour sort les captures
+    order_move(game, &moves_list, 0, 0); // Ply et follow_pv est inutile ici car pas necessaire pour sort les captures
 
     for (int i = 0; i < moves_list.current_index; i++)
     {
@@ -84,12 +81,8 @@ ScoredMove call_search_algorithm(Game* game, int depth)
     ScoredMove scored_move;
     int cumulative_time = 0;
     nodes_searched = 0;
-    TranspositionTable* tt = malloc(sizeof(TranspositionTable));
-    if(tt == NULL){
-        fprintf(stderr, "Failed to allocate memory for Transposition Table\n");
-        return (ScoredMove){ .score = 0, .move = 0 };
-    }
-    initialize_transposition_table(tt);
+
+    initialize_transposition_table();
     reset_killer_moves();
     reset_history_heuristic();
     
@@ -97,17 +90,19 @@ ScoredMove call_search_algorithm(Game* game, int depth)
     {
         set_depth(curr_depth);
         int start_time = get_time_ms();
-        scored_move = nega_alpha_beta(game, curr_depth, MIN, MAX, tt);
+        if(curr_depth > 1)
+        {
+            memcpy(old_pv_list, pv_list, sizeof(pv_list));
+            memcpy(old_pv_length, pv_length, sizeof(pv_length));
+        }
+        scored_move = nega_alpha_beta(game, curr_depth, MIN, MAX, curr_depth > 1);
         int end_time = get_time_ms() - start_time;
         cumulative_time += end_time;
 
         print_info_at_end_of_search(game, curr_depth, scored_move, cumulative_time);
-
-        if(cumulative_time > 1500)
-            break;
     }
 
-    free(tt);
+    free_transposition_table();
 
     return scored_move;
 }
@@ -117,7 +112,7 @@ U64 get_nodes_searched()
     return nodes_searched;
 }
 
-ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, TranspositionTable* tt)
+ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, int follow_pv)
 {
     int move_found = 0;
     int max = MIN;
@@ -127,7 +122,7 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, Transposi
     int original_alpha = alpha;
 
     // Probe TT
-    TTEntry entry = probe(tt, game->zobrist_key, depth, alpha, beta);
+    TTEntry entry = probe(game->zobrist_key, depth, alpha, beta);
     if (entry.flag != TT_NOT_FOUND) {
         pv_length[ply] = 0;
         return entry.best_move;
@@ -142,7 +137,8 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, Transposi
 
     MoveList moves_list = { .current_index = 0 };
     generate_all_pseudo_legal_moves_from_game_state(game, &moves_list);
-    order_move(game, &moves_list, ply);
+    order_move(game, &moves_list, ply, follow_pv);
+    
 
     for (int i = 0; i < moves_list.current_index; i++)
     {
@@ -154,7 +150,7 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, Transposi
         
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){ // Little hack here Side and TURN are aligned
             move_found = 1;
-            scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, tt);
+            scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, follow_pv && i == 0 && old_pv_length[ply + 1] > 0);
             scored_move.score *= -1;
 
             if (scored_move.score > max)
@@ -205,15 +201,15 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, Transposi
 
     if(scored_move.score <= original_alpha)
     {
-        record(tt, game->zobrist_key, depth, scored_move, TT_UPPERBOUND);
+        record(game->zobrist_key, depth, scored_move, TT_UPPERBOUND);
     }
     else if (scored_move.score >= beta)
     {
-        record(tt, game->zobrist_key, depth, scored_move, TT_LOWERBOUND);
+        record(game->zobrist_key, depth, scored_move, TT_LOWERBOUND);
     }
     else
     {
-        record(tt, game->zobrist_key, depth, scored_move, TT_EXACT);
+        record(game->zobrist_key, depth, scored_move, TT_EXACT);
     }
 
     return scored_move;

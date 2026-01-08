@@ -23,6 +23,7 @@
 #include "config.h"
 #include "zobrist_key.h"
 #include "tt.h"
+#include "pv.h"
 
 Game* test_game = NULL;
 
