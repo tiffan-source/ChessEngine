@@ -17,7 +17,7 @@ extern int history_heuristic[64][64];
 void update_history_heuristic(ScoredMove* scored_move, int bonus);
 void reset_history_heuristic();
 
-void order_move(Game* game, MoveList* move, int ply);
+void order_move(Game* game, MoveList* move, int ply, int follow_pv);
 void add_killer_move_at_ply(Move move, int ply);
 void reset_killer_moves();
 

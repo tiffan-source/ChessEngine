@@ -17,7 +17,7 @@ int quiesce(Game* game, int alpha, int beta ) {
 
     MoveList moves_list = { .current_index = 0 };
     generate_all_pseudo_legal_capture_moves_from_game_state(game, &moves_list);
-    order_move(game, &moves_list, 0); // Ply est inutile ici car pas necessaire pour sort les captures
+    order_move(game, &moves_list, 0, 0); // Ply et follow_pv est inutile ici car pas necessaire pour sort les captures
 
     for (int i = 0; i < moves_list.current_index; i++)
     {
@@ -90,7 +90,11 @@ ScoredMove call_search_algorithm(Game* game, int depth)
     {
         set_depth(curr_depth);
         int start_time = get_time_ms();
-        scored_move = nega_alpha_beta(game, curr_depth, MIN, MAX);
+        if(curr_depth > 1)
+        {
+            memcpy(old_pv_list, pv_list, sizeof(pv_list));
+        }
+        scored_move = nega_alpha_beta(game, curr_depth, MIN, MAX, curr_depth > 1);
         int end_time = get_time_ms() - start_time;
         cumulative_time += end_time;
 
@@ -107,7 +111,7 @@ U64 get_nodes_searched()
     return nodes_searched;
 }
 
-ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta)
+ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, int following_pv)
 {
     int move_found = 0;
     int max = MIN;
@@ -132,7 +136,7 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta)
 
     MoveList moves_list = { .current_index = 0 };
     generate_all_pseudo_legal_moves_from_game_state(game, &moves_list);
-    order_move(game, &moves_list, ply);
+    order_move(game, &moves_list, ply, following_pv);
 
     for (int i = 0; i < moves_list.current_index; i++)
     {
@@ -144,7 +148,7 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta)
         
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){ // Little hack here Side and TURN are aligned
             move_found = 1;
-            scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha);
+            scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, i == 0 && following_pv);
             scored_move.score *= -1;
 
             if (scored_move.score > max)
