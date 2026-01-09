@@ -80,13 +80,15 @@ ScoredMove call_search_algorithm(Game* game, int depth)
 {
     ScoredMove scored_move;
     int cumulative_time = 0;
+    int alpha = MIN;
+    int beta = MAX;
     nodes_searched = 0;
 
     initialize_transposition_table();
     reset_killer_moves();
     reset_history_heuristic();
     
-    for (int curr_depth = 1; curr_depth <= MAX_DEPTH; curr_depth++)
+    for (int curr_depth = 1; curr_depth <= depth; curr_depth++)
     {
         set_depth(curr_depth);
         int start_time = get_time_ms();
@@ -95,7 +97,33 @@ ScoredMove call_search_algorithm(Game* game, int depth)
             memcpy(old_pv_list, pv_list, sizeof(pv_list));
             memcpy(old_pv_length, pv_length, sizeof(pv_length));
         }
-        scored_move = nega_alpha_beta(game, curr_depth, MIN, MAX, curr_depth > 1);
+
+        scored_move = nega_alpha_beta(game, curr_depth, alpha, beta, curr_depth > 1);
+
+        if(scored_move.score <= alpha)
+        {
+            alpha = MIN;
+            curr_depth--;
+            int end_time = get_time_ms() - start_time;
+            cumulative_time += end_time;
+            print_info_at_end_of_search(game, curr_depth, scored_move, cumulative_time);
+            continue; // Re-search
+        }
+        else if (scored_move.score >= beta)
+        {
+            beta = MAX;
+            curr_depth--;
+            int end_time = get_time_ms() - start_time;
+            cumulative_time += end_time;
+            print_info_at_end_of_search(game, curr_depth, scored_move, cumulative_time);
+            continue; // Re-search
+        }
+        else
+        {
+            alpha = scored_move.score - 50;
+            beta = scored_move.score + 50;
+        }
+
         int end_time = get_time_ms() - start_time;
         cumulative_time += end_time;
 

@@ -76,6 +76,7 @@ void handle_go_command(Game* game, const char* input, char* response)
     char* perf = strstr(input_copy, "perft ");
     char *depth = strstr(input_copy, "depth ");
 
+    set_depth(64);
 
     if (perf != NULL)
     {
