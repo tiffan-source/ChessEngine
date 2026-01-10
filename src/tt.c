@@ -37,17 +37,23 @@ TTEntry probe(U64 zobrist_key, int depth, int alpha, int beta)
     unsigned long long index = zobrist_key % TRANSPOSITION_TABLE_SIZE;
     TTEntry entry = tt->entries[index];
 
-    if (entry.zobrist_key == zobrist_key && entry.depth >= depth) {
+    if (entry.zobrist_key == zobrist_key) {
+        if (entry.depth >= depth)
+        {
+            if(entry.best_move.score > (MAX - 100)) entry.best_move.score -= (get_depth() - depth);
+            if(entry.best_move.score < -(MAX - 100)) entry.best_move.score += (get_depth() - depth);
 
-        if(entry.best_move.score > (MAX - 100)) entry.best_move.score -= (get_depth() - depth);
-        if(entry.best_move.score < -(MAX - 100)) entry.best_move.score += (get_depth() - depth);
-
-        if (entry.flag == TT_EXACT) {
-            return entry;
-        } else if (entry.flag == TT_LOWERBOUND && entry.best_move.score >= beta) {
-            return entry;
-        } else if (entry.flag == TT_UPPERBOUND && entry.best_move.score <= alpha) {
-            return entry;
+            if (entry.flag == TT_EXACT) {
+                return entry;
+            } else if (entry.flag == TT_LOWERBOUND && entry.best_move.score >= beta) {
+                return entry;
+            } else if (entry.flag == TT_UPPERBOUND && entry.best_move.score <= alpha) {
+                return entry;
+            }
+        }else{
+            TTEntry depth_not_enough_entry = entry;
+            depth_not_enough_entry.flag = TT_DEPTH_NOT_ENOUGH;
+            return depth_not_enough_entry;
         }
     }
 

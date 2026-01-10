@@ -121,11 +121,17 @@ PieceType check_victime_piece_on_square(Game *game, Square square)
     }
 }
 
-void scored_move_using(Game *game, ScoredMove *scored_move, int ply, int follow_pv)
+void scored_move_using(Game *game, ScoredMove *scored_move, int ply, int follow_pv, ScoredMove tt_move)
 {
     if( follow_pv && scored_move->move == old_pv_list[ply][0] )
     {
         scored_move->score = 100000;
+        return;
+    }
+
+    if( tt_move.move != 0 && scored_move->move == tt_move.move )
+    {
+        scored_move->score = 90000;
         return;
     }
 
@@ -161,11 +167,11 @@ int compare_scored_move(const void *a, const void *b)
     return ib - ia;
 }
 
-void order_move(Game *game, MoveList *move_list, int ply, int follow_pv)
+void order_move(Game *game, MoveList *move_list, int ply, int follow_pv, ScoredMove tt_move)
 {
     for (int i = 0; i < move_list->current_index; i++)
     {
-        scored_move_using(game, move_list->moves + i, ply, follow_pv);
+        scored_move_using(game, move_list->moves + i, ply, follow_pv, tt_move);
     }
 
     qsort(move_list->moves, move_list->current_index, sizeof(ScoredMove), compare_scored_move);

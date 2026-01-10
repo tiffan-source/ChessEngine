@@ -17,7 +17,7 @@ int quiesce(Game* game, int alpha, int beta ) {
 
     MoveList moves_list = { .current_index = 0 };
     generate_all_pseudo_legal_capture_moves_from_game_state(game, &moves_list);
-    order_move(game, &moves_list, 0, 0); // Ply et follow_pv est inutile ici car pas necessaire pour sort les captures
+    order_move(game, &moves_list, 0, 0, (ScoredMove){0}); // Ply et follow_pv est inutile ici car pas necessaire pour sort les captures
 
     for (int i = 0; i < moves_list.current_index; i++)
     {
@@ -153,10 +153,15 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, int follo
     int ply = get_depth() - depth;
     int original_alpha = alpha;
     int finded_pv_move = 0;
+    ScoredMove tt_move = {0};
 
     // Probe TT
     TTEntry entry = probe(game->zobrist_key, depth, alpha, beta);
-    if (entry.flag != TT_NOT_FOUND) {
+    if(entry.flag == TT_DEPTH_NOT_ENOUGH)
+    {
+        tt_move = entry.best_move;
+    }
+    else if (entry.flag != TT_NOT_FOUND) {
         pv_length[ply] = 0;
         return entry.best_move;
     }
@@ -170,9 +175,8 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, int follo
 
     MoveList moves_list = { .current_index = 0 };
     generate_all_pseudo_legal_moves_from_game_state(game, &moves_list);
-    order_move(game, &moves_list, ply, follow_pv);
+    order_move(game, &moves_list, ply, follow_pv, tt_move);
     
-
     for (int i = 0; i < moves_list.current_index; i++)
     {
         Game new_game_state;

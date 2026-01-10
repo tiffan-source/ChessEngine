@@ -14,7 +14,8 @@ typedef enum {
     TT_EXACT,
     TT_LOWERBOUND,
     TT_UPPERBOUND,
-    TT_NOT_FOUND
+    TT_NOT_FOUND,
+    TT_DEPTH_NOT_ENOUGH
 } TTFlag;
 
 typedef struct TranspositionTableEntry {
