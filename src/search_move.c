@@ -3,6 +3,20 @@
 
 U64 nodes_searched = 0;
 
+int maybe_in_zugzwangs(Game* game)
+{
+    int rooks = COUNT_BITS_SET(game->white_rooks | game->black_rooks);
+    int bishops = COUNT_BITS_SET(game->white_bishops | game->black_bishops);
+    int queens = COUNT_BITS_SET(game->white_queens | game->black_queens);
+    int knights = COUNT_BITS_SET(game->white_knights | game->black_knights);
+    int total_minor_major_pieces = rooks + bishops + queens + knights;
+    if (total_minor_major_pieces <= 1)
+    {
+        return 1;
+    }
+    return 0;
+}
+
 int get_reduction_amount(int moves_searched, int depth, int in_check, int am_i_giving_check, ScoredMove move) {
     int move_type = GET_MOVE_TYPE_FROM_MOVE(move.move);
     
@@ -189,6 +203,30 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, int follo
         return entry.best_move;
     }
 
+    int static_eval = material_evaluation_with_piece_square_table_for_side(game);
+    int margin = 50; // can be tuned to 50 + depth * 10
+    // Null move pruning
+    if (!am_i_in_check && depth >= 3 && !maybe_in_zugzwangs(game) && static_eval >= beta + margin)
+    {
+        Game new_game_state;
+        memcpy(&new_game_state, game, sizeof(Game));
+        make_null_move(&new_game_state);
+        nodes_searched++;
+
+        int R = 2;
+        if (depth >= 6) R = 3;
+
+        scored_move = nega_alpha_beta(&new_game_state, depth - 1 - R, -beta, -beta + 1, 0);
+        scored_move.score *= -1;
+        if (scored_move.score >= beta && !is_a_mate_score(scored_move.score) && depth <= 6)
+        {
+            //Verified Null Move Pruning
+            ScoredMove verified_move = nega_alpha_beta(game, depth - 3, alpha, beta, 0);
+            if (verified_move.score >= beta && !is_a_mate_score(verified_move.score))
+                return (ScoredMove){ .score = beta };
+        }
+    }
+
     if(depth == 0)
     {
         pv_length[ply] = 0;
@@ -240,25 +278,9 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, int follo
             }
             else
             {
-                if (reduction > 0)
-                {
-                    // Reduced search
-                    scored_move = nega_alpha_beta(&new_game_state, depth - 1 - reduction, -alpha - 1, -alpha, follow_pv && i == 0 && old_pv_length[ply + 1] > 0);
-                    scored_move.score *= -1;
-
-                    if (scored_move.score > alpha && scored_move.score < beta)
-                    {
-                        // We need to re-search at full depth
-                        scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, follow_pv && i == 0 && old_pv_length[ply + 1] > 0);
-                        scored_move.score *= -1;
-                    }
-                }
-                else
-                {
-                    // Full depth search
-                    scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, follow_pv && i == 0 && old_pv_length[ply + 1] > 0);
-                    scored_move.score *= -1;
-                }
+                // Full depth search
+                scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, follow_pv && i == 0 && old_pv_length[ply + 1] > 0);
+                scored_move.score *= -1;
             }
 
             if (scored_move.score > max)
