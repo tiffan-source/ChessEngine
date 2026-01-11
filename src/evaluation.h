@@ -24,5 +24,6 @@ extern int king_square_table[64];
 
 int material_evaluation_for_side(Game* game);
 int material_evaluation_with_piece_square_table_for_side(Game* game);
+int is_a_mate_score(int score);
 
 #endif // EVALUATION_H

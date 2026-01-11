@@ -138,3 +138,8 @@ int material_evaluation_with_piece_square_table_for_side(Game* game)
 
     return score * (game->turn == WHITE_TURN ? 1 : -1);
 }
+
+int is_a_mate_score(int score)
+{
+    return (score <= MIN + 100) || (score >= MAX - 100);
+}
