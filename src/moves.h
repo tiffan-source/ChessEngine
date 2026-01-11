@@ -81,5 +81,6 @@ void print_move_as_uci(Move move);
 void build_move_as_uci(Move move,char* result);
 
 void make_move(Game* game, Move move);
+void make_null_move(Game* game);
 
 #endif // MOVES_H

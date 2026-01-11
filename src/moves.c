@@ -489,3 +489,18 @@ void make_move(Game* game, Move move)
     game->turn = !game->turn; // Switch turn
     game->zobrist_key ^= black_to_move_zobrist_magic_number;
 }
+
+void make_null_move(Game* game)
+{
+    int previous_en_passant_square = game->en_passant_target_square;
+
+    // Remove en passant square from Zobrist key if it exists
+    if (previous_en_passant_square != -1) {
+        game->zobrist_key ^= en_passant_square_zobrist_magic_number[previous_en_passant_square];
+    }
+
+    game->en_passant_target_square = -1; // No en passant target
+
+    game->turn = !game->turn; // Switch turn
+    game->zobrist_key ^= black_to_move_zobrist_magic_number;
+}
