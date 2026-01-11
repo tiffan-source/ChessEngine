@@ -3,6 +3,27 @@
 
 U64 nodes_searched = 0;
 
+int get_reduction_amount(int moves_searched, int depth, int in_check, int am_i_giving_check, ScoredMove move) {
+    int move_type = GET_MOVE_TYPE_FROM_MOVE(move.move);
+    
+    // 1. Filtres d'exclusion (On ne réduit JAMAIS ces coups)
+    if (moves_searched < 4 || depth < 3) return 0;
+    if (in_check) return 0;
+    if (move.ordering_score > 29000) return 0; // Capture, TT, Killer
+    if( move_type == KNIGHT_PROMOTION || 
+        move_type == BISHOP_PROMOTION || 
+        move_type == ROOK_PROMOTION || 
+        move_type == QUEEN_PROMOTION) return 0;
+    if (am_i_giving_check) return 0; 
+
+    // 2. Calcul de la réduction
+    // Plus on cherche loin dans la liste, plus on peut réduire
+    int reduction = 1;
+    if (moves_searched > 12 && depth >= 4) reduction = 2;
+
+    return reduction;
+}
+
 int quiesce(Game* game, int alpha, int beta ) {
     int static_eval = material_evaluation_with_piece_square_table_for_side(game);
 
@@ -154,6 +175,8 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, int follo
     int original_alpha = alpha;
     int finded_pv_move = 0;
     ScoredMove tt_move = {0};
+    int reduction = 0;
+    int am_i_in_check = is_king_attacked_by_side(game, !game->turn);
 
     // Probe TT
     TTEntry entry = probe(game->zobrist_key, depth, alpha, beta);
@@ -186,33 +209,62 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, int follo
         nodes_searched++;
         
         if(!is_king_attacked_by_side(&new_game_state, new_game_state.turn)){ // Little hack here Side and TURN are aligned
-            move_found = 1;
+            move_found++;
+
+            // Late Move Reductions
+            int am_i_giving_check = is_king_attacked_by_side(&new_game_state, game->turn);
+            reduction = get_reduction_amount(move_found, depth, am_i_in_check, am_i_giving_check, moves_list.moves[i]);
 
             if(finded_pv_move)
             {
-                // If we already found a PV move, we can do a null window search
-                scored_move = nega_alpha_beta(&new_game_state, depth - 1, -alpha - 1, -alpha, follow_pv && i == 0 && old_pv_length[ply + 1] > 0);
-                scored_move.score *= -1;
-
-                if (scored_move.score > alpha && scored_move.score < beta)
+                if(reduction)
                 {
-                    // We need to re-search
-                    scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, follow_pv && i == 0 && old_pv_length[ply + 1] > 0);
+                    // Reduced search
+                    scored_move = nega_alpha_beta(&new_game_state, depth - 1 - reduction, -alpha - 1, -alpha, follow_pv && i == 0 && old_pv_length[ply + 1] > 0);
                     scored_move.score *= -1;
+                }else scored_move.score = alpha + 1; // Force re-search
+
+                if(scored_move.score > alpha)
+                {
+                    // If we already found a PV move, we can do a null window search
+                    scored_move = nega_alpha_beta(&new_game_state, depth - 1, -alpha - 1, -alpha, follow_pv && i == 0 && old_pv_length[ply + 1] > 0);
+                    scored_move.score *= -1;
+
+                    if (scored_move.score > alpha && scored_move.score < beta)
+                    {
+                        // We need to re-search
+                        scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, follow_pv && i == 0 && old_pv_length[ply + 1] > 0);
+                        scored_move.score *= -1;
+                    }
                 }
             }
             else
             {
-                // Normal search
-                scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, follow_pv && i == 0 && old_pv_length[ply + 1] > 0);
-                scored_move.score *= -1;
+                if (reduction > 0)
+                {
+                    // Reduced search
+                    scored_move = nega_alpha_beta(&new_game_state, depth - 1 - reduction, -alpha - 1, -alpha, follow_pv && i == 0 && old_pv_length[ply + 1] > 0);
+                    scored_move.score *= -1;
+
+                    if (scored_move.score > alpha && scored_move.score < beta)
+                    {
+                        // We need to re-search at full depth
+                        scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, follow_pv && i == 0 && old_pv_length[ply + 1] > 0);
+                        scored_move.score *= -1;
+                    }
+                }
+                else
+                {
+                    // Full depth search
+                    scored_move = nega_alpha_beta(&new_game_state, depth - 1, -beta, -alpha, follow_pv && i == 0 && old_pv_length[ply + 1] > 0);
+                    scored_move.score *= -1;
+                }
             }
 
             if (scored_move.score > max)
             {
                 max = scored_move.score;
                 best_move = moves_list.moves[i].move;
-
 
                 if (max > alpha)
                 {

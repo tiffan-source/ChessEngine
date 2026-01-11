@@ -47,6 +47,7 @@ typedef unsigned int Move;
 
 typedef struct ScoredMove {
     long int score;
+    long int ordering_score;
     Move move;
 } ScoredMove;
 

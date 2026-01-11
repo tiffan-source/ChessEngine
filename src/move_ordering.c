@@ -125,13 +125,13 @@ void scored_move_using(Game *game, ScoredMove *scored_move, int ply, int follow_
 {
     if( follow_pv && scored_move->move == old_pv_list[ply][0] )
     {
-        scored_move->score = 100000;
+        scored_move->ordering_score = 100000;
         return;
     }
 
     if( tt_move.move != 0 && scored_move->move == tt_move.move )
     {
-        scored_move->score = 90000;
+        scored_move->ordering_score = 90000;
         return;
     }
 
@@ -142,16 +142,16 @@ void scored_move_using(Game *game, ScoredMove *scored_move, int ply, int follow_
     case QUEEN_PROMOTION_CAPTURE:
     case KNIGHT_PROMOTION_CAPTURE:
     case BISHOP_PROMOTION_CAPTURE:
-        scored_move->score = score_mvv_lva[GET_PIECE_TYPE((*scored_move)) % 6][check_victime_piece_on_square(game, GET_DESTINATION_SQUARE((*scored_move))) % 6] + 40000;
+        scored_move->ordering_score = score_mvv_lva[GET_PIECE_TYPE((*scored_move)) % 6][check_victime_piece_on_square(game, GET_DESTINATION_SQUARE((*scored_move))) % 6] + 40000;
         break;
 
     default:
         if (scored_move->move == killer_move[ply][0])
-            scored_move->score = 30000;
+            scored_move->ordering_score = 30000;
         else if (scored_move->move == killer_move[ply][1])
-            scored_move->score = 29000;
+            scored_move->ordering_score = 29000;
         else
-            scored_move->score = history_heuristic[
+            scored_move->ordering_score = history_heuristic[
                 GET_SOURCE_SQUARE((*scored_move))
             ][
                 GET_DESTINATION_SQUARE((*scored_move))
@@ -162,8 +162,8 @@ void scored_move_using(Game *game, ScoredMove *scored_move, int ply, int follow_
 
 int compare_scored_move(const void *a, const void *b)
 {
-    unsigned int ia = (*(const ScoredMove *)a).score;
-    unsigned int ib = (*(const ScoredMove *)b).score;
+    unsigned int ia = (*(const ScoredMove *)a).ordering_score;
+    unsigned int ib = (*(const ScoredMove *)b).ordering_score;
     return ib - ia;
 }
 
