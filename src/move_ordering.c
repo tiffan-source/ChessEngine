@@ -167,12 +167,26 @@ int compare_scored_move(const void *a, const void *b)
     return ib - ia;
 }
 
-void order_move(Game *game, MoveList *move_list, int ply, int follow_pv, ScoredMove tt_move)
+void score_moves(Game *game, MoveList *move_list, int ply, int follow_pv, ScoredMove tt_move)
 {
     for (int i = 0; i < move_list->current_index; i++)
     {
         scored_move_using(game, move_list->moves + i, ply, follow_pv, tt_move);
     }
+}
 
-    qsort(move_list->moves, move_list->current_index, sizeof(ScoredMove), compare_scored_move);
+void pick_next_move(MoveList *move_list, int start_index)
+{
+    int best_index = start_index;
+    for (int i = start_index + 1; i < move_list->current_index; i++)
+    {
+        if (move_list->moves[i].ordering_score > move_list->moves[best_index].ordering_score)
+        {
+            best_index = i;
+        }
+    }
+
+    ScoredMove temp = move_list->moves[start_index];
+    move_list->moves[start_index] = move_list->moves[best_index];
+    move_list->moves[best_index] = temp;
 }

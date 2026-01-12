@@ -5,12 +5,11 @@ U64 nodes_searched = 0;
 
 int maybe_in_zugzwangs(Game* game)
 {
-    int rooks = COUNT_BITS_SET(game->white_rooks | game->black_rooks);
-    int bishops = COUNT_BITS_SET(game->white_bishops | game->black_bishops);
-    int queens = COUNT_BITS_SET(game->white_queens | game->black_queens);
-    int knights = COUNT_BITS_SET(game->white_knights | game->black_knights);
-    int total_minor_major_pieces = rooks + bishops + queens + knights;
-    if (total_minor_major_pieces <= 1)
+    Bitboard minors_majors = game->white_rooks | game->black_rooks | 
+                             game->white_bishops | game->black_bishops | 
+                             game->white_queens | game->black_queens | 
+                             game->white_knights | game->black_knights;
+    if (COUNT_BITS_SET(minors_majors) <= 1)
     {
         return 1;
     }
@@ -52,10 +51,12 @@ int quiesce(Game* game, int alpha, int beta ) {
 
     MoveList moves_list = { .current_index = 0 };
     generate_all_pseudo_legal_capture_moves_from_game_state(game, &moves_list);
-    order_move(game, &moves_list, 0, 0, (ScoredMove){0}); // Ply et follow_pv est inutile ici car pas necessaire pour sort les captures
+    score_moves(game, &moves_list, 0, 0, (ScoredMove){0}); // Ply et follow_pv est inutile ici car pas necessaire pour sort les captures
 
     for (int i = 0; i < moves_list.current_index; i++)
     {
+        pick_next_move(&moves_list, i);
+
         Game new_game_state = *game;
         make_move(&new_game_state, moves_list.moves[i].move);
         nodes_searched++;
@@ -236,10 +237,12 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, int follo
 
     MoveList moves_list = { .current_index = 0 };
     generate_all_pseudo_legal_moves_from_game_state(game, &moves_list);
-    order_move(game, &moves_list, ply, follow_pv, tt_move);
+    score_moves(game, &moves_list, ply, follow_pv, tt_move);
     
     for (int i = 0; i < moves_list.current_index; i++)
     {
+        pick_next_move(&moves_list, i);
+
         Game new_game_state;
         memcpy(&new_game_state, game, sizeof(Game));
         make_move(&new_game_state, moves_list.moves[i].move);
@@ -260,7 +263,8 @@ ScoredMove nega_alpha_beta(Game *game, int depth, int alpha, int beta, int follo
                     // Reduced search
                     scored_move = nega_alpha_beta(&new_game_state, depth - 1 - reduction, -alpha - 1, -alpha, follow_pv && i == 0 && old_pv_length[ply + 1] > 0);
                     scored_move.score *= -1;
-                }else scored_move.score = alpha + 1; // Force re-search
+                }else 
+                    scored_move.score = alpha + 1; // Force re-search
 
                 if(scored_move.score > alpha)
                 {
